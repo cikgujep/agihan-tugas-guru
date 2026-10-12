@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panduan Sistem Agihan Tugas Guru</title>
+<meta name="description" content="Panduan pemasangan dan penggunaan Sistem Agihan Tugas Guru v4.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: sama identiti dengan halaman promosi — bar navigasi melekit, hero ringkas dengan 3 pintu masuk, kemudian kandungan dua lajur (indeks melekit + bacaan) */
+:root {
+  --bg: #F5F8FC; --surface: #FFFFFF; --tint: #EAF1F9; --fg: #14223A; --muted: #56647C; --line: #DCE4EE;
+  --navy: #1E3A5F; --teal: #0F766E; --teal-soft: #DDF3EF; --amber: #EA7A12; --amber-ink: #FFFFFF;
+  --ok: #15803D; --ok-soft: #E3F6EA; --warn: #B45309; --warn-soft: #FFF1DC; --bad: #C0262D; --bad-soft: #FDE8E9;
+  --code: #EEF3F9;
+  --shadow: 0 1px 2px rgba(20,34,58,.06), 0 12px 32px -12px rgba(20,34,58,.18);
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0D1626; --surface: #142036; --tint: #111C30; --fg: #E7EDF6; --muted: #9AA8BF; --line: #24324B;
+  --navy: #9DB9E3; --teal: #4FD1BE; --teal-soft: #12302E; --amber: #F59A3C; --amber-ink: #1B1205;
+  --ok: #6FD39C; --ok-soft: #143326; --warn: #F2B866; --warn-soft: #3A2A12; --bad: #FF8F95; --bad-soft: #3D1A1D;
+  --code: #1A2943; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.6); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0D1626; --surface: #142036; --tint: #111C30; --fg: #E7EDF6; --muted: #9AA8BF; --line: #24324B;
+  --navy: #9DB9E3; --teal: #4FD1BE; --teal-soft: #12302E; --amber: #F59A3C; --amber-ink: #1B1205;
+  --ok: #6FD39C; --ok-soft: #143326; --warn: #F2B866; --warn-soft: #3A2A12; --bad: #FF8F95; --bad-soft: #3D1A1D;
+  --code: #1A2943; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.6); color-scheme: dark }
+
+* { box-sizing: border-box }
+html { scroll-behavior: smooth }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } *, *::before, *::after { transition: none !important } }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 17px; line-height: 1.65 }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px }
+a { color: var(--teal); text-underline-offset: 3px }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.12; text-wrap: balance; margin: 0; color: var(--fg) }
+h2 { font-size: clamp(1.7rem, 3.4vw, 2.2rem); letter-spacing: -.02em }
+h3 { font-size: 1.2rem; letter-spacing: -.01em; margin: 34px 0 10px }
+p { margin: 0 0 14px; max-width: 68ch }
+code, .mono { font-family: var(--f-mono); font-size: .86em; background: var(--code); padding: 2px 7px; border-radius: 6px; white-space: nowrap }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--teal); margin: 0 0 8px }
+.muted { color: var(--muted) }
+.btn { display: inline-flex; align-items: center; gap: 10px; font: 700 15px/1 var(--f-body); padding: 13px 20px; border-radius: 12px; text-decoration: none; border: 2px solid transparent; cursor: pointer }
+.btn.utama { background: var(--amber); color: var(--amber-ink) }
+.btn.kedua { border-color: var(--line); background: var(--surface); color: var(--fg) }
+.btn:focus-visible, a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px }
+
+/* Nav */
+nav.atas { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line) }
+nav.atas .wrap { display: flex; align-items: center; gap: 18px; height: 64px }
+.jenama { display: flex; align-items: center; gap: 10px; font: 800 17px var(--f-display); text-decoration: none; color: var(--fg); white-space: nowrap }
+.jenama small { font: 600 13px var(--f-body); color: var(--muted); border-left: 1px solid var(--line); padding-left: 10px }
+.logo { width: 34px; height: 34px; border-radius: 10px; background: var(--navy); display: grid; place-items: center; flex: none }
+.logo svg { width: 20px; height: 20px }
+nav.atas .kanan { margin-left: auto; display: flex; gap: 10px }
+nav.atas .btn { padding: 10px 14px; font-size: 14px }
+@media (max-width: 720px) { .jenama small, nav.atas .btn.kedua { display: none } }
+@media (max-width: 420px) { .jenama .teks { display: none } }
+
+/* Hero */
+.hero { padding-block: 56px 40px }
+.hero h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: -.03em; margin-bottom: 14px }
+.hero .lead { color: var(--muted); font-size: 1.12rem; max-width: 62ch }
+.pintu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 32px }
+@media (max-width: 820px) { .pintu { grid-template-columns: minmax(0, 1fr) } }
+.pintu a { display: grid; gap: 6px; text-decoration: none; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; transition: border-color .15s, transform .15s }
+.pintu a:hover { border-color: var(--teal); transform: translateY(-2px) }
+.pintu b { font: 700 1.1rem var(--f-display) }
+.pintu span { color: var(--muted); font-size: 15px }
+.pintu i { font-style: normal; color: var(--teal); font-weight: 700; font-size: 14px }
+
+/* Badan */
+.badan { display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 48px; padding-block: 24px 80px }
+@media (max-width: 960px) { .badan { grid-template-columns: minmax(0, 1fr) } nav.toc { display: none } }
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 84px); align-self: start; font-size: 14.5px }
+nav.toc p { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); font-weight: 700; margin-bottom: 8px }
+nav.toc ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; counter-reset: t }
+nav.toc li { counter-increment: t }
+nav.toc a { display: flex; gap: 10px; color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 9px }
+nav.toc a::before { content: counter(t); font: 600 12px var(--f-mono); color: var(--teal); min-width: 16px; padding-top: 2px }
+nav.toc a:hover, nav.toc a.aktif { background: var(--teal-soft); color: var(--fg) }
+main { min-width: 0; max-width: 800px }
+main > section { padding-block: 44px; border-top: 1px solid var(--line); scroll-margin-top: 80px }
+main > section:first-child { border-top: 0; padding-top: 8px }
+.no { font: 600 13px var(--f-mono); color: var(--teal); display: block; margin-bottom: 6px }
+main > section > h2 { margin-bottom: 14px }
+
+/* Komponen */
+.langkah { list-style: none; padding: 0; margin: 18px 0; display: grid; gap: 14px; counter-reset: l }
+.langkah > li { counter-increment: l; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px }
+.langkah > li::before { content: counter(l); width: 34px; height: 34px; border-radius: 10px; background: var(--teal-soft); color: var(--teal); font: 800 16px var(--f-display); display: grid; place-items: center }
+.langkah > li > div { min-width: 0 }
+.langkah b.t { display: block; font-size: 16px; margin-bottom: 2px }
+.langkah span.d { color: var(--muted); font-size: 15.5px }
+.nota { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; background: var(--teal-soft); border-radius: 14px; padding: 14px 18px; margin: 18px 0; font-size: 15.5px }
+.nota::before { content: "i"; width: 22px; height: 22px; border-radius: 50%; background: var(--teal); color: var(--bg); font: 700 13px var(--f-mono); display: grid; place-items: center; margin-top: 2px }
+.nota.amaran { background: var(--warn-soft) }
+.nota.amaran::before { content: "!"; background: var(--warn) }
+.nota p { margin: 0 }
+.tbl { overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: 14px; background: var(--surface) }
+table { border-collapse: collapse; width: 100%; font-size: 15px }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; background: var(--tint) }
+tr:last-child td { border-bottom: 0 }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap }
+.pil { display: inline-block; font: 700 12.5px var(--f-body); padding: 3px 10px; border-radius: 999px; white-space: nowrap }
+.pil.ok { background: var(--ok-soft); color: var(--ok) } .pil.warn { background: var(--warn-soft); color: var(--warn) } .pil.bad { background: var(--bad-soft); color: var(--bad) } .pil.neutral { background: var(--tint); color: var(--muted) }
+.rumus { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: 12px; padding: 16px 20px; margin: 14px 0; overflow-x: auto }
+.rumus .eq { font: 500 15px var(--f-mono); white-space: nowrap }
+.rumus .eq b { color: var(--teal); font-weight: 600 }
+.rumus .cap { color: var(--muted); font-size: 14.5px; margin-top: 6px; white-space: normal }
+.kad-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 16px 0 }
+@media (max-width: 640px) { .kad-grid { grid-template-columns: minmax(0, 1fr) } }
+.kad-grid > div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; min-width: 0 }
+.kad-grid b { display: block; font: 700 1.02rem var(--f-display); margin-bottom: 4px }
+.kad-grid span { color: var(--muted); font-size: 15px }
+
+/* Kalkulator (sama seperti halaman promosi) */
+.kalk { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 22px; background: var(--surface); border-radius: 20px; border: 1px solid var(--line); padding: 26px; box-shadow: var(--shadow); margin-top: 18px }
+@media (max-width: 760px) { .kalk { grid-template-columns: minmax(0, 1fr); padding: 18px } }
+.sub-kalk { font-size: 1rem; margin: 0 0 12px; color: var(--navy) }
+.kiri-kalk .sub-kalk:not(:first-child) { margin-top: 22px }
+.medan { display: grid; gap: 8px; margin-bottom: 14px }
+.medan label { display: flex; justify-content: space-between; gap: 12px; font-weight: 600; font-size: 15px }
+.medan output { font: 700 15px var(--f-mono); color: var(--teal); white-space: nowrap }
+input[type=range] { width: 100%; accent-color: var(--teal) }
+.suis { display: flex; align-items: center; gap: 10px; font-weight: 600; cursor: pointer; font-size: 15px }
+.suis input { width: 18px; height: 18px; accent-color: var(--teal) }
+.senarai-t { display: grid; gap: 8px }
+.tugas { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr) auto auto; gap: 6px; align-items: center; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 8px }
+.tugas select { width: 100%; min-width: 0; font: 600 13.5px var(--f-body); color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px }
+.tugas .skor-t { font: 700 13.5px var(--f-mono); color: var(--teal); white-space: nowrap; min-width: 44px; text-align: right }
+.tugas .buang { border: 0; background: transparent; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; padding: 4px 6px; border-radius: 6px }
+.tugas .buang:hover { color: var(--bad); background: var(--bad-soft) }
+@media (max-width: 560px) { .tugas { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } .tugas .skor-t { text-align: left } }
+.btn-tambah { margin-top: 10px; font: 700 14px var(--f-body); color: var(--teal); background: var(--teal-soft); border: 0; border-radius: 10px; padding: 9px 14px; cursor: pointer }
+.andaian { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 12px }
+.andaian summary { cursor: pointer; font-weight: 700; color: var(--muted); font-size: 14.5px }
+.grid-andaian { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 10px }
+@media (max-width: 560px) { .grid-andaian { grid-template-columns: minmax(0, 1fr) } }
+.grid-andaian label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted) }
+.grid-andaian input { font: 600 15px var(--f-mono); color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px; width: 100% }
+.hasil { background: var(--navy); color: var(--bg); border-radius: 16px; padding: 22px; display: grid; align-content: start; gap: 8px; min-width: 0 }
+.hasil small { opacity: .8; font-size: 14px }
+.hasil .besar { font: 800 3.4rem/1 var(--f-display); font-variant-numeric: tabular-nums; letter-spacing: -.03em }
+.zon { display: inline-block; font: 700 14px var(--f-body); padding: 4px 13px; border-radius: 999px; background: var(--ok-soft); color: var(--ok) }
+.skala-k { position: relative; height: 10px; border-radius: 999px; margin: 10px 0 22px; background: linear-gradient(90deg, var(--warn) 0 35%, var(--ok) 35% 65%, var(--bad) 65% 100%) }
+.skala-k i { position: absolute; top: -5px; width: 4px; height: 20px; border-radius: 2px; background: var(--bg); box-shadow: 0 0 0 2px var(--navy); transform: translateX(-50%); transition: left .3s }
+.skala-k span { position: absolute; top: 14px; font: 600 11px var(--f-mono); opacity: .8 }
+.skala-k span:nth-of-type(2), .skala-k span:nth-of-type(3) { transform: translateX(-50%) }
+.langkah-k { margin: 0; padding: 14px 0 0 18px; display: grid; gap: 7px; font-size: 13.5px; opacity: .92; border-top: 1px solid color-mix(in srgb, var(--bg) 25%, transparent) }
+.langkah-k b { font-family: var(--f-mono); font-weight: 600 }
+
+/* Soalan lazim */
+.faq { display: grid; gap: 10px }
+.faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 2px 20px }
+.faq summary { cursor: pointer; font-weight: 700; padding-block: 14px; list-style: none; display: flex; justify-content: space-between; gap: 16px }
+.faq summary::-webkit-details-marker { display: none }
+.faq summary::after { content: "+"; font: 700 22px/1 var(--f-display); color: var(--teal); transition: transform .2s; flex: none }
+.faq details[open] summary::after { transform: rotate(45deg) }
+.faq details p { color: var(--muted); padding-bottom: 14px; margin: 0 }
+
+details.pembangun { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 4px 22px }
+details.pembangun > summary { cursor: pointer; font: 700 1.05rem var(--f-display); padding-block: 16px }
+footer { border-top: 1px solid var(--line); padding-block: 32px 48px; color: var(--muted); font-size: 14px }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px }
+</style>
+
+<nav class="atas" aria-label="Navigasi utama">
+  <div class="wrap">
+    <a class="jenama" href="#atas">
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 18h16" stroke="#fff" stroke-width="2" stroke-linecap="round"/><rect x="5" y="10" width="3" height="6" rx="1" fill="#fff"/><rect x="10.5" y="7" width="3" height="9" rx="1" fill="#fff"/><rect x="16" y="10" width="3" height="6" rx="1" fill="#fff"/></svg></span>
+      <span class="teks">Agihan Tugas Guru</span><small>Panduan</small>
+    </a>
+    <div class="kanan">
+      <a class="btn kedua" href="index.html">Tentang sistem</a>
+      <a class="btn utama" href="https://docs.google.com/spreadsheets/d/1LeGeLryVMnU486NuROsNySdFnk1UbwmowVqgoht77SY/copy" target="_blank" rel="noopener">Dapatkan salinan</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="atas">
+  <div class="wrap">
+    <p class="eyebrow">Panduan pengguna · v4</p>
+    <h1>Panduan Sistem Agihan Tugas Guru</h1>
+    <p class="lead">Semua yang anda perlu tahu untuk memasang sistem di sekolah anda, melantik ahli jawatankuasa, membaca Indeks Beban dan menghantar surat lantikan.</p>
+    <div class="pintu">
+      <a href="#pasang"><b>Baru mula?</b><span>Pasang sistem dalam kira-kira 10 minit.</span><i>Pasang di sekolah anda →</i></a>
+      <a href="#tugas"><b>Sudah guna?</b><span>Lantik, tukar dan isi kekosongan jawatan.</span><i>Mengurus tugas →</i></a>
+      <a href="#kira"><b>Ingin faham kiraan?</b><span>Cuba kalkulator Indeks Beban.</span><i>Cara beban dikira →</i></a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap badan">
+<nav class="toc" aria-label="Kandungan">
+  <p>Kandungan</p>
+  <ol>
+    <li><a href="#pasang">Pasang di sekolah anda</a></li>
+    <li><a href="#peranan">Siapa boleh buat apa</a></li>
+    <li><a href="#aliran">Aliran kerja setahun</a></li>
+    <li><a href="#menu">Menu sistem</a></li>
+    <li><a href="#tugas">Mengurus tugas</a></li>
+    <li><a href="#kira">Cara beban dikira</a></li>
+    <li><a href="#ambang">Memilih ambang</a></li>
+    <li><a href="#amaran">Amaran</a></li>
+    <li><a href="#surat">Surat &amp; emel</a></li>
+    <li><a href="#tetapan">Tetapan &amp; data</a></li>
+    <li><a href="#soalan">Soalan lazim</a></li>
+    <li><a href="#master">Untuk pemilik master</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<section id="pasang">
+  <span class="no">01</span>
+  <h2>Pasang di sekolah anda</h2>
+  <p>Anda hanya perlukan akaun Google sekolah, contohnya akaun <code>@moe-dl.edu.my</code>. Tiada lesen, tiada bayaran, dan data sekolah anda kekal dalam Drive sekolah anda sendiri.</p>
+  <ol class="langkah">
+    <li><div><b class="t">Buat salinan</b><span class="d">Buka pautan <a href="https://docs.google.com/spreadsheets/d/1LeGeLryVMnU486NuROsNySdFnk1UbwmowVqgoht77SY/copy" target="_blank" rel="noopener">Dapatkan salinan</a> dan klik <b>Make a copy</b>. Simpan dalam Drive akaun sekolah. Kod sistem ikut disalin bersama.</span></div></li>
+    <li><div><b class="t">Beri kebenaran</b><span class="d">Dalam salinan anda, buka <b>Extensions › Apps Script</b>. Pilih fungsi <code>pasang</code> dan klik <b>Run</b>. Jika Google memaparkan amaran, klik <b>Advanced › Go to … (unsafe)</b>, kemudian <b>Allow</b>.</span></div></li>
+    <li><div><b class="t">Terbitkan sebagai web app</b><span class="d">Klik <b>Deploy › New deployment</b> dan pilih <b>Web app</b>. Tetapkan <em>Execute as: Me</em> dan <em>Who has access: Anyone within</em> domain sekolah. Klik <b>Deploy</b> dan salin URL.</span></div></li>
+    <li><div><b class="t">Buka sistem</b><span class="d">Buka URL tadi. <b>Akaun pertama yang membuka sistem menjadi pentadbir (ADMIN).</b></span></div></li>
+    <li><div><b class="t">Cuba, kemudian buang data contoh</b><span class="d">Salinan sudah mengandungi data sebuah sekolah contoh dengan agihan yang seimbang. Selepas meneroka, buka Sheet dan pilih <b>Sistem Agihan Tugas › Buang data contoh</b>. Hanya rekod contoh dibuang.</span></div></li>
+    <li><div><b class="t">Isi data sekolah</b><span class="d">Lengkapkan Tetapan › Sekolah (profil, logo, tandatangan), semak senarai gred dan jawatan, import senarai guru di menu Guru, kemudian sediakan jawatankuasa.</span></div></li>
+    <li><div><b class="t">Beri akses kepada warga sekolah</b><span class="d">Tetapan › Pengguna › <b>Beri akses GURU kepada semua guru</b>, dan tambah PK bersama bidang masing-masing. Kongsi URL web app kepada guru.</span></div></li>
+  </ol>
+  <div class="nota amaran"><p>Jika menu <b>Sistem Agihan Tugas</b> tidak kelihatan dalam Sheet, muat semula halaman Sheet selepas langkah 2.</p></div>
+</section>
+
+<section id="peranan">
+  <span class="no">02</span>
+  <h2>Siapa boleh buat apa</h2>
+  <p>Sistem mengenal pengguna melalui akaun Google mereka. Hanya emel yang didaftarkan dan aktif di Tetapan › Pengguna boleh masuk.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Peranan</th><th>Boleh buat</th></tr></thead>
+    <tbody>
+      <tr><td><b>ADMIN</b></td><td>Semua perkara: tetapan, pengguna, guru, semua jawatankuasa, surat dan emel.</td></tr>
+      <tr><td><b>PK</b></td><td>Melantik dan menukar ahli dalam jawatankuasa bidangnya sahaja. Melihat Analisis dan senarai guru.</td></tr>
+      <tr><td><b>GURU</b></td><td>Melihat <em>Tugas Saya</em>: lantikan sendiri, Indeks Beban sendiri dan surat sendiri.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="aliran">
+  <span class="no">03</span>
+  <h2>Aliran kerja setahun</h2>
+  <ol class="langkah">
+    <li><div><b class="t">Sediakan tetapan</b><span class="d">Profil sekolah, logo, tandatangan Pengetua, senarai gred dan jawatan.</span></div></li>
+    <li><div><b class="t">Masukkan guru</b><span class="d">Tambah satu demi satu atau import CSV. Tandakan status (Aktif, Cuti, Bertukar keluar) dan tag seperti PK atau GKMP.</span></div></li>
+    <li><div><b class="t">Isi masa mengajar</b><span class="d">Di menu Guru, isi jumlah masa seminggu (contohnya 30 masa) dan tanda jika guru mengajar kelas peperiksaan.</span></div></li>
+    <li><div><b class="t">Sediakan jawatankuasa</b><span class="d">Setiap JK ada bidang, tahap (Utama, Sokongan, Sampingan) dan jenis tempoh. Pada awal tahun, guna <b>Salin lantikan dari tahun lepas</b>.</span></div></li>
+    <li><div><b class="t">Lantik ahli</b><span class="d">Di Jawatankuasa › <b>Urus ahli</b>, pilih guru bagi setiap jawatan. Calon disusun daripada beban paling rendah.</span></div></li>
+    <li><div><b class="t">Semak Analisis</b><span class="d">Lihat siapa terbeban, siapa masih ada ruang, dan JK yang belum lengkap. Tukar tugas terus dari profil guru.</span></div></li>
+    <li><div><b class="t">Jana dan hantar surat</b><span class="d">Di menu Surat. Jika lantikan berubah selepas itu, surat guru terlibat ditanda perlu dijana semula.</span></div></li>
+  </ol>
+</section>
+
+<section id="menu">
+  <span class="no">04</span>
+  <h2>Menu sistem</h2>
+  <div class="kad-grid">
+    <div><b>Analisis</b><span>Ringkasan sekolah: taburan beban, guru yang perlu perhatian (Terbeban · Ada ruang · JK kosong), carta masa mengajar lawan tugas, kelengkapan JK, status surat, agihan ikut bidang dan gred.</span></div>
+    <div><b>Jawatankuasa</b><span>Senarai JK ikut bidang, disusun ikut tahap kemudian tempoh. Klik untuk melihat ahli; <b>Urus ahli</b> untuk melantik. Carian turut mencari nama guru.</span></div>
+    <div><b>Guru</b><span>Jadual guru dengan masa mengajar dan tanda peperiksaan yang boleh diedit terus. Klik nama untuk membuka profil.</span></div>
+    <div><b>Surat</b><span>Jana PDF lantikan, hantar emel, dan pantau status setiap guru.</span></div>
+    <div><b>Tetapan</b><span>Sekolah, Surat &amp; emel, Senarai rujukan, Pengguna, Log aktiviti dan Lanjutan (pemberat dan ambang).</span></div>
+    <div><b>Tugas Saya</b><span>Untuk semua pengguna: lantikan sendiri, Indeks Beban dan surat.</span></div>
+  </div>
+  <p>Status jawatankuasa dalam senarai: <span class="pil ok">Lengkap</span> <span class="pil warn">2 posisi kosong</span> <span class="pil warn">Setiausaha kosong</span> <span class="pil bad">Belum ada ahli</span></p>
+</section>
+
+<section id="tugas">
+  <span class="no">05</span>
+  <h2>Mengurus tugas</h2>
+  <h3>Tukar guru terus dari profil</h3>
+  <p>Klik nama mana-mana guru di Analisis atau menu Guru. Setiap lantikan dalam profil ada butang <b>⇄ Tukar</b>. Calon pengganti disusun daripada beban paling rendah, lengkap dengan indeks <em>sekarang</em> dan <em>jika dilantik</em>. Surat kedua-dua guru ditanda perlu dijana semula.</p>
+  <h3>Simpan posisi kosong</h3>
+  <p>Di <b>Urus ahli</b>, tekan <b>Tambah posisi</b> dan simpan walaupun belum memilih guru. Posisi itu dipaparkan sebagai <span class="pil warn">Belum diisi</span> sehingga diisi, dan tidak keluar dalam surat.</p>
+  <div class="nota"><p>Butang ✕ pada guru mengosongkan posisi tetapi posisi itu kekal. Tekan ✕ sekali lagi untuk membuang posisi sepenuhnya.</p></div>
+  <h3>Susunan ahli yang automatik</h3>
+  <div class="kad-grid">
+    <div><b>Rumah sukan, kelab, badan beruniform</b><span>Isi nama unit dalam butiran (contohnya MERAH atau PENGAKAP). Ahli dikumpul di bawah tajuk unit masing-masing.</span></div>
+    <div><b>Pengurusan tingkatan</b><span>Butiran "TINGKATAN 2" dan kelas seperti "2 AMANAH" dikumpul di bawah <em>Tingkatan 2</em>. Penyelaras di atas, diikuti kelas ikut abjad.</span></div>
+    <div><b>Butiran yang menyebut jawatan</b><span>"Setiausaha PBD" disusun sebelum "Penolong Setiausaha SPM", mengikut susunan jawatan.</span></div>
+    <div><b>Pentadbir</b><span>Pengetua, PK dan GKMP tiada Indeks Beban dan dipaparkan <span class="pil neutral">Dikecualikan</span>. Lantikan mereka kekal.</span></div>
+  </div>
+</section>
+
+<section id="kira">
+  <span class="no">06</span>
+  <h2>Cara beban dikira</h2>
+  <p>Setiap guru diberi satu nombor, <b>Indeks Beban</b>, yang menggabungkan masa mengajar dan tugas jawatankuasa. Kedua-duanya dibandingkan dengan guru biasa di sekolah anda sendiri, jadi <b>1.00 bermaksud setara dengan guru biasa</b>.</p>
+
+  <h3>1 · Skor setiap tugas</h3>
+  <div class="rumus"><div class="eq">Skor tugas = <b>Tahap JK</b> × <b>Berat jawatan</b> × <b>Tempoh</b></div>
+    <div class="cap">Tahap: Utama 3 · Sokongan 2 · Sampingan 1. Jawatan: Pengerusi 5 · Naib Pengerusi 4 · Setiausaha 4 · Pen. Setiausaha 3 · Bendahari 3 · Penyelaras 3 · AJK 1. Tempoh: Sepanjang tahun 1.0 · Bermusim 0.6 · Program 0.3.</div></div>
+
+  <h3>2 · Bandingkan dengan guru biasa</h3>
+  <div class="rumus"><div class="eq">Nisbah mengajar = masa mengajar ÷ median sekolah<br>Nisbah tugas &nbsp;&nbsp;&nbsp;= jumlah skor tugas ÷ median sekolah</div>
+    <div class="cap">Median ialah nilai guru di tengah-tengah, dikira semula setiap kali data berubah. Guru kelas peperiksaan: masa × faktor peperiksaan (contohnya 1.2), dipaparkan sebagai <em>masa mengajar (terlaras)</em>.</div></div>
+
+  <h3>3 · Gabungkan</h3>
+  <div class="rumus"><div class="eq">Indeks Beban = <b>60%</b> × nisbah mengajar + <b>40%</b> × nisbah tugas</div>
+    <div class="cap">Bahagian 60/40 boleh diubah di Tetapan › Lanjutan. Guru Cuti, Bertukar keluar dan pentadbir yang dikecualikan tidak diberi indeks.</div></div>
+
+  <div class="tbl"><table>
+    <thead><tr><th class="num">Indeks</th><th>Label</th><th>Maksud</th></tr></thead>
+    <tbody>
+      <tr><td class="num">lebih 1.30</td><td><span class="pil bad">Terbeban</span></td><td>Lebih 30% berat daripada guru biasa.</td></tr>
+      <tr><td class="num">0.70 – 1.30</td><td><span class="pil ok">Seimbang</span></td><td>Dalam julat wajar.</td></tr>
+      <tr><td class="num">bawah 0.70</td><td><span class="pil warn">Kurang beban</span></td><td>Masih ada ruang untuk tugas tambahan.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Cuba sendiri</h3>
+  <div class="kalk">
+    <div class="kiri-kalk">
+      <h3 class="sub-kalk">Masa mengajar</h3>
+      <div class="medan">
+        <label for="kMasa">Masa seminggu <output id="oMasa" for="kMasa">28 masa</output></label>
+        <input type="range" id="kMasa" min="0" max="40" step="1" value="28">
+      </div>
+      <label class="suis" for="kPep"><input type="checkbox" id="kPep" checked> Kelas peperiksaan <span class="muted">(× 1.2)</span></label>
+      <h3 class="sub-kalk">Tugas jawatankuasa</h3>
+      <div class="senarai-t" id="senaraiT"></div>
+      <button type="button" class="btn-tambah" id="btnTambahT">+ Tambah tugas</button>
+      <details class="andaian">
+        <summary>Andaian guru biasa di sekolah</summary>
+        <div class="grid-andaian">
+          <label for="kMedM">Median masa<input type="number" id="kMedM" min="1" max="40" value="28"></label>
+          <label for="kMedT">Median skor tugas<input type="number" id="kMedT" min="0.5" step="0.5" value="8"></label>
+          <label for="kAlpha">Bahagian mengajar (%)<input type="number" id="kAlpha" min="0" max="100" step="5" value="60"></label>
+        </div>
+      </details>
+    </div>
+    <div class="hasil" aria-live="polite">
+      <small>Indeks Beban</small>
+      <div class="besar" id="hIndeks">1.00</div>
+      <div><span class="zon" id="hZon">Seimbang</span></div>
+      <div class="skala-k" aria-hidden="true"><i id="hPenanda"></i><span style="left:0">0</span><span style="left:35%">0.7</span><span style="left:65%">1.3</span><span style="right:0">2.0+</span></div>
+      <ol class="langkah-k" id="hLangkah"></ol>
+    </div>
+  </div>
+</section>
+
+<section id="ambang">
+  <span class="no">07</span>
+  <h2>Memilih ambang</h2>
+  <p>Ambang ialah <b>piawai</b>, bukan kuota. Matlamatnya ialah sifar guru terbeban, dicapai dengan mengagihkan semula tugas, bukan dengan menaikkan ambang sehingga tiada sesiapa ditanda.</p>
+  <div class="kad-grid">
+    <div><b>0.7 / 1.3 · disyorkan</b><span>±30% daripada guru biasa. Biasanya menanda kira-kira 10% guru di setiap hujung.</span></div>
+    <div><b>Hingga 1.4 atau 1.5</b><span>Masih munasabah jika pengurusan menganggap 30% terlalu ketat.</span></div>
+    <div><b>2.0 · elakkan</b><span>Guru perlu memikul dua kali ganda beban guru biasa sebelum ditanda. Masalah sebenar akan tersorok.</span></div>
+    <div><b>Selepas menukar</b><span>Tekan <b>Kira semula</b> di Analisis, dan catat rujukan keputusan mesyuarat di Tetapan › Lanjutan.</span></div>
+  </div>
+</section>
+
+<section id="amaran">
+  <span class="no">08</span>
+  <h2>Amaran</h2>
+  <p>Sistem memaparkan amaran dalam bahasa biasa. Kod W hanya muncul apabila tetikus dihalakan pada amaran.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Amaran</th><th>Bila muncul</th></tr></thead>
+    <tbody>
+      <tr><td><b>Terbeban</b> <span class="mono">W01</span></td><td>Indeks melebihi ambang tinggi.</td></tr>
+      <tr><td><b>Kurang beban</b> <span class="mono">W02</span></td><td>Indeks di bawah ambang rendah.</td></tr>
+      <tr><td><b>Banyak jawatan</b> <span class="mono">W03</span></td><td>Bilangan lantikan melebihi had yang ditetapkan.</td></tr>
+      <tr><td><b>Gred di bawah cadangan</b> <span class="mono">W04</span></td><td>Gred guru lebih rendah daripada yang dicadangkan bagi jawatan itu.</td></tr>
+      <tr><td><b>Guru kanan, AJK sahaja</b> <span class="mono">W05</span></td><td>Guru kanan hanya memegang jawatan AJK.</td></tr>
+      <tr><td><b>Lantikan berganda</b> <span class="mono">W06</span></td><td>Guru dilantik dua kali dalam JK dan unit yang sama.</td></tr>
+      <tr><td><b>Jawatan wajib kosong</b> <span class="mono">W07</span></td><td>JK belum mengisi jawatan bertanda Wajib.</td></tr>
+      <tr><td><b>Tidak aktif</b> <span class="mono">W08</span></td><td>Guru Cuti atau Bertukar keluar masih memegang lantikan.</td></tr>
+      <tr><td><b>Surat perlu dijana semula</b> <span class="mono">W09</span></td><td>Lantikan berubah selepas surat dijana.</td></tr>
+      <tr><td><b>Semak emel</b> <span class="mono">W10</span></td><td>Format emel salah atau bukan domain sekolah.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="surat">
+  <span class="no">09</span>
+  <h2>Surat &amp; emel</h2>
+  <ol class="langkah">
+    <li><div><b class="t">Sediakan templat sekali</b><span class="d">Tetapan › Surat &amp; emel › <b>Sediakan Templat &amp; Folder</b>. Templat ialah Google Doc yang boleh anda sunting.</span></div></li>
+    <li><div><b class="t">Jana</b><span class="d">Satu PDF setiap guru. Halaman 1 ialah surat <em>Pelantikan Tugas-tugas Rasmi</em>. Halaman 2 ialah <b>Lampiran A</b>, senarai tugasan disusun ikut bidang.</span></div></li>
+    <li><div><b class="t">Hantar</b><span class="d">Emel dihantar berperingkat. Jika masa tamat, sistem menyambung sendiri tanpa menghantar dua kali.</span></div></li>
+  </ol>
+  <div class="nota"><p>Untuk kembali kepada reka bentuk surat asal, klik <b>Cipta Semula Templat Lalai</b>. Ruang isian yang disokong termasuk <code>{{NAMA_GURU}}</code> <code>{{TAHUN}}</code> <code>{{NO_RUJUKAN}}</code> <code>{{JADUAL_LANTIKAN}}</code> <code>{{BIL_LANTIKAN}}</code>.</p></div>
+  <div class="nota amaran"><p>Kuota emel harian Google terhad. Sistem menyemak kuota dahulu dan tidak menghantar jika tidak mencukupi.</p></div>
+</section>
+
+<section id="tetapan">
+  <span class="no">10</span>
+  <h2>Tetapan &amp; data</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Tetapan</th><th class="num">Lalai</th><th>Kesan</th></tr></thead>
+    <tbody>
+      <tr><td>Bahagian mengajar</td><td class="num">60%</td><td>Berat masa mengajar dalam indeks; selebihnya tugas JK.</td></tr>
+      <tr><td>Ambang tinggi / rendah</td><td class="num">1.3 / 0.7</td><td>Had Terbeban dan Kurang beban.</td></tr>
+      <tr><td>Faktor kelas peperiksaan</td><td class="num">1.0</td><td>Pengganda masa bagi guru kelas peperiksaan.</td></tr>
+      <tr><td>Minit setiap masa</td><td class="num">30</td><td>Penukar masa kepada minit.</td></tr>
+      <tr><td>Had bilangan jawatan</td><td class="num">8</td><td>Melebihi had mencetuskan amaran Banyak jawatan.</td></tr>
+      <tr><td>Tidak dikira dalam indeks</td><td class="num">Pengetua, PK, GKMP</td><td>Tag guru yang dikecualikan.</td></tr>
+    </tbody>
+  </table></div>
+  <h3>Nilai yang dibenarkan dalam Sheet</h3>
+  <p>Jika anda menyunting Sheet secara terus, gunakan nilai berikut tepat seperti ditulis, kemudian tekan <b>Kira semula</b> di Analisis.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Lajur</th><th>Nilai</th></tr></thead>
+    <tbody>
+      <tr><td>GURU · status</td><td><code>AKTIF</code> <code>CUTI</code> <code>BERTUKAR_KELUAR</code></td></tr>
+      <tr><td>GURU · tag</td><td><code>PENGETUA</code> <code>PK</code> <code>GKMP</code> <code>KETUA_PANITIA</code> <code>GC</code> <code>GURU_BAHARU</code>, boleh lebih satu dipisah koma</td></tr>
+      <tr><td>PENGGUNA · peranan</td><td><code>ADMIN</code> <code>PK</code> (wajib isi id_bidang) <code>GURU</code></td></tr>
+      <tr><td>JAWATANKUASA · tahap</td><td><code>UTAMA</code> <code>SOKONGAN</code> <code>SAMPINGAN</code></td></tr>
+      <tr><td>JAWATANKUASA · jenis_tempoh</td><td><code>SEPANJANG_TAHUN</code> <code>BERMUSIM</code> <code>PROGRAM</code></td></tr>
+      <tr><td>id_bidang</td><td><code>PENTADBIRAN</code> <code>KURIKULUM</code> <code>HEM</code> <code>KOKURIKULUM</code></td></tr>
+      <tr><td>Lajur Ya/Tidak</td><td><code>Y</code> atau <code>T</code> sahaja</td></tr>
+      <tr><td>MENGAJAR · minit_seminggu</td><td>Dalam minit (32 masa = 960). Skrin memaparkan masa.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="soalan">
+  <span class="no">11</span>
+  <h2>Soalan lazim</h2>
+  <div class="faq">
+    <details><summary>Kenapa indeks seorang guru berubah walaupun lantikannya sama?</summary><p>Indeks dibandingkan dengan median sekolah. Apabila guru lain menerima lantikan baharu, median naik dan indeks guru lain turun sedikit.</p></details>
+    <details><summary>Perlu ke skrin log masuk?</summary><p>Tidak. Sistem mengenal pengguna melalui akaun Google sekolah dan senarai di Tetapan › Pengguna. Tiada kata laluan untuk diurus.</p></details>
+    <details><summary>Guru mendapat skrin "Akses disekat" walaupun sudah didaftarkan?</summary><p>Biasanya kerana pelayar log masuk beberapa akaun Google. Tekan <b>Tukar akaun Google</b> pada skrin itu dan pilih akaun sekolah, atau buka pautan dalam tetingkap Incognito.</p></details>
+    <details><summary>Indeks ramai guru melonjak tinggi, contohnya 6.x?</summary><p>Semak tahun yang dipilih di bahagian atas. Jika lantikan tahun itu belum lengkap, median skor tugas sangat rendah dan indeks menjadi besar. Lengkapkan lantikan atau salin dari tahun lepas.</p></details>
+    <details><summary>Tanda kelas peperiksaan tiada kesan?</summary><p>Betul selagi faktor peperiksaan ialah 1.0. Naikkan kepada 1.1 atau 1.2 di Tetapan › Lanjutan.</p></details>
+    <details><summary>Siapa boleh melihat data sekolah kami?</summary><p>Hanya pengguna yang anda daftarkan. Data berada dalam salinan Sheet milik sekolah anda; pembangun sistem tidak boleh melihatnya.</p></details>
+  </div>
+</section>
+
+<section id="master">
+  <span class="no">12</span>
+  <h2>Untuk pemilik master</h2>
+  <p>Bahagian ini untuk pembangun yang menyelenggara sistem dan berkongsi salinan kepada sekolah lain. Pengguna sekolah boleh melangkau bahagian ini.</p>
+  <details class="pembangun">
+    <summary>Struktur projek, perkongsian dan kemas kini</summary>
+    <div class="tbl"><table>
+      <thead><tr><th>Projek</th><th>Peranan</th></tr></thead>
+      <tbody>
+        <tr><td><b>Master</b><br><span class="muted">terikat pada Sheet sekolah pemilik</span></td><td>Sistem sekolah pemilik. Jangan kongsi.</td></tr>
+        <tr><td><b>CoreLib</b><br><span class="muted">projek berasingan, tiada data</span></td><td>Semua kod sistem. Dikongsi <em>Anyone with the link · Viewer</em> supaya salinan sekolah lain boleh memanggilnya.</td></tr>
+        <tr><td><b>Client</b><br><span class="muted">Sheet "Sistem Agihan Tugas v4 - Client"</span></td><td>Templat untuk disalin. Skripnya hanya penghubung kepada CoreLib.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="nota amaran"><p>Projek yang terikat pada Sheet berkongsi akses dengan Sheet itu. Berkongsi master bermakna berkongsi data guru sekolah anda.</p></div>
+    <p>Salinan client dikunci pada satu versi CoreLib supaya kemas kini tidak memecahkan sekolah lain secara tiba-tiba. Untuk menerima kemas kini, sekolah membuka Apps Script salinan mereka dan menaikkan <em>Libraries › CoreLib › Version</em> kepada versi terkini.</p>
+  </details>
+</section>
+
+</main>
+</div>
+
+<footer><div class="wrap"><span>Sistem Agihan Tugas Guru v4 · cikgujep © 2026</span><a href="index.html">Tentang sistem</a></div></footer>
+
+<script>
+(function () {
+  // ---------- Kalkulator Indeks Beban (nilai lalai sistem) ----------
+  var el = function (id) { return document.getElementById(id); };
+  var TAHAP = [['Utama', 3], ['Sokongan', 2], ['Sampingan', 1]];
+  var JAW = [['Pengerusi', 5], ['Naib Pengerusi', 4], ['Setiausaha', 4], ['Pen. Setiausaha', 3], ['Bendahari', 3], ['Penyelaras', 3], ['AJK', 1]];
+  var TEMPOH = [['Sepanjang tahun', 1], ['Bermusim', 0.6], ['Program', 0.3]];
+  var tugas = [{ t: 1, j: 2, p: 0 }, { t: 2, j: 6, p: 1 }];
+  var pilihan = function (senarai, dipilih) {
+    return senarai.map(function (x, i) { return '<option value="' + i + '"' + (i === dipilih ? ' selected' : '') + '>' + x[0] + ' (' + x[1] + ')</option>'; }).join('');
+  };
+  var skorTugas = function (x) { return TAHAP[x.t][1] * JAW[x.j][1] * TEMPOH[x.p][1]; };
+  var satu = function (v) { return (Math.round(v * 10) / 10).toFixed(1); };
+  var dua = function (v) { return (Math.round(v * 100) / 100).toFixed(2); };
+  var kirakan = function () {
+    var masa = +el('kMasa').value, pep = el('kPep').checked;
+    var medM = Math.max(1, +el('kMedM').value || 1), medT = Math.max(0.1, +el('kMedT').value || 0.1);
+    var a = Math.min(100, Math.max(0, +el('kAlpha').value || 0)) / 100;
+    el('oMasa').textContent = masa + ' masa';
+    var masaLaras = masa * (pep ? 1.2 : 1);
+    var T = tugas.reduce(function (s, x) { return s + skorTugas(x); }, 0);
+    var nm = masaLaras / medM, nt = T / medT, ind = a * nm + (1 - a) * nt;
+    el('hIndeks').textContent = dua(ind);
+    var z = ind > 1.3 ? ['Terbeban', 'var(--bad-soft)', 'var(--bad)'] : ind < 0.7 ? ['Kurang beban', 'var(--warn-soft)', 'var(--warn)'] : ['Seimbang', 'var(--ok-soft)', 'var(--ok)'];
+    el('hZon').textContent = z[0]; el('hZon').style.background = z[1]; el('hZon').style.color = z[2];
+    var p = ind <= 0.7 ? ind / 0.7 * 35 : ind <= 1.3 ? 35 + (ind - 0.7) / 0.6 * 30 : 65 + Math.min(ind - 1.3, 0.7) / 0.7 * 35;
+    el('hPenanda').style.left = Math.max(0, Math.min(100, p)) + '%';
+    el('hLangkah').innerHTML =
+      '<li>Mengajar: <b>' + masa + (pep ? ' × 1.2 = ' + satu(masaLaras) : '') + '</b> ÷ ' + medM + ' → <b>' + dua(nm) + '</b></li>' +
+      '<li>Tugas: <b>' + (tugas.length ? tugas.map(function (x) { return satu(skorTugas(x)); }).join(' + ') + ' = ' + satu(T) : '0') + '</b> ÷ ' + satu(medT) + ' → <b>' + dua(nt) + '</b></li>' +
+      '<li>Gabung: <b>' + Math.round(a * 100) + '% × ' + dua(nm) + ' + ' + Math.round((1 - a) * 100) + '% × ' + dua(nt) + ' = ' + dua(ind) + '</b></li>';
+  };
+  var lukisTugas = function () {
+    el('senaraiT').innerHTML = tugas.length ? tugas.map(function (x, i) {
+      return '<div class="tugas"><select aria-label="Tahap jawatankuasa" data-i="' + i + '" data-k="t">' + pilihan(TAHAP, x.t) + '</select>' +
+        '<select aria-label="Jawatan" data-i="' + i + '" data-k="j">' + pilihan(JAW, x.j) + '</select>' +
+        '<select aria-label="Tempoh" data-i="' + i + '" data-k="p">' + pilihan(TEMPOH, x.p) + '</select>' +
+        '<span class="skor-t">+' + satu(skorTugas(x)) + '</span>' +
+        '<button type="button" class="buang" data-buang="' + i + '" aria-label="Buang tugas">×</button></div>';
+    }).join('') : '<p class="muted" style="font-size:14px;margin:0">Tiada tugas. Tekan Tambah tugas.</p>';
+    el('senaraiT').querySelectorAll('select').forEach(function (s) { s.onchange = function () { tugas[+s.dataset.i][s.dataset.k] = +s.value; lukisTugas(); }; });
+    el('senaraiT').querySelectorAll('[data-buang]').forEach(function (b) { b.onclick = function () { tugas.splice(+b.dataset.buang, 1); lukisTugas(); }; });
+    kirakan();
+  };
+  el('btnTambahT').onclick = function () { if (tugas.length < 12) { tugas.push({ t: 1, j: 6, p: 0 }); lukisTugas(); } };
+  ['kMasa', 'kPep', 'kMedM', 'kMedT', 'kAlpha'].forEach(function (id) { el(id).addEventListener('input', kirakan); el(id).addEventListener('change', kirakan); });
+  lukisTugas();
+
+  // ---------- Indeks kandungan: serlahkan seksyen semasa ----------
+  var pautan = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entri) {
+      entri.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        pautan.forEach(function (a) { a.classList.toggle('aktif', a.getAttribute('href') === '#' + e.target.id); });
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    document.querySelectorAll('main > section').forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>

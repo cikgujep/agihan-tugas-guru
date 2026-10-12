@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agihan Tugas Guru</title>
+<meta name="description" content="Sistem percuma untuk sekolah: agih tugas jawatankuasa guru dengan adil, lihat Indeks Beban, dan jana surat lantikan dalam satu klik.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: bilik guru digital — hero dengan "papan analisis" yang berubah daripada berat sebelah kepada seimbang; seksyen berselang latar biru pucat & putih */
+:root {
+  --bg: #F5F8FC; --surface: #FFFFFF; --tint: #EAF1F9; --fg: #14223A; --muted: #56647C; --line: #DCE4EE;
+  --navy: #1E3A5F; --teal: #0F766E; --teal-soft: #DDF3EF; --amber: #EA7A12; --amber-ink: #FFFFFF;
+  --ok: #15803D; --ok-soft: #E3F6EA; --warn: #B45309; --warn-soft: #FFF1DC; --bad: #C0262D; --bad-soft: #FDE8E9;
+  --shadow: 0 1px 2px rgba(20,34,58,.06), 0 12px 32px -12px rgba(20,34,58,.18);
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0D1626; --surface: #142036; --tint: #111C30; --fg: #E7EDF6; --muted: #9AA8BF; --line: #24324B;
+  --navy: #9DB9E3; --teal: #4FD1BE; --teal-soft: #12302E; --amber: #F59A3C; --amber-ink: #1B1205;
+  --ok: #6FD39C; --ok-soft: #143326; --warn: #F2B866; --warn-soft: #3A2A12; --bad: #FF8F95; --bad-soft: #3D1A1D;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.6); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0D1626; --surface: #142036; --tint: #111C30; --fg: #E7EDF6; --muted: #9AA8BF; --line: #24324B;
+  --navy: #9DB9E3; --teal: #4FD1BE; --teal-soft: #12302E; --amber: #F59A3C; --amber-ink: #1B1205;
+  --ok: #6FD39C; --ok-soft: #143326; --warn: #F2B866; --warn-soft: #3A2A12; --bad: #FF8F95; --bad-soft: #3D1A1D;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.6); color-scheme: dark }
+
+* { box-sizing: border-box }
+html { scroll-behavior: smooth }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } *, *::before, *::after { transition: none !important; animation: none !important } }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 17px; line-height: 1.6 }
+.wrap { max-width: 1140px; margin: 0 auto; padding-inline: 20px }
+a { color: inherit }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.1; text-wrap: balance; margin: 0 }
+h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -.02em }
+h3 { font-size: 1.25rem; letter-spacing: -.01em }
+p { margin: 0 }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--teal) }
+.lead { color: var(--muted); font-size: 1.1rem; max-width: 60ch }
+section { padding-block: 88px }
+section.tint { background: var(--tint) }
+.kepala { display: grid; gap: 14px; margin-bottom: 44px; max-width: 720px }
+.btn { display: inline-flex; align-items: center; gap: 10px; font: 700 16px/1 var(--f-body); padding: 15px 22px; border-radius: 12px; text-decoration: none; border: 2px solid transparent; cursor: pointer; transition: transform .15s, box-shadow .15s }
+.btn:focus-visible, button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid var(--teal); outline-offset: 3px }
+.btn.utama { background: var(--amber); color: var(--amber-ink); box-shadow: 0 8px 20px -8px var(--amber) }
+.btn.utama:hover { transform: translateY(-2px) }
+.btn.kedua { border-color: var(--line); background: var(--surface); color: var(--fg) }
+.btn.kedua:hover { border-color: var(--navy) }
+
+/* Nav */
+nav.atas { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line) }
+nav.atas .wrap { display: flex; align-items: center; gap: 24px; height: 66px }
+.jenama { display: flex; align-items: center; gap: 10px; font: 800 18px var(--f-display); text-decoration: none; letter-spacing: -.01em }
+.logo { width: 34px; height: 34px; border-radius: 10px; background: var(--navy); display: grid; place-items: center; flex: none }
+.logo svg { width: 20px; height: 20px }
+.pautan { display: flex; gap: 22px; margin-left: auto; font-size: 15px; font-weight: 600 }
+.pautan a { text-decoration: none; color: var(--muted) }
+.pautan a:hover { color: var(--fg) }
+nav.atas .btn { padding: 11px 16px; font-size: 14px }
+@media (max-width: 900px) { .pautan { display: none } nav.atas .btn { margin-left: auto } }
+@media (max-width: 420px) { .jenama span.teks { display: none } }
+
+/* Hero */
+.hero { padding-block: 64px 80px; overflow: hidden }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 48px; align-items: center }
+@media (max-width: 960px) { .hero .wrap { grid-template-columns: minmax(0, 1fr) } }
+.lencana { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: var(--teal-soft); color: var(--teal); font-size: 14px; font-weight: 700 }
+.lencana i { width: 8px; height: 8px; border-radius: 50%; background: var(--teal) }
+.hero h1 { font-size: clamp(2.4rem, 5.6vw, 4rem); letter-spacing: -.03em; margin-block: 20px 18px }
+.hero h1 em { font-style: normal; color: var(--teal); white-space: nowrap }
+.hero .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px }
+.hero .kecil { margin-top: 16px; font-size: 14px; color: var(--muted) }
+
+/* Mockup papan analisis */
+.peranti { background: var(--surface); border-radius: 18px; box-shadow: var(--shadow); border: 1px solid var(--line); overflow: hidden; min-width: 0 }
+.bar-peranti { display: flex; align-items: center; gap: 6px; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--tint) }
+.bar-peranti i { width: 10px; height: 10px; border-radius: 50%; background: var(--line) }
+.bar-peranti span { margin-left: 10px; font: 600 12px var(--f-mono); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.isi-peranti { padding: 20px; display: grid; gap: 16px }
+.togol { display: inline-flex; background: var(--tint); border-radius: 10px; padding: 4px; border: 1px solid var(--line); justify-self: start }
+.togol button { font: 700 14px var(--f-body); border: 0; background: transparent; color: var(--muted); padding: 8px 14px; border-radius: 7px; cursor: pointer }
+.togol button[aria-pressed="true"] { background: var(--surface); color: var(--fg); box-shadow: 0 1px 3px rgba(20,34,58,.15) }
+.kpi-mini { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px }
+.kpi-mini div { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; min-width: 0 }
+.kpi-mini b { display: block; font: 700 24px/1.1 var(--f-display); font-variant-numeric: tabular-nums; transition: color .3s }
+.kpi-mini span { font-size: 12px; color: var(--muted) }
+.carta { position: relative; height: 170px; display: flex; align-items: flex-end; gap: 4px; padding: 0 2px; border-bottom: 1px solid var(--line) }
+.carta .b { flex: 1; border-radius: 4px 4px 0 0; transition: height .6s cubic-bezier(.3,.8,.3,1), background .3s; min-height: 0 }
+.carta .ambang { position: absolute; top: 0; bottom: 0; border-left: 2px dashed; opacity: .7 }
+.carta .ambang span { position: absolute; top: -2px; font: 600 11px var(--f-mono); white-space: nowrap }
+.paksi { display: flex; justify-content: space-between; font: 500 11px var(--f-mono); color: var(--muted); margin-top: -8px }
+.legenda { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted) }
+.legenda span { display: inline-flex; align-items: center; gap: 6px }
+.legenda i { width: 10px; height: 10px; border-radius: 3px }
+.nota-carta { font-size: 13px; color: var(--muted) }
+
+/* Bukti */
+.bukti { padding-block: 28px; border-block: 1px solid var(--line); background: var(--surface) }
+.bukti .wrap { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px }
+@media (max-width: 760px) { .bukti .wrap { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+.bukti b { display: block; font: 800 clamp(1.8rem, 3.6vw, 2.4rem)/1 var(--f-display); color: var(--navy); font-variant-numeric: tabular-nums }
+.bukti span { font-size: 14px; color: var(--muted) }
+
+/* Perbandingan */
+.banding { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px }
+@media (max-width: 800px) { .banding { grid-template-columns: minmax(0, 1fr) } }
+.lajur-b { border-radius: 18px; padding: 28px; border: 1px solid var(--line); background: var(--surface) }
+.lajur-b.lama { background: transparent; border-style: dashed }
+.lajur-b h3 { display: flex; align-items: center; gap: 10px; margin-bottom: 18px }
+.lajur-b ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px }
+.lajur-b li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start }
+.lajur-b li b { display: block; font-size: 15px }
+.lajur-b li span { color: var(--muted); font-size: 15px }
+.tanda { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-weight: 800; font-size: 14px }
+.tanda.x { background: var(--bad-soft); color: var(--bad) }
+.tanda.v { background: var(--ok-soft); color: var(--ok) }
+
+/* Ciri (tab) */
+.tab-baris { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px }
+.tab-baris button { font: 700 15px var(--f-body); padding: 12px 18px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer }
+.tab-baris button[aria-selected="true"] { background: var(--navy); border-color: var(--navy); color: var(--bg) }
+.panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 36px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 36px }
+@media (max-width: 860px) { .panel { grid-template-columns: minmax(0, 1fr); padding: 24px } }
+.panel h3 { font-size: 1.6rem; margin-bottom: 12px }
+.panel p { color: var(--muted) }
+.semak { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 10px }
+.semak li { display: flex; gap: 10px; align-items: flex-start }
+.semak li::before { content: "✓"; color: var(--teal); font-weight: 800; flex: none }
+.mini { border: 1px solid var(--line); border-radius: 14px; background: var(--bg); padding: 16px; font-size: 14px; min-width: 0 }
+.mini .tajuk-mini { font: 700 13px var(--f-body); color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .06em }
+.baris-m { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line) }
+.baris-m:last-child { border-bottom: 0 }
+.baris-m .n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.baris-m .n small { display: block; color: var(--muted); font-size: 12px }
+.unit { font: 700 12px var(--f-body); color: var(--teal); padding: 8px 0 2px; letter-spacing: .04em }
+.pil { font: 700 12px var(--f-mono); padding: 3px 9px; border-radius: 999px; white-space: nowrap; flex: none }
+.pil.ok { background: var(--ok-soft); color: var(--ok) } .pil.warn { background: var(--warn-soft); color: var(--warn) } .pil.bad { background: var(--bad-soft); color: var(--bad) }
+.btn-mini { font: 700 12px var(--f-body); border: 1px solid var(--line); border-radius: 8px; padding: 4px 9px; background: var(--surface); color: var(--fg); flex: none }
+.surat { background: var(--surface); border-radius: 6px; padding: 18px; box-shadow: var(--shadow); font-family: Arial, sans-serif; font-size: 11px; line-height: 1.5; color: var(--fg) }
+.surat .t { font-weight: 700; margin: 8px 0 }
+.surat table { width: 100%; border-collapse: collapse; margin-top: 8px }
+.surat td, .surat th { border: 1px solid var(--line); padding: 4px 6px; text-align: left }
+.surat th { background: var(--tint) }
+
+/* Kalkulator */
+.kalk { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 28px; background: var(--surface); border-radius: 22px; border: 1px solid var(--line); padding: 36px; box-shadow: var(--shadow) }
+@media (max-width: 860px) { .kalk { grid-template-columns: minmax(0, 1fr); padding: 24px } }
+.medan { display: grid; gap: 8px; margin-bottom: 22px }
+.medan label { display: flex; justify-content: space-between; gap: 12px; font-weight: 600 }
+.medan output { font: 700 16px var(--f-mono); color: var(--teal); white-space: nowrap }
+input[type=range] { width: 100%; accent-color: var(--teal) }
+.hasil { background: var(--navy); color: var(--bg); border-radius: 18px; padding: 28px; display: grid; align-content: start; gap: 10px; min-width: 0 }
+.hasil .besar { font: 800 clamp(3rem, 8vw, 4.4rem)/1 var(--f-display); font-variant-numeric: tabular-nums; letter-spacing: -.03em }
+.hasil small { opacity: .8; font-size: 14px }
+.hasil .pecahan { font-size: 14px; opacity: .85; border-top: 1px solid color-mix(in srgb, var(--bg) 25%, transparent); padding-top: 12px; margin-top: 6px }
+
+.sub-kalk { font-size: 1rem; margin: 6px 0 14px; color: var(--navy) }
+.kiri-kalk .sub-kalk:not(:first-child) { margin-top: 26px }
+.suis { display: flex; align-items: center; gap: 10px; font-weight: 600; cursor: pointer }
+.suis input { width: 18px; height: 18px; accent-color: var(--teal) }
+.muted { color: var(--muted); font-weight: 500 }
+.senarai-t { display: grid; gap: 10px }
+.tugas { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.2fr) minmax(0, 1fr) auto auto; gap: 8px; align-items: center; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 10px }
+.tugas select { width: 100%; min-width: 0; font: 600 14px var(--f-body); color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px }
+.tugas .skor-t { font: 700 14px var(--f-mono); color: var(--teal); white-space: nowrap; min-width: 46px; text-align: right }
+.tugas .buang { border: 0; background: transparent; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; padding: 4px 6px; border-radius: 6px }
+.tugas .buang:hover { color: var(--bad); background: var(--bad-soft) }
+@media (max-width: 560px) { .tugas { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) } .tugas .skor-t { text-align: left } }
+.btn-tambah { margin-top: 12px; font: 700 14px var(--f-body); color: var(--teal); background: var(--teal-soft); border: 0; border-radius: 10px; padding: 10px 14px; cursor: pointer }
+.andaian { margin-top: 26px; border-top: 1px solid var(--line); padding-top: 14px }
+.andaian summary { cursor: pointer; font-weight: 700; color: var(--muted); font-size: 15px }
+.grid-andaian { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 12px }
+@media (max-width: 560px) { .grid-andaian { grid-template-columns: minmax(0, 1fr) } }
+.grid-andaian label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; color: var(--muted) }
+.grid-andaian input { font: 600 15px var(--f-mono); color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px; width: 100% }
+.zon { display: inline-block; font: 700 14px var(--f-body); padding: 5px 14px; border-radius: 999px; background: var(--ok-soft); color: var(--ok) }
+.skala-k { position: relative; height: 10px; border-radius: 999px; margin: 10px 0 22px; background: linear-gradient(90deg, var(--warn) 0 35%, var(--ok) 35% 65%, var(--bad) 65% 100%); opacity: .9 }
+.skala-k i { position: absolute; top: -5px; width: 4px; height: 20px; border-radius: 2px; background: var(--bg); box-shadow: 0 0 0 2px var(--navy); transform: translateX(-50%); transition: left .3s }
+.skala-k span { position: absolute; top: 14px; font: 600 11px var(--f-mono); opacity: .8 }
+.skala-k span:nth-of-type(2), .skala-k span:nth-of-type(3) { transform: translateX(-50%) }
+.langkah-k { margin: 0; padding: 0 0 0 18px; display: grid; gap: 8px; font-size: 14px; opacity: .92; border-top: 1px solid color-mix(in srgb, var(--bg) 25%, transparent); padding-top: 14px }
+.langkah-k b { font-family: var(--f-mono); font-weight: 600 }
+.nota-kalk { margin-top: 16px; font-size: 14px; color: var(--muted); max-width: 80ch }
+
+/* Langkah */
+.langkah { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; counter-reset: l }
+@media (max-width: 860px) { .langkah { grid-template-columns: minmax(0, 1fr) } }
+.langkah li { list-style: none; counter-increment: l; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 26px }
+.langkah li::before { content: counter(l); display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: var(--teal-soft); color: var(--teal); font: 800 20px var(--f-display); margin-bottom: 16px }
+.langkah h3 { margin-bottom: 8px }
+.langkah p { color: var(--muted); font-size: 15px }
+.langkah .masa { display: inline-block; margin-top: 12px; font: 600 12px var(--f-mono); color: var(--teal) }
+
+.kotak-panduan { margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px 26px }
+.kotak-panduan div { display: grid; gap: 4px; min-width: 0; flex: 1 1 320px }
+.kotak-panduan span { color: var(--muted); font-size: 15px }
+
+/* Percuma */
+.pakej { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: center; background: var(--surface); border: 2px solid var(--teal); border-radius: 24px; padding: 40px; position: relative }
+@media (max-width: 860px) { .pakej { grid-template-columns: minmax(0, 1fr); padding: 26px } }
+.harga { font: 800 clamp(3.4rem, 9vw, 5rem)/1 var(--f-display); letter-spacing: -.03em; color: var(--teal) }
+.harga small { font-size: 1.1rem; color: var(--muted); font-weight: 600; letter-spacing: 0 }
+.pakej ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px }
+.pakej li { display: flex; gap: 12px }
+.pakej li::before { content: "✓"; flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--teal-soft); color: var(--teal); display: grid; place-items: center; font-weight: 800; font-size: 13px }
+
+/* FAQ */
+.faq { display: grid; gap: 12px; max-width: 820px }
+.faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 4px 22px }
+.faq summary { cursor: pointer; font-weight: 700; padding-block: 16px; list-style: none; display: flex; justify-content: space-between; gap: 16px }
+.faq summary::-webkit-details-marker { display: none }
+.faq summary::after { content: "+"; font: 700 22px/1 var(--f-display); color: var(--teal); transition: transform .2s }
+.faq details[open] summary::after { transform: rotate(45deg) }
+.faq p { color: var(--muted); padding-bottom: 18px }
+
+/* Penutup */
+.penutup { background: var(--navy); color: var(--bg); border-radius: 28px; padding: clamp(32px, 6vw, 64px); display: grid; gap: 18px; justify-items: start }
+.penutup h2 { color: var(--bg); max-width: 18ch }
+.penutup p { opacity: .85; max-width: 56ch }
+.penutup .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px }
+.penutup .btn.kedua { background: transparent; color: var(--bg); border-color: color-mix(in srgb, var(--bg) 40%, transparent) }
+footer { padding-block: 36px 48px; color: var(--muted); font-size: 14px }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px }
+</style>
+
+<nav class="atas" aria-label="Navigasi utama">
+  <div class="wrap">
+    <a class="jenama" href="#atas" aria-label="Sistem Agihan Tugas Guru">
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 18h16" stroke="#fff" stroke-width="2" stroke-linecap="round"/><rect x="5" y="10" width="3" height="6" rx="1" fill="#fff"/><rect x="10.5" y="7" width="3" height="9" rx="1" fill="#fff"/><rect x="16" y="10" width="3" height="6" rx="1" fill="#fff"/></svg></span>
+      <span class="teks">Agihan Tugas Guru</span>
+    </a>
+    <div class="pautan">
+      <a href="#kelebihan">Kelebihan</a><a href="#ciri">Ciri-ciri</a><a href="#kalkulator">Cara kira</a><a href="#percuma">Percuma</a><a href="#soalan">Soalan lazim</a><a href="panduan.html">Panduan</a>
+    </div>
+    <a class="btn utama" href="#mula">Dapatkan salinan</a>
+  </div>
+</nav>
+
+<header class="hero" id="atas">
+  <div class="wrap">
+    <div>
+      <span class="lencana"><i></i>Percuma untuk semua sekolah · Telefon &amp; komputer</span>
+      <h1>Agih tugas guru dengan <em>adil</em>, dalam beberapa klik.</h1>
+      <p class="lead">Lantik ahli jawatankuasa, lihat siapa yang sudah terbeban sebelum melantik, dan jana surat lantikan untuk seluruh guru sekali gus. Direka untuk Pengetua, PK dan setiausaha jawatankuasa sekolah.</p>
+      <div class="cta">
+        <a class="btn utama" href="#mula">Dapatkan salinan percuma →</a>
+        <a class="btn kedua" href="#ciri">Lihat cara ia berfungsi ↓</a>
+      </div>
+      <p class="kecil">Guna akaun Google sekolah anda. Tiada aplikasi untuk dipasang, tiada kata laluan baharu.</p>
+    </div>
+
+    <div class="peranti" aria-label="Contoh paparan Analisis">
+      <div class="bar-peranti"><i></i><i></i><i></i><span>Analisis · Taburan beban guru · Tahun 2027</span></div>
+      <div class="isi-peranti">
+        <div class="togol" role="group" aria-label="Pilih paparan">
+          <button type="button" id="tgSebelum" aria-pressed="false">Agihan biasa</button>
+          <button type="button" id="tgSelepas" aria-pressed="true">Dengan sistem</button>
+        </div>
+        <div class="kpi-mini">
+          <div><b id="kSeimbang">40</b><span>guru seimbang</span></div>
+          <div><b id="kTerbeban">0</b><span>guru terbeban</span></div>
+          <div><b id="kKurang">0</b><span>kurang beban</span></div>
+        </div>
+        <div class="carta" id="carta" role="img" aria-label="Histogram Indeks Beban guru"></div>
+        <div class="paksi"><span>0.3</span><span>0.7</span><span>1.0</span><span>1.3</span><span>2.0</span></div>
+        <div class="legenda"><span><i style="background:var(--warn)"></i>Kurang beban</span><span><i style="background:var(--ok)"></i>Seimbang</span><span><i style="background:var(--bad)"></i>Terbeban</span></div>
+        <p class="nota-carta" id="notaCarta">Setiap bar ialah bilangan guru pada tahap beban itu. 1.0 bermaksud beban setara guru biasa di sekolah. Contoh ilustrasi.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="bukti" aria-label="Fakta ringkas">
+  <div class="wrap">
+    <div><b>91</b><span>jawatankuasa diurus di sekolah perintis</span></div>
+    <div><b>714</b><span>lantikan setahun dalam satu sistem</span></div>
+    <div><b>1 klik</b><span>surat lantikan PDF untuk semua guru</span></div>
+    <div><b>RM0</b><span>tiada lesen, tiada langganan</span></div>
+  </div>
+</div>
+
+<section id="kelebihan">
+  <div class="wrap">
+    <div class="kepala">
+      <p class="eyebrow">Sebelum dan selepas</p>
+      <h2>Mesyuarat agihan tugas tidak perlu lagi bergantung pada ingatan.</h2>
+      <p class="lead">Setiap awal tahun, ratusan lantikan perlu diagih. Tanpa gambaran beban yang jelas, tugas cenderung jatuh kepada guru yang sama.</p>
+    </div>
+    <div class="banding">
+      <div class="lajur-b lama">
+        <h3><span class="tanda x">✕</span>Cara biasa: Excel &amp; Word</h3>
+        <ul>
+          <li><span class="tanda x">✕</span><div><b>Beban guru tidak kelihatan</b><span>Sukar tahu siapa sudah memegang 12 jawatan dan siapa hanya 2.</span></div></li>
+          <li><span class="tanda x">✕</span><div><b>Masa mengajar tidak diambil kira</b><span>Guru kelas SPM dengan 30 masa dilantik sama berat dengan guru 20 masa.</span></div></li>
+          <li><span class="tanda x">✕</span><div><b>Surat ditaip satu demi satu</b><span>Seratus surat, seratus kali salin-tampal nama dan jawatan.</span></div></li>
+          <li><span class="tanda x">✕</span><div><b>Jawatan wajib tercicir</b><span>JK tanpa setiausaha hanya disedari bila program sudah hampir.</span></div></li>
+        </ul>
+      </div>
+      <div class="lajur-b">
+        <h3><span class="tanda v">✓</span>Dengan Sistem Agihan Tugas Guru</h3>
+        <ul>
+          <li><span class="tanda v">✓</span><div><b>Indeks Beban setiap guru</b><span>Satu nombor yang menggabungkan masa mengajar dan tugas jawatankuasa.</span></div></li>
+          <li><span class="tanda v">✓</span><div><b>Cadangan semasa melantik</b><span>Senarai calon disusun daripada beban paling rendah, lengkap dengan kesan jika dilantik.</span></div></li>
+          <li><span class="tanda v">✓</span><div><b>Surat siap dalam satu klik</b><span>PDF rasmi dengan Lampiran A untuk setiap guru, terus dihantar ke emel.</span></div></li>
+          <li><span class="tanda v">✓</span><div><b>Kekosongan ditanda automatik</b><span>JK yang belum lengkap dipaparkan di Analisis sehingga diisi.</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tint" id="ciri">
+  <div class="wrap">
+    <div class="kepala">
+      <p class="eyebrow">Ciri-ciri</p>
+      <h2>Empat tugas harian, satu tempat.</h2>
+    </div>
+    <div class="tab-baris" role="tablist" aria-label="Ciri sistem">
+      <button role="tab" id="t-agih" aria-controls="p-agih" aria-selected="true">Lantik ahli JK</button>
+      <button role="tab" id="t-analisis" aria-controls="p-analisis" aria-selected="false">Analisis beban</button>
+      <button role="tab" id="t-surat" aria-controls="p-surat" aria-selected="false">Surat lantikan</button>
+      <button role="tab" id="t-guru" aria-controls="p-guru" aria-selected="false">Tugas Saya</button>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-agih" aria-labelledby="t-agih">
+      <div>
+        <h3>Lantik dengan melihat beban, bukan meneka.</h3>
+        <p>Klik satu jawatan dan sistem menyenaraikan calon dari beban paling rendah. Rumah sukan, kelab dan tingkatan disusun ikut unit secara automatik.</p>
+        <ul class="semak">
+          <li>Calon dengan indeks sekarang dan jika dilantik</li>
+          <li>Posisi boleh disimpan kosong dan ditanda "Belum diisi"</li>
+          <li>Tukar guru terus dari profil dalam dua klik</li>
+        </ul>
+      </div>
+      <div class="mini" aria-hidden="true">
+        <div class="tajuk-mini">JK Rumah Sukan · Urus ahli</div>
+        <div class="unit">MERAH</div>
+        <div class="baris-m"><span class="n">Penyelaras<small>Zaiton binti Sulaiman</small></span><span class="pil ok">0.96</span></div>
+        <div class="baris-m"><span class="n">AJK<small>Belum diisi</small></span><span class="btn-mini">Pilih guru</span></div>
+        <div class="tajuk-mini" style="margin-top:14px">Calon · beban paling rendah</div>
+        <div class="baris-m"><span class="n">Hafiz bin Ibrahim<small>3 jawatan</small></span><span class="pil warn">0.78 → 0.86</span></div>
+        <div class="baris-m"><span class="n">Chew Mei Ling<small>4 jawatan</small></span><span class="pil ok">0.88 → 0.95</span></div>
+      </div>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-analisis" aria-labelledby="t-analisis" hidden>
+      <div>
+        <h3>Nampak siapa terbeban sebelum masalah berlaku.</h3>
+        <p>Paparan Analisis menunjukkan taburan beban seluruh sekolah, guru yang perlu perhatian, kelengkapan jawatankuasa dan status surat.</p>
+        <ul class="semak">
+          <li>Tab Terbeban, Ada ruang dan JK kosong</li>
+          <li>Carta masa mengajar lawan tugas jawatankuasa</li>
+          <li>Pengetua, PK dan GKMP dikecualikan secara automatik</li>
+        </ul>
+      </div>
+      <div class="mini" aria-hidden="true">
+        <div class="tajuk-mini">Perlu perhatian · Ada ruang</div>
+        <div class="baris-m"><span class="n">Nurul Izzati binti Hassan<small>2 jawatan · 26 masa</small></span><span class="pil warn">0.64</span></div>
+        <div class="baris-m"><span class="n">Suresh a/l Krishnan<small>3 jawatan · 24 masa</small></span><span class="pil warn">0.68</span></div>
+        <div class="tajuk-mini" style="margin-top:14px">Kelengkapan jawatankuasa</div>
+        <div class="baris-m"><span class="n">Lengkap</span><span class="pil ok">19 JK</span></div>
+        <div class="baris-m"><span class="n">Setiausaha kosong</span><span class="pil warn">2 JK</span></div>
+        <div class="baris-m"><span class="n">Belum ada ahli</span><span class="pil bad">1 JK</span></div>
+      </div>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-surat" aria-labelledby="t-surat" hidden>
+      <div>
+        <h3>Surat rasmi untuk seratus guru, tanpa menaip.</h3>
+        <p>Satu PDF setiap guru, lengkap dengan nombor rujukan, tandatangan Pengetua dan Lampiran A yang menyenaraikan semua tugasan. Dihantar terus ke emel guru.</p>
+        <ul class="semak">
+          <li>Format surat pelantikan tugas-tugas rasmi</li>
+          <li>Surat ditanda perlu dijana semula bila lantikan berubah</li>
+          <li>Tiada emel berganda walaupun proses terhenti</li>
+        </ul>
+      </div>
+      <div class="surat" aria-hidden="true">
+        <div style="text-align:right;font-weight:700">LAMPIRAN A</div>
+        <div class="t" style="text-align:center">SENARAI TUGASAN BAGI SESI PERSEKOLAHAN 2027</div>
+        <div>Nama : <b>Rosnah binti Kassim</b></div>
+        <table>
+          <tr><th>Bil</th><th>Jawatankuasa</th><th>Jawatan</th></tr>
+          <tr><td>1</td><td>JK Pengurusan Tingkatan</td><td>Guru Kelas (3 Amanah)</td></tr>
+          <tr><td>2</td><td>JK Disiplin Murid</td><td>Setiausaha</td></tr>
+          <tr><td>3</td><td>JK Kelab dan Persatuan</td><td>Penyelaras (Kelab Sains)</td></tr>
+        </table>
+        <div style="margin-top:8px;color:var(--muted)">Jumlah tugasan: 3</div>
+      </div>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-guru" aria-labelledby="t-guru" hidden>
+      <div>
+        <h3>Setiap guru tahu tugasnya sendiri.</h3>
+        <p>Guru membuka pautan yang sama dan terus melihat lantikan sendiri, indeks beban berbanding median sekolah, dan memuat turun surat. Tiada akses kepada data guru lain.</p>
+        <ul class="semak">
+          <li>Log masuk dengan akaun Google sekolah</li>
+          <li>Mesra telefon</li>
+          <li>Butang tukar akaun jika tersilap akaun</li>
+        </ul>
+      </div>
+      <div class="mini" aria-hidden="true">
+        <div class="tajuk-mini">Tugas Saya · 2027</div>
+        <div class="baris-m"><span class="n">Indeks Beban<small>Median sekolah 1.00</small></span><span class="pil ok">0.97 Seimbang</span></div>
+        <div class="baris-m"><span class="n">JK Peperiksaan dan Pentaksiran<small>Setiausaha PBD</small></span><span class="pil ok">+9.0</span></div>
+        <div class="baris-m"><span class="n">JK Rumah Sukan<small>AJK · BIRU</small></span><span class="pil ok">+2.0</span></div>
+        <div class="baris-m"><span class="n">Surat lantikan<small>Versi 1 · siap</small></span><span class="btn-mini">Muat turun</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="kalkulator">
+  <div class="wrap">
+    <div class="kepala">
+      <p class="eyebrow">Kalkulator Indeks Beban</p>
+      <h2>Lihat sendiri cara beban seorang guru dikira.</h2>
+      <p class="lead">Masukkan masa mengajar dan tugas jawatankuasa seorang guru. Sistem membandingkannya dengan guru biasa di sekolah anda, kemudian memberi satu nombor: Indeks Beban.</p>
+    </div>
+    <div class="kalk">
+      <div class="kiri-kalk">
+        <h3 class="sub-kalk">1 · Masa mengajar</h3>
+        <div class="medan">
+          <label for="kMasa">Masa mengajar seminggu <output id="oMasa" for="kMasa">28 masa</output></label>
+          <input type="range" id="kMasa" min="0" max="40" step="1" value="28">
+        </div>
+        <label class="suis" for="kPep"><input type="checkbox" id="kPep" checked> Mengajar kelas peperiksaan <span class="muted">(masa × 1.2)</span></label>
+
+        <h3 class="sub-kalk">2 · Tugas jawatankuasa</h3>
+        <div class="senarai-t" id="senaraiT"></div>
+        <button type="button" class="btn-tambah" id="btnTambahT">+ Tambah tugas</button>
+
+        <details class="andaian">
+          <summary>Andaian guru biasa di sekolah (boleh diubah)</summary>
+          <div class="grid-andaian">
+            <label for="kMedM">Median masa mengajar<input type="number" id="kMedM" min="1" max="40" value="28"></label>
+            <label for="kMedT">Median skor tugas<input type="number" id="kMedT" min="0.5" step="0.5" value="8"></label>
+            <label for="kAlpha">Bahagian mengajar (%)<input type="number" id="kAlpha" min="0" max="100" step="5" value="60"></label>
+          </div>
+        </details>
+      </div>
+
+      <div class="hasil" aria-live="polite">
+        <small>Indeks Beban</small>
+        <div class="besar" id="hIndeks">1.00</div>
+        <div><span class="zon" id="hZon">Seimbang</span></div>
+        <div class="skala-k" aria-hidden="true"><i id="hPenanda"></i><span style="left:0">0</span><span style="left:35%">0.7</span><span style="left:65%">1.3</span><span style="right:0">2.0+</span></div>
+        <ol class="langkah-k" id="hLangkah"></ol>
+      </div>
+    </div>
+    <p class="nota-kalk">Nilai pemberat di sini ialah nilai lalai sistem. Setiap sekolah boleh menukarnya ikut keputusan mesyuarat, dan Pengetua, PK serta GKMP tidak dikira dalam indeks.</p>
+  </div>
+</section>
+
+<section class="tint" id="mula">
+  <div class="wrap">
+    <div class="kepala">
+      <p class="eyebrow">Mula guna</p>
+      <h2>Tiga langkah, kira-kira sepuluh minit.</h2>
+    </div>
+    <ol class="langkah">
+      <li><h3>Buat salinan</h3><p>Buka pautan dan klik <b>Make a copy</b>. Sistem disimpan dalam Google Drive akaun sekolah anda sendiri.</p><span class="masa">1 minit</span></li>
+      <li><h3>Benarkan &amp; terbitkan</h3><p>Jalankan <b>pasang</b> sekali, benarkan, kemudian terbitkan sebagai web app. Panduan langkah demi langkah disediakan.</p><span class="masa">5 minit</span></li>
+      <li><h3>Buka &amp; mula agih</h3><p>Akaun pertama yang membuka sistem menjadi pentadbir. Teroka data contoh, buang, kemudian import senarai guru anda.</p><span class="masa">5 minit</span></li>
+    </ol>
+    <div class="kotak-panduan">
+      <div><b>Panduan pemasangan langkah demi langkah</b><span>Termasuk cara memberi kebenaran, menerbitkan web app, membuang data contoh dan mengisi data sekolah.</span></div>
+      <a class="btn kedua" href="panduan.html">Buka panduan</a>
+    </div>
+  </div>
+</section>
+
+<section id="percuma">
+  <div class="wrap">
+    <div class="pakej">
+      <div>
+        <p class="eyebrow">Akses</p>
+        <div class="harga">RM0 <small>untuk setiap sekolah</small></div>
+        <p class="lead" style="margin-top:14px">Tiada lesen, tiada langganan, tiada had bilangan guru. Dikongsi oleh seorang guru untuk rakan-rakan pendidik.</p>
+        <div class="cta" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px">
+          <a class="btn utama" href="https://docs.google.com/spreadsheets/d/1LeGeLryVMnU486NuROsNySdFnk1UbwmowVqgoht77SY/copy" target="_blank" rel="noopener">Buat salinan sekarang →</a>
+        </div>
+      </div>
+      <ul>
+        <li>Semua ciri: lantikan, analisis, surat, emel, Tugas Saya</li>
+        <li>Data contoh sekolah untuk dicuba dahulu</li>
+        <li>Data disimpan dalam Drive sekolah anda sendiri</li>
+        <li>Akses ikut peranan: Pentadbir, PK dan Guru</li>
+        <li>Kemas kini sistem disalurkan secara berkala</li>
+        <li>Panduan pengguna lengkap dalam Bahasa Melayu</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="tint" id="soalan">
+  <div class="wrap">
+    <div class="kepala"><p class="eyebrow">Soalan lazim</p><h2>Sebelum anda mula</h2></div>
+    <div class="faq">
+      <details><summary>Adakah guru yang kurang mahir komputer boleh guna?</summary><p>Ya. Guru hanya membuka satu pautan dan melihat tugasnya sendiri. Kerja melantik dibuat oleh pentadbir dan PK melalui senarai yang sudah disusun dan butang yang jelas.</p></details>
+      <details><summary>Perlu muat turun aplikasi?</summary><p>Tidak. Sistem dibuka terus dalam pelayar di telefon atau komputer, menggunakan akaun Google sekolah anda.</p></details>
+      <details><summary>Siapa boleh melihat data sekolah kami?</summary><p>Hanya pengguna yang anda daftarkan. Data berada dalam salinan Google Sheet milik sekolah anda. Pembangun sistem tidak boleh melihatnya.</p></details>
+      <details><summary>Bagaimana Indeks Beban dikira?</summary><p>Indeks menggabungkan masa mengajar seminggu dan skor tugas jawatankuasa (berat jawatankuasa × berat jawatan × tempoh), kemudian dibandingkan dengan guru biasa di sekolah anda. 1.0 bermaksud setara; 1.3 ke atas dianggap terbeban. Semua pemberat boleh diubah ikut keputusan mesyuarat sekolah.</p></details>
+      <details><summary>Boleh import senarai guru dari Excel?</summary><p>Boleh. Simpan sebagai CSV dan import senarai guru serta masa mengajar melalui menu Guru. Lantikan tahun lepas juga boleh disalin ke tahun baharu dengan satu butang.</p></details>
+      <details><summary>Perlu bayar atau daftar lesen?</summary><p>Tidak. Sistem ini percuma sepenuhnya untuk sekolah.</p></details>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="penutup">
+      <p class="eyebrow" style="color:var(--teal-soft)">Sesi persekolahan baharu</p>
+      <h2>Mulakan agihan tugas tahun depan dengan lebih adil.</h2>
+      <p>Buat salinan hari ini, cuba dengan data contoh, dan bawa paparan Analisis ke mesyuarat agihan tugas sekolah anda.</p>
+      <div class="cta">
+        <a class="btn utama" href="https://docs.google.com/spreadsheets/d/1LeGeLryVMnU486NuROsNySdFnk1UbwmowVqgoht77SY/copy" target="_blank" rel="noopener">Dapatkan salinan percuma →</a>
+        <a class="btn kedua" href="panduan.html">Baca panduan pemasangan</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>Sistem Agihan Tugas Guru v4 · cikgujep © 2026</span><span>Dibina untuk sekolah Malaysia</span></div></footer>
+
+<script>
+(function () {
+  // ---------- Histogram hero: agihan biasa lawan dengan sistem (ilustrasi) ----------
+  var MIN = 0.3, LB = 0.1;
+  var data = {
+    sebelum: [2, 3, 3, 4, 5, 5, 6, 5, 4, 4, 3, 3, 2, 2, 2, 1, 1],
+    selepas: [0, 0, 0, 0, 1, 3, 6, 9, 10, 7, 3, 1, 0, 0, 0, 0, 0]
+  };
+  var carta = document.getElementById('carta');
+  var n = data.sebelum.length, maks = 12;
+  var zon = function (i) { var t = MIN + (i + 0.5) * LB; return t < 0.7 ? 'var(--warn)' : t > 1.3 ? 'var(--bad)' : 'var(--ok)'; };
+  for (var i = 0; i < n; i++) { var b = document.createElement('div'); b.className = 'b'; b.style.background = zon(i); carta.appendChild(b); }
+  [[0.7, 'Rendah 0.7', 'var(--warn)', 'end'], [1.3, 'Tinggi 1.3', 'var(--bad)', 'start']].forEach(function (a) {
+    var g = document.createElement('div'); g.className = 'ambang';
+    g.style.left = ((a[0] - MIN) / (n * LB) * 100) + '%'; g.style.borderColor = a[2];
+    var s = document.createElement('span'); s.textContent = a[1]; s.style.color = a[2];
+    s.style[a[3] === 'end' ? 'right' : 'left'] = '6px'; g.appendChild(s); carta.appendChild(g);
+  });
+  var bars = carta.querySelectorAll('.b');
+  var kira = function (arr) {
+    var r = { s: 0, t: 0, k: 0 };
+    arr.forEach(function (v, i) { var t = MIN + (i + 0.5) * LB; if (t < 0.7) r.k += v; else if (t > 1.3) r.t += v; else r.s += v; });
+    return r;
+  };
+  var papar = function (k) {
+    var arr = data[k];
+    arr.forEach(function (v, i) { bars[i].style.height = (v / maks * 100) + '%'; });
+    var r = kira(arr);
+    document.getElementById('kSeimbang').textContent = r.s;
+    document.getElementById('kTerbeban').textContent = r.t;
+    document.getElementById('kKurang').textContent = r.k;
+    document.getElementById('kTerbeban').style.color = r.t ? 'var(--bad)' : 'var(--ok)';
+    document.getElementById('kKurang').style.color = r.k ? 'var(--warn)' : 'var(--ok)';
+    document.getElementById('tgSebelum').setAttribute('aria-pressed', k === 'sebelum');
+    document.getElementById('tgSelepas').setAttribute('aria-pressed', k === 'selepas');
+  };
+  document.getElementById('tgSebelum').onclick = function () { papar('sebelum'); };
+  document.getElementById('tgSelepas').onclick = function () { papar('selepas'); };
+  papar('selepas');
+
+  // ---------- Tab ciri ----------
+  var tabs = document.querySelectorAll('[role=tab]');
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (x) {
+        var on = x === t;
+        x.setAttribute('aria-selected', on);
+        document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+      });
+    });
+  });
+
+  // ---------- Kalkulator Indeks Beban (nilai lalai sistem) ----------
+  var el = function (id) { return document.getElementById(id); };
+  var TAHAP = [['Utama', 3], ['Sokongan', 2], ['Sampingan', 1]];
+  var JAW = [['Pengerusi', 5], ['Naib Pengerusi', 4], ['Setiausaha', 4], ['Pen. Setiausaha', 3], ['Bendahari', 3], ['Penyelaras', 3], ['AJK', 1]];
+  var TEMPOH = [['Sepanjang tahun', 1], ['Bermusim', 0.6], ['Program', 0.3]];
+  var tugas = [{ t: 1, j: 2, p: 0 }, { t: 2, j: 6, p: 1 }];
+  var pilihan = function (senarai, dipilih) {
+    return senarai.map(function (x, i) { return '<option value="' + i + '"' + (i === dipilih ? ' selected' : '') + '>' + x[0] + ' (' + x[1] + ')</option>'; }).join('');
+  };
+  var skorTugas = function (x) { return TAHAP[x.t][1] * JAW[x.j][1] * TEMPOH[x.p][1]; };
+  var satu = function (v) { return (Math.round(v * 10) / 10).toFixed(1); };
+  var dua = function (v) { return (Math.round(v * 100) / 100).toFixed(2); };
+  var lukisTugas = function () {
+    el('senaraiT').innerHTML = tugas.length ? tugas.map(function (x, i) {
+      return '<div class="tugas"><select aria-label="Tahap jawatankuasa" data-i="' + i + '" data-k="t">' + pilihan(TAHAP, x.t) + '</select>' +
+        '<select aria-label="Jawatan" data-i="' + i + '" data-k="j">' + pilihan(JAW, x.j) + '</select>' +
+        '<select aria-label="Tempoh" data-i="' + i + '" data-k="p">' + pilihan(TEMPOH, x.p) + '</select>' +
+        '<span class="skor-t">+' + satu(skorTugas(x)) + '</span>' +
+        '<button type="button" class="buang" data-buang="' + i + '" aria-label="Buang tugas">×</button></div>';
+    }).join('') : '<p class="muted" style="font-size:14px">Tiada tugas. Tekan Tambah tugas.</p>';
+    el('senaraiT').querySelectorAll('select').forEach(function (s) {
+      s.onchange = function () { tugas[+s.dataset.i][s.dataset.k] = +s.value; lukisTugas(); };
+    });
+    el('senaraiT').querySelectorAll('[data-buang]').forEach(function (b) {
+      b.onclick = function () { tugas.splice(+b.dataset.buang, 1); lukisTugas(); };
+    });
+    kirakan();
+  };
+  el('btnTambahT').onclick = function () { if (tugas.length < 12) { tugas.push({ t: 1, j: 6, p: 0 }); lukisTugas(); } };
+  var kirakan = function () {
+    var masa = +el('kMasa').value, pep = el('kPep').checked;
+    var medM = Math.max(1, +el('kMedM').value || 1), medT = Math.max(0.1, +el('kMedT').value || 0.1);
+    var a = Math.min(100, Math.max(0, +el('kAlpha').value || 0)) / 100;
+    el('oMasa').textContent = masa + ' masa';
+    var masaLaras = masa * (pep ? 1.2 : 1);
+    var T = tugas.reduce(function (s, x) { return s + skorTugas(x); }, 0);
+    var nm = masaLaras / medM, nt = T / medT;
+    var ind = a * nm + (1 - a) * nt;
+    el('hIndeks').textContent = dua(ind);
+    var z = ind > 1.3 ? ['Terbeban', 'var(--bad-soft)', 'var(--bad)'] : ind < 0.7 ? ['Kurang beban', 'var(--warn-soft)', 'var(--warn)'] : ['Seimbang', 'var(--ok-soft)', 'var(--ok)'];
+    el('hZon').textContent = z[0]; el('hZon').style.background = z[1]; el('hZon').style.color = z[2];
+    var p = ind <= 0.7 ? ind / 0.7 * 35 : ind <= 1.3 ? 35 + (ind - 0.7) / 0.6 * 30 : 65 + Math.min(ind - 1.3, 0.7) / 0.7 * 35;
+    el('hPenanda').style.left = Math.max(0, Math.min(100, p)) + '%';
+    el('hLangkah').innerHTML =
+      '<li>Masa mengajar: <b>' + masa + (pep ? ' × 1.2 = ' + satu(masaLaras) : '') + '</b> masa, berbanding guru biasa ' + medM + ' masa → <b>' + dua(nm) + '</b></li>' +
+      '<li>Skor tugas: <b>' + (tugas.length ? tugas.map(function (x) { return satu(skorTugas(x)); }).join(' + ') + ' = ' + satu(T) : '0') + '</b>, berbanding guru biasa ' + satu(medT) + ' → <b>' + dua(nt) + '</b></li>' +
+      '<li>Gabung: <b>' + Math.round(a * 100) + '% × ' + dua(nm) + ' + ' + Math.round((1 - a) * 100) + '% × ' + dua(nt) + ' = ' + dua(ind) + '</b></li>';
+  };
+  ['kMasa', 'kPep', 'kMedM', 'kMedT', 'kAlpha'].forEach(function (id) { el(id).addEventListener('input', kirakan); el(id).addEventListener('change', kirakan); });
+  lukisTugas();
+})();
+</script>
+</body>
+</html>
