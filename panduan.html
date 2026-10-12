@@ -166,8 +166,6 @@ input[type=range] { width: 100%; accent-color: var(--teal) }
 .faq details[open] summary::after { transform: rotate(45deg) }
 .faq details p { color: var(--muted); padding-bottom: 14px; margin: 0 }
 
-details.pembangun { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 4px 22px }
-details.pembangun > summary { cursor: pointer; font: 700 1.05rem var(--f-display); padding-block: 16px }
 footer { border-top: 1px solid var(--line); padding-block: 32px 48px; color: var(--muted); font-size: 14px }
 footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px }
 </style>
@@ -213,7 +211,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <li><a href="#surat">Surat &amp; emel</a></li>
     <li><a href="#tetapan">Tetapan &amp; data</a></li>
     <li><a href="#soalan">Soalan lazim</a></li>
-    <li><a href="#master">Untuk pemilik master</a></li>
   </ol>
 </nav>
 
@@ -438,25 +435,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <details><summary>Tanda kelas peperiksaan tiada kesan?</summary><p>Betul selagi faktor peperiksaan ialah 1.0. Naikkan kepada 1.1 atau 1.2 di Tetapan › Lanjutan.</p></details>
     <details><summary>Siapa boleh melihat data sekolah kami?</summary><p>Hanya pengguna yang anda daftarkan. Data berada dalam salinan Sheet milik sekolah anda; pembangun sistem tidak boleh melihatnya.</p></details>
   </div>
-</section>
-
-<section id="master">
-  <span class="no">12</span>
-  <h2>Untuk pemilik master</h2>
-  <p>Bahagian ini untuk pembangun yang menyelenggara sistem dan berkongsi salinan kepada sekolah lain. Pengguna sekolah boleh melangkau bahagian ini.</p>
-  <details class="pembangun">
-    <summary>Struktur projek, perkongsian dan kemas kini</summary>
-    <div class="tbl"><table>
-      <thead><tr><th>Projek</th><th>Peranan</th></tr></thead>
-      <tbody>
-        <tr><td><b>Master</b><br><span class="muted">terikat pada Sheet sekolah pemilik</span></td><td>Sistem sekolah pemilik. Jangan kongsi.</td></tr>
-        <tr><td><b>CoreLib</b><br><span class="muted">projek berasingan, tiada data</span></td><td>Semua kod sistem. Dikongsi <em>Anyone with the link · Viewer</em> supaya salinan sekolah lain boleh memanggilnya.</td></tr>
-        <tr><td><b>Client</b><br><span class="muted">Sheet "Sistem Agihan Tugas v4 - Client"</span></td><td>Templat untuk disalin. Skripnya hanya penghubung kepada CoreLib.</td></tr>
-      </tbody>
-    </table></div>
-    <div class="nota amaran"><p>Projek yang terikat pada Sheet berkongsi akses dengan Sheet itu. Berkongsi master bermakna berkongsi data guru sekolah anda.</p></div>
-    <p>Salinan client dikunci pada satu versi CoreLib supaya kemas kini tidak memecahkan sekolah lain secara tiba-tiba. Untuk menerima kemas kini, sekolah membuka Apps Script salinan mereka dan menaikkan <em>Libraries › CoreLib › Version</em> kepada versi terkini.</p>
-  </details>
 </section>
 
 </main>
