@@ -189,7 +189,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <h1>Panduan Sistem Agihan Tugas Guru</h1>
     <p class="lead">Semua yang anda perlu tahu untuk memasang sistem di sekolah anda, melantik ahli jawatankuasa, membaca Indeks Beban dan menghantar surat lantikan.</p>
     <div class="pintu">
-      <a href="#pasang"><b>Baru mula?</b><span>Pasang sistem dalam kira-kira 10 minit.</span><i>Pasang di sekolah anda →</i></a>
+      <a href="#pasang"><b>Baru mula?</b><span>Pasang sistem dalam kira-kira 5 minit.</span><i>Pasang di sekolah anda →</i></a>
       <a href="#tugas"><b>Sudah guna?</b><span>Lantik, tukar dan isi kekosongan jawatan.</span><i>Mengurus tugas →</i></a>
       <a href="#kira"><b>Ingin faham kiraan?</b><span>Cuba kalkulator Indeks Beban.</span><i>Cara beban dikira →</i></a>
     </div>
@@ -223,9 +223,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <ol class="langkah">
     <li><div><b class="t">Daftar sekolah</b><span class="d">Isi <a href="https://script.google.com/a/macros/moe-dl.edu.my/s/AKfycbzd1rjZiCfvu8Muc_X-X0GUuuyH8ikicQqC1bfDE9W3KVlJKlY4w9BS5OrbFyRb-WH4/exec" target="_blank" rel="noopener">borang pendaftaran</a> (akaun @moe-dl.edu.my). Anda terus menerima emel berserta <b>kod sekolah</b>, pautan salinan dan langkah pemasangan.</span></div></li>
     <li><div><b class="t">Buat salinan</b><span class="d">Buka pautan salinan dalam emel pendaftaran dan klik <b>Make a copy</b>. Simpan dalam Drive akaun sekolah. Kod sistem ikut disalin bersama.</span></div></li>
-    <li><div><b class="t">Beri kebenaran</b><span class="d">Dalam salinan anda, buka <b>Extensions › Apps Script</b>. Pilih fungsi <code>pasang</code> dan klik <b>Run</b>. Jika Google memaparkan amaran, klik <b>Advanced › Go to … (unsafe)</b>, kemudian <b>Allow</b>.</span></div></li>
-    <li><div><b class="t">Terbitkan sebagai web app</b><span class="d">Klik <b>Deploy › New deployment</b> dan pilih <b>Web app</b>. Tetapkan <em>Execute as: Me</em> dan <em>Who has access: Anyone within</em> domain sekolah. Klik <b>Deploy</b> dan salin URL.</span></div></li>
-    <li><div><b class="t">Buka sistem</b><span class="d">Buka URL tadi. Skrin <b>Aktifkan Sistem</b> meminta kod sekolah; masukkan kod daripada emel. <b>Akaun yang menjalankan pasang menjadi pentadbir (ADMIN).</b></span></div></li>
+    <li><div><b class="t">Terbitkan sebagai web app</b><span class="d">Dalam salinan anda, buka <b>Extensions › Apps Script</b>. Klik <b>Deploy › New deployment</b> dan pilih <b>Web app</b>. Tetapkan <em>Execute as: Me</em> dan <em>Who has access: Anyone within</em> domain sekolah. Klik <b>Deploy</b>. Bila diminta, klik <b>Authorize access</b> (jika Google memaparkan amaran, klik <b>Advanced › Go to … (unsafe)</b>, kemudian <b>Allow</b>). Salin URL web app.</span></div></li>
+    <li><div><b class="t">Buka sistem</b><span class="d">Buka URL tadi. Skrin <b>Aktifkan Sistem</b> meminta kod sekolah; masukkan kod daripada emel. <b>Anda sebagai pemilik salinan menjadi pentadbir (ADMIN) secara automatik.</b></span></div></li>
     <li><div><b class="t">Cuba, kemudian buang data contoh</b><span class="d">Salinan sudah mengandungi data sebuah sekolah contoh dengan agihan yang seimbang. Selepas meneroka, buka Sheet dan pilih <b>Sistem Agihan Tugas › Buang data contoh</b>. Hanya rekod contoh dibuang.</span></div></li>
     <li><div><b class="t">Isi data sekolah</b><span class="d">Lengkapkan Tetapan › Sekolah (profil, logo, tandatangan), semak senarai gred dan jawatan, import senarai guru di menu Guru, kemudian sediakan jawatankuasa.</span></div></li>
     <li><div><b class="t">Beri akses kepada warga sekolah</b><span class="d">Tetapan › Pengguna › <b>Beri akses GURU kepada semua guru</b>, dan tambah PK bersama bidang masing-masing. Kongsi URL web app kepada guru.</span></div></li>
