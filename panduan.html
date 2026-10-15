@@ -226,8 +226,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <li><div><b class="t">Terbitkan sebagai web app</b><span class="d">Dalam salinan anda, buka <b>Extensions › Apps Script</b>. Klik <b>Deploy › New deployment</b> dan pilih <b>Web app</b>. Tetapkan <em>Execute as: Me</em> dan <em>Who has access: Anyone within</em> domain sekolah. Klik <b>Deploy</b>. Bila diminta, klik <b>Authorize access</b> (jika Google memaparkan amaran, klik <b>Advanced › Go to … (unsafe)</b>, kemudian <b>Allow</b>). Salin URL web app.</span></div></li>
     <li><div><b class="t">Buka sistem</b><span class="d">Buka URL tadi. Skrin <b>Aktifkan Sistem</b> meminta kod sekolah; masukkan kod daripada emel. <b>Anda sebagai pemilik salinan menjadi pentadbir (ADMIN) secara automatik.</b></span></div></li>
     <li><div><b class="t">Cuba, kemudian buang data contoh</b><span class="d">Salinan sudah mengandungi data sebuah sekolah contoh dengan agihan yang seimbang. Selepas meneroka, buka Sheet dan pilih <b>Sistem Agihan Tugas › Buang data contoh</b>. Hanya rekod contoh dibuang.</span></div></li>
-    <li><div><b class="t">Isi data sekolah</b><span class="d">Lengkapkan Tetapan › Sekolah (profil, logo, tandatangan), semak senarai gred dan jawatan, import senarai guru di menu Guru, kemudian sediakan jawatankuasa.</span></div></li>
-    <li><div><b class="t">Beri akses kepada warga sekolah</b><span class="d">Tetapan › Pengguna › <b>Beri akses GURU kepada semua guru</b>, dan tambah PK bersama bidang masing-masing. Kongsi URL web app kepada guru.</span></div></li>
+    <li><div><b class="t">Isi data sekolah</b><span class="d">Lengkapkan Tetapan › Sekolah (alamat, logo, tandatangan; nama dan kod sekolah diisi automatik ikut pendaftaran), semak senarai gred dan jawatan, import senarai guru di menu Guru, kemudian sediakan jawatankuasa.</span></div></li>
+    <li><div><b class="t">Beri akses kepada warga sekolah</b><span class="d">Tetapan › Pengguna › <b>Beri akses GURU kepada semua guru</b>, atau hidupkan <b>Akses terbuka</b> supaya semua akaun sekolah boleh masuk sebagai GURU. Tambah PK bersama bidang masing-masing, kemudian kongsi URL web app kepada guru.</span></div></li>
   </ol>
   <div class="nota amaran"><p>Jika menu <b>Sistem Agihan Tugas</b> tidak kelihatan dalam Sheet, muat semula halaman Sheet selepas langkah 2.</p></div>
 </section>
@@ -235,7 +235,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 <section id="peranan">
   <span class="no">02</span>
   <h2>Siapa boleh buat apa</h2>
-  <p>Sistem mengenal pengguna melalui akaun Google mereka. Hanya emel yang didaftarkan dan aktif di Tetapan › Pengguna boleh masuk.</p>
+  <p>Sistem mengenal pengguna melalui akaun Google mereka. <b>Pemilik salinan sistem sentiasa ADMIN</b>, walaupun emelnya tiada dalam senarai pengguna. Pengguna lain mesti didaftarkan dan aktif di Tetapan › Pengguna, kecuali jika <b>Akses terbuka</b> dihidupkan: sesiapa yang log masuk dengan akaun domain sekolah boleh masuk sebagai GURU. ADMIN dan PK tetap perlu didaftarkan.</p>
   <div class="tbl"><table>
     <thead><tr><th>Peranan</th><th>Boleh buat</th></tr></thead>
     <tbody>
@@ -265,7 +265,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <h2>Menu sistem</h2>
   <div class="kad-grid">
     <div><b>Analisis</b><span>Ringkasan sekolah: taburan beban, guru yang perlu perhatian (Terbeban · Ada ruang · JK kosong), carta masa mengajar lawan tugas, kelengkapan JK, status surat, agihan ikut bidang dan gred.</span></div>
-    <div><b>Jawatankuasa</b><span>Senarai JK ikut bidang, disusun ikut tahap kemudian tempoh. Klik untuk melihat ahli; <b>Urus ahli</b> untuk melantik. Carian turut mencari nama guru.</span></div>
+    <div><b>Jawatankuasa</b><span>Senarai JK ikut bidang, disusun ikut tahap kemudian tempoh. Klik untuk melihat ahli; <b>Urus ahli</b> untuk melantik. Carian turut mencari nama guru. <b>Muat turun DOCX</b> menghasilkan senarai jawatankuasa dalam Word.</span></div>
     <div><b>Guru</b><span>Jadual guru dengan masa mengajar dan tanda peperiksaan yang boleh diedit terus. Klik nama untuk membuka profil.</span></div>
     <div><b>Surat</b><span>Jana PDF lantikan, hantar emel, dan pantau status setiap guru.</span></div>
     <div><b>Tetapan</b><span>Sekolah, Surat &amp; emel, Senarai rujukan, Pengguna, Log aktiviti dan Lanjutan (pemberat dan ambang).</span></div>
@@ -289,6 +289,13 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <div><b>Butiran yang menyebut jawatan</b><span>"Setiausaha PBD" disusun sebelum "Penolong Setiausaha SPM", mengikut susunan jawatan.</span></div>
     <div><b>Pentadbir</b><span>Pengetua, PK dan GKMP tiada Indeks Beban dan dipaparkan <span class="pil neutral">Dikecualikan</span>. Lantikan mereka kekal.</span></div>
   </div>
+  <h3>Muat turun senarai jawatankuasa (Word)</h3>
+  <p>Di menu Jawatankuasa, tekan <b>Muat turun DOCX</b>. Fail .docx disusun seperti buku pengurusan sekolah: nama jawatankuasa (tebal), diikuti <b>Jawatan : Nama</b> bagi setiap ahli, dengan titik bertindih yang sejajar.</p>
+  <ul>
+    <li>Pilih sama ada JK yang sedang dipaparkan (ikut tab, carian dan tapisan) atau semua JK aktif.</li>
+    <li>Nama HURUF BESAR boleh ditukar kepada huruf biasa, dan gelaran En/Pn ditambah ikut bin/binti. Semak gelaran (contohnya Cik) sebelum dicetak.</li>
+    <li>"AJK" ditulis <b>Ahli</b> dan "Penolong Setiausaha" ditulis <b>Pen. Setiausaha</b>.</li>
+  </ul>
 </section>
 
 <section id="kira">
@@ -405,6 +412,8 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <tr><td>Minit setiap masa</td><td class="num">30</td><td>Penukar masa kepada minit.</td></tr>
       <tr><td>Had bilangan jawatan</td><td class="num">8</td><td>Melebihi had mencetuskan amaran Banyak jawatan.</td></tr>
       <tr><td>Tidak dikira dalam indeks</td><td class="num">Pengetua, PK, GKMP</td><td>Tag guru yang dikecualikan.</td></tr>
+      <tr><td>Akses terbuka</td><td class="num">Mati</td><td>Hidup: sesiapa dalam domain sekolah boleh masuk sebagai GURU (Tetapan › Pengguna).</td></tr>
+      <tr><td>Nama &amp; kod sekolah</td><td class="num">Ikut pendaftaran</td><td>Dikunci; ubahan terus dalam Sheet dipulihkan. Hubungi pembangun untuk membetulkan.</td></tr>
     </tbody>
   </table></div>
   <h3>Nilai yang dibenarkan dalam Sheet</h3>
@@ -433,7 +442,10 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <details><summary>Guru mendapat skrin "Akses disekat" walaupun sudah didaftarkan?</summary><p>Biasanya kerana pelayar log masuk beberapa akaun Google. Tekan <b>Tukar akaun Google</b> pada skrin itu dan pilih akaun sekolah, atau buka pautan dalam tetingkap Incognito.</p></details>
     <details><summary>Indeks ramai guru melonjak tinggi, contohnya 6.x?</summary><p>Semak tahun yang dipilih di bahagian atas. Jika lantikan tahun itu belum lengkap, median skor tugas sangat rendah dan indeks menjadi besar. Lengkapkan lantikan atau salin dari tahun lepas.</p></details>
     <details><summary>Tanda kelas peperiksaan tiada kesan?</summary><p>Betul selagi faktor peperiksaan ialah 1.0. Naikkan kepada 1.1 atau 1.2 di Tetapan › Lanjutan.</p></details>
-    <details><summary>Siapa boleh melihat data sekolah kami?</summary><p>Hanya pengguna yang anda daftarkan. Data berada dalam salinan Sheet milik sekolah anda; pembangun sistem tidak boleh melihatnya.</p></details>
+    <details><summary>Siapa boleh melihat data sekolah kami?</summary><p>Hanya pengguna yang anda daftarkan (atau semua akaun domain sekolah jika Akses terbuka dihidupkan, dan mereka hanya melihat tugas sendiri). Data berada dalam salinan Sheet milik sekolah anda; pembangun sistem tidak boleh melihatnya.</p></details>
+    <details><summary>Nama atau kod sekolah dalam sistem salah?</summary><p>Nama dan kod sekolah diambil daripada pendaftaran dan tidak boleh diubah di Tetapan. Balas emel pendaftaran untuk membetulkannya; sistem anda dikemas kini sendiri dalam masa kira-kira 20 minit.</p></details>
+    <details><summary>Skrin "Aktifkan Sistem" memaparkan ralat?</summary><p><b>Kod sudah digunakan oleh salinan lain</b>: satu kod hanya untuk satu salinan; minta pembangun set semula jika anda membuat salinan baharu. <b>Tidak berdaftar</b>: semak ejaan kod atau daftar dahulu. <b>Tidak dapat dihubungi</b>: pastikan salinan dibuat daripada pautan terkini dalam emel.</p></details>
+    <details><summary>Boleh guna akaun Google selain DELIMa?</summary><p>Boleh. Sistem berfungsi dengan mana-mana akaun Google Workspace sekolah. Pastikan guru menggunakan akaun domain yang sama dengan pemilik salinan supaya sistem dapat mengenal mereka.</p></details>
   </div>
 </section>
 
