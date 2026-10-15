@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daftar Sekolah · Agihan Tugas Guru</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@600&display=swap">
+<style>
+:root { --bg:#F5F8FC; --surface:#fff; --tint:#EAF1F9; --fg:#14223A; --muted:#56647C; --line:#DCE4EE; --navy:#1E3A5F;
+  --teal:#0F766E; --teal-soft:#DDF3EF; --amber:#EA7A12; --ok:#15803D; --ok-soft:#E3F6EA; --bad:#C0262D; --bad-soft:#FDE8E9;
+  --kopi:#7C4A1E; --kopi-soft:#F7EDE3; }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 Figtree, system-ui, "Segoe UI", sans-serif; padding: 28px 16px 60px }
+.wrap { max-width: 640px; margin: 0 auto }
+.jenama { display: flex; align-items: center; gap: 10px; font: 800 17px "Bricolage Grotesque", sans-serif; margin-bottom: 22px }
+.logo { width: 34px; height: 34px; border-radius: 10px; background: var(--navy); display: grid; place-items: center }
+h1 { font: 800 clamp(1.7rem, 5vw, 2.2rem)/1.1 "Bricolage Grotesque", sans-serif; letter-spacing: -.02em; margin: 0 0 10px }
+.lead { color: var(--muted); margin: 0 0 24px }
+.kad { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 24px; margin-bottom: 16px }
+.kad h2 { font: 700 1.05rem Figtree, sans-serif; margin: 0 0 16px; display: flex; align-items: center; gap: 10px }
+.kad h2 i { font-style: normal; width: 26px; height: 26px; border-radius: 8px; background: var(--teal-soft); color: var(--teal); display: grid; place-items: center; font-size: 14px; font-weight: 800 }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px 16px }
+@media (max-width: 560px) { .grid { grid-template-columns: 1fr } }
+.penuh { grid-column: 1 / -1 }
+.medan { display: grid; gap: 7px; align-content: start; min-width: 0 }
+.medan > label { font-weight: 600; font-size: 14px; display: flex; align-items: baseline; gap: 6px }
+.medan > label em, .kad h2 em { font-style: normal; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--tint); border-radius: 999px; padding: 1px 8px }
+.medan small { color: var(--muted); font-size: 13px }
+.fail { position: relative; display: flex; align-items: center; gap: 10px; border: 1.5px dashed var(--line); border-radius: 10px; padding: 11px 12px; background: #fff; cursor: pointer; color: var(--muted); font-size: 15px; overflow: hidden }
+.fail::before { content: "⬆"; color: var(--kopi); font-weight: 800 }
+.fail input { position: absolute; inset: 0; opacity: 0; cursor: pointer }
+.fail span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.fail.ada { border-style: solid; border-color: var(--kopi); color: var(--fg) }
+input, select { font: 500 16px Figtree, sans-serif; color: var(--fg); background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px; padding: 11px 12px; width: 100% }
+input:focus, select:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-soft) }
+input[readonly] { background: var(--tint); color: var(--muted) }
+#kod { font: 600 17px "JetBrains Mono", monospace; letter-spacing: .08em; text-transform: uppercase }
+.wajib { color: var(--bad); font-weight: 700 }
+.kad h2 em { margin-left: 2px }
+.hantar-kad { display: grid; gap: 16px }
+.kopi { background: var(--kopi-soft); border-color: #EBD8C4 }
+.kopi h2 i { background: #fff; color: var(--kopi) }
+.akaun { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; background: #fff; border-radius: 12px; padding: 14px 16px; margin-bottom: 14px }
+.akaun b { font: 600 1.15rem "JetBrains Mono", monospace; letter-spacing: .04em }
+.akaun span { display: block; font-size: 13px; color: var(--muted) }
+.salin { font: 700 13px Figtree, sans-serif; border: 1.5px solid var(--line); background: #fff; color: var(--fg); border-radius: 8px; padding: 7px 12px; cursor: pointer }
+.nota { font-size: 14px; color: var(--muted); margin: 0 0 14px }
+.setuju { display: flex; gap: 10px; align-items: flex-start; font-weight: 500; font-size: 15px }
+.setuju input { width: 20px; height: 20px; flex: none; margin-top: 2px; accent-color: var(--teal) }
+button.hantar { width: 100%; background: var(--amber); color: #fff; border: 0; border-radius: 12px; padding: 16px; font: 700 17px Figtree, sans-serif; cursor: pointer; box-shadow: 0 8px 20px -8px var(--amber) }
+button.hantar:disabled { opacity: .6; cursor: wait }
+.ralat { display: none; margin-top: 14px; background: var(--bad-soft); color: var(--bad); border-radius: 10px; padding: 12px 14px; font-weight: 600 }
+.berjaya { text-align: center; padding: 36px 24px }
+.berjaya .tanda { width: 64px; height: 64px; border-radius: 50%; background: var(--ok-soft); color: var(--ok); display: grid; place-items: center; font-size: 32px; margin: 0 auto 16px }
+.berjaya ol { text-align: left; color: var(--muted); max-width: 440px; margin: 18px auto 0; display: grid; gap: 8px }
+.kod-besar { display: inline-grid; gap: 4px; background: var(--teal-soft); border-radius: 14px; padding: 14px 28px; margin-top: 4px }
+.kod-besar span { font-size: 13px; font-weight: 700; color: var(--teal) }
+.kod-besar b { font: 600 1.8rem "JetBrains Mono", monospace; letter-spacing: .1em; color: var(--fg) }
+.tindakan { display: grid; gap: 10px; max-width: 360px; margin: 24px auto 0 }
+.btn-u, .btn-k { display: block; text-decoration: none; border-radius: 12px; padding: 14px; font-weight: 700 }
+.btn-u { background: var(--amber); color: #fff }
+.btn-k { border: 1.5px solid var(--line); color: var(--fg) }
+[hidden] { display: none !important }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="jenama" href="index.html" style="text-decoration:none;color:inherit">
+    <span class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 18h16" stroke="#fff" stroke-width="2" stroke-linecap="round"/><rect x="5" y="10" width="3" height="6" rx="1" fill="#fff"/><rect x="10.5" y="7" width="3" height="9" rx="1" fill="#2BB5A3"/><rect x="16" y="10" width="3" height="6" rx="1" fill="#fff"/></svg></span>
+    Agihan Tugas Guru
+  </a>
+
+  <div id="paparanBorang">
+    <h1>Daftar sekolah anda</h1>
+    <p class="lead">Percuma. Isi sekali untuk setiap sekolah. Sebaik dihantar, anda terus menerima emel berserta kod sekolah, pautan salinan sistem dan langkah pemasangan.</p>
+
+    <form id="borang" novalidate>
+      <div class="kad">
+        <h2><i>1</i>Maklumat sekolah</h2>
+        <div class="grid">
+          <div class="medan"><label for="kod">Kod sekolah <b class="wajib">*</b></label><input id="kod" maxlength="7" placeholder="ABC1234" autocomplete="off" required pattern="[A-Za-z]{3}[0-9]{4}"><small>Kod KPM: 3 huruf, 4 nombor</small></div>
+          <div class="medan"><label for="negeri">Negeri <b class="wajib">*</b></label><select id="negeri" required>
+              <option value="">Pilih negeri</option>
+              <option>Johor</option><option>Kedah</option><option>Kelantan</option><option>Melaka</option><option>Negeri Sembilan</option>
+              <option>Pahang</option><option>Perak</option><option>Perlis</option><option>Pulau Pinang</option><option>Sabah</option>
+              <option>Sarawak</option><option>Selangor</option><option>Terengganu</option><option>W.P. Kuala Lumpur</option>
+              <option>W.P. Labuan</option><option>W.P. Putrajaya</option>
+            </select></div>
+          <div class="medan penuh"><label for="namaSekolah">Nama sekolah <b class="wajib">*</b></label><input id="namaSekolah" required placeholder="Nama penuh sekolah" autocomplete="organization"></div>
+          <div class="medan"><label for="bilGuru">Anggaran bilangan guru <em>pilihan</em></label><input id="bilGuru" type="number" min="1" max="999" inputmode="numeric" placeholder="Contoh: 80"></div>
+        </div>
+      </div>
+
+      <div class="kad">
+        <h2><i>2</i>Maklumat pemohon</h2>
+        <div class="grid">
+          <div class="medan penuh"><label for="namaGuru">Nama penuh <b class="wajib">*</b></label><input id="namaGuru" required autocomplete="name" placeholder="Nama seperti dalam rekod sekolah"></div>
+          <div class="medan"><label for="jawatan">Jawatan <b class="wajib">*</b></label><input id="jawatan" required list="senaraiJawatan" placeholder="Pilih atau taip">
+            <datalist id="senaraiJawatan"><option>Pengetua</option><option>Guru Besar</option><option>PK Pentadbiran</option>
+              <option>PK Hal Ehwal Murid</option><option>PK Kokurikulum</option><option>Setiausaha Kurikulum</option><option>Guru</option></datalist></div>
+          <div class="medan"><label for="telefon">No. telefon (WhatsApp) <b class="wajib">*</b></label><input id="telefon" required type="tel" inputmode="tel" placeholder="01X-XXX XXXX" autocomplete="tel"></div>
+          <div class="medan penuh"><label for="emel">Emel rasmi <b class="wajib">*</b></label><input id="emel" type="email" required placeholder="nama@moe-dl.edu.my" autocomplete="email"><small>Kod sekolah, pautan salinan dan langkah pemasangan dihantar ke emel ini.</small></div>
+        </div>
+      </div>
+
+      <div class="kad kopi">
+        <h2><i>☕</i>Belanja kopi <em>pilihan</em></h2>
+        <p class="nota">Sistem ini percuma. Jika rasa membantu, belanja secawan kopi untuk pembangun.</p>
+        <div class="akaun">
+          <div><span>Maybank</span><b id="noAkaun">151043879403</b></div>
+          <button type="button" class="salin" id="btnSalin">Salin no. akaun</button>
+        </div>
+        <div class="grid">
+          <div class="medan"><label for="kopi">Jumlah (RM) <em>pilihan</em></label><input id="kopi" type="number" min="1" step="0.01" inputmode="decimal" placeholder="Contoh: 10"></div>
+          <div class="medan"><label for="resit">Resit pindahan <em>pilihan</em></label><label class="fail" for="resit"><input id="resit" type="file" accept="image/*,application/pdf"><span id="namaResit">Pilih gambar atau PDF</span></label><small>Maksimum 5MB</small></div>
+        </div>
+      </div>
+
+      <div class="kad hantar-kad">
+        <label class="setuju"><input type="checkbox" id="setuju" required>
+          <span>Saya mengesahkan maklumat ini benar. Kod sekolah hanya akan digunakan untuk satu salinan sistem bagi sekolah ini.</span></label>
+        <button type="submit" class="hantar" id="btnHantar">Daftar sekarang</button>
+        <div class="ralat" id="ralat"></div>
+      </div>
+    </form>
+  </div>
+
+  <div id="paparanBerjaya" class="kad berjaya" hidden>
+    <div class="tanda">✓</div>
+    <h1>Pendaftaran berjaya</h1>
+    <p class="lead" id="teksBerjaya"></p>
+    <div class="kod-besar"><span>Kod sekolah anda</span><b id="kodBerjaya"></b></div>
+    <ol>
+      <li><b>Buat salinan</b> sistem dalam Drive akaun sekolah.</li>
+      <li>Dalam Apps Script salinan itu, klik <b>Deploy</b> sebagai web app dan benarkan akses.</li>
+      <li>Buka web app dan masukkan kod sekolah di atas.</li>
+    </ol>
+    <div class="tindakan">
+      <a class="btn-u" id="pautanSalinan" target="_blank" rel="noopener">Buat salinan sistem →</a>
+      <a class="btn-k" id="pautanPanduan" target="_blank" rel="noopener">Buka panduan pemasangan</a>
+    </div>
+  </div>
+</div>
+
+<script>
+var URL_PUSAT_LESEN = 'https://script.google.com/macros/s/AKfycbwZjqKaT5r_LT8TEi-mdpvub3cwl-aHlNMXuEe66mPAVloEWp498y1G3QsqsIevIWPq/exec';
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  $('resit').addEventListener('change', function () {
+    var f = this.files[0]; $('namaResit').textContent = f ? f.name : 'Pilih gambar atau PDF';
+    this.parentNode.classList.toggle('ada', !!f);
+  });
+  $('kod').addEventListener('input', function () { this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); });
+  $('btnSalin').onclick = function () {
+    var b = this, t = $('noAkaun').textContent;
+    var siap = function () { b.textContent = 'Disalin ✓'; setTimeout(function () { b.textContent = 'Salin no. akaun'; }, 1800); };
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(siap, siap); else siap();
+  };
+  var ralat = function (m) { var r = $('ralat'); r.textContent = m; r.style.display = 'block'; };
+  var bacaFail = function (f) {
+    return new Promise(function (ok, gagal) {
+      if (!f) return ok(null);
+      if (f.size > 5 * 1024 * 1024) return gagal(new Error('Fail resit melebihi 5MB.'));
+      var fr = new FileReader();
+      fr.onload = function () { ok({ nama: f.name, jenis: f.type, data: String(fr.result).split(',')[1] }); };
+      fr.onerror = function () { gagal(new Error('Gagal membaca fail resit.')); };
+      fr.readAsDataURL(f);
+    });
+  };
+
+  $('borang').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    $('ralat').style.display = 'none';
+    var f = this;
+    if (!f.checkValidity()) {
+      var x = f.querySelector(':invalid'); x.focus();
+      return ralat(x.id === 'kod' ? 'Kod sekolah mesti 3 huruf dan 4 nombor, contoh JEA1234.' :
+        x.id === 'setuju' ? 'Sila tandakan pengesahan.' : 'Sila lengkapkan ruangan yang bertanda *.');
+    }
+    var b = $('btnHantar'); b.disabled = true; b.textContent = 'Menghantar...';
+    var pulih = function (e) { b.disabled = false; b.textContent = 'Daftar sekarang'; ralat(e.message || String(e)); };
+    bacaFail($('resit').files[0]).then(function (resit) {
+      var data = {
+        kod: $('kod').value, namaSekolah: $('namaSekolah').value, negeri: $('negeri').value, bilGuru: $('bilGuru').value,
+        namaGuru: $('namaGuru').value, jawatan: $('jawatan').value, telefon: $('telefon').value, emel: $('emel').value,
+        kopi: $('kopi').value, resit: resit, setuju: $('setuju').checked
+      };
+      // text/plain: permintaan ringkas tanpa preflight CORS
+      return fetch(URL_PUSAT_LESEN, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ tindakan: 'daftar', data: data }) })
+        .then(function (res) { if (!res.ok) throw new Error('Pelayan tidak dapat dihubungi (HTTP ' + res.status + '). Cuba lagi.'); return res.json(); })
+        .then(function (r) {
+          if (!r.ok) throw new Error(r.mesej || 'Pendaftaran gagal.');
+          $('paparanBorang').hidden = true; $('paparanBerjaya').hidden = false;
+          $('teksBerjaya').textContent = r.emelDihantar
+            ? 'Emel pengesahan bersama pautan salinan dan langkah pemasangan telah dihantar ke ' + r.emel + '. Semak juga folder Spam.'
+            : 'Sekolah anda sudah aktif. Simpan kod di bawah dan ikut langkah pemasangan.';
+          $('kodBerjaya').textContent = r.kod;
+          $('pautanSalinan').href = r.salinan;
+          $('pautanPanduan').href = r.panduan;
+          window.scrollTo(0, 0);
+        });
+    }).catch(pulih);
+  });
+})();
+</script>
+</body>
+</html>
