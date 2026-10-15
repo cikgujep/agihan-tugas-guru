@@ -218,6 +218,8 @@ body.sidebar-kecil .nav li a { justify-content: center; padding: 11px 0; }
 textarea.input { height: auto; min-height: 90px; padding: 10px 14px; resize: vertical; }
 select.input { padding-right: 30px; }
 .input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(30,58,95,.12); }
+.input[readonly] { background: var(--bg, #F3F5F9); color: var(--text-muted, #56647C); cursor: not-allowed; }
+.input[readonly]:focus { border-color: inherit; box-shadow: none; }
 .input.sm { height: 36px; font-size: 14px; }
 .medan { display: flex; flex-direction: column; gap: 6px; }
 .medan label, .label-medan { font-size: 14px; font-weight: 500; color: var(--text); }
@@ -669,7 +671,14 @@ function api(fn, payload) {
   });
 }
 
+// Data sampai selepas pengguna bertukar halaman: elemen halaman lama sudah tiada. Bukan ralat sebenar.
+function paparanLama_(e) {
+  return e instanceof TypeError && /of null \((setting|reading) '(innerHTML|textContent|value|classList|style|onclick|disabled|hidden)'\)/.test(e.message);
+}
+window.addEventListener('unhandledrejection', ev => { if (paparanLama_(ev.reason)) ev.preventDefault(); });
+
 function ralat(e) {
+  if (paparanLama_(e)) { console.warn('Paparan lama diabaikan:', e.message); return; }
   console.error(e);
   showToast(e && e.message ? e.message : String(e), 'error', 6000);
 }
@@ -940,6 +949,9 @@ function tutupLaci() { document.getElementById('akarLaci').innerHTML = ''; }
 // ============================================================================
 // 4. KERANGKA & PENGHALA
 // ============================================================================
+/** Label menu ikut peranan (cth. "Tugas Guru" untuk ADMIN/PK). */
+function labelHalaman(h) { return (h.labelPeranan && S.user && h.labelPeranan[S.user.role]) || h.label; }
+
 // Menu ringkas (5 + Tugas Saya). Halaman "tersorok" tidak dipaparkan dalam menu tetapi boleh dibuka.
 const HALAMAN = [
   { id: 'papan', label: 'Analisis', ikon: 'analytics', peranan: ['ADMIN', 'PK'], render: () => renderPapan() },
@@ -948,7 +960,7 @@ const HALAMAN = [
   { id: 'surat', label: 'Surat', ikon: 'mail', peranan: ['ADMIN'], render: () => renderSurat() },
   { id: 'tetapan', label: 'Tetapan', ikon: 'settings', peranan: ['ADMIN'], render: () => renderTetapan() },
   { pemisah: true, peranan: ['ADMIN', 'PK'] },
-  { id: 'tugas', label: 'Tugas Saya', ikon: 'badge', peranan: ['ADMIN', 'PK', 'GURU'], render: () => renderTugasSaya() },
+  { id: 'tugas', label: 'Tugas Saya', labelPeranan: { ADMIN: 'Tugas Guru', PK: 'Tugas Guru' }, ikon: 'badge', peranan: ['ADMIN', 'PK', 'GURU'], render: () => renderTugasSaya() },
   // Skrin lantikan satu JK (dibuka dari Jawatankuasa)
   { id: 'agihan', label: 'Lantikan', induk: 'jk', tersorok: true, peranan: ['ADMIN', 'PK'], render: () => renderAgihan() }
 ];
@@ -961,10 +973,10 @@ function halamanLalai() { return S.user.role === 'GURU' ? 'tugas' : 'papan'; }
 function binaKerangka() {
   const dibenar = halamanDibenar().filter(h => !h.tersorok);
   $('#navUtama').innerHTML = dibenar.map(h => h.pemisah ? '<li class="pemisah" role="separator"></li>' :
-    '<li><a href="#' + h.id + '" data-hal="' + h.id + '" title="' + esc(h.label) + '">' + ikon(h.ikon) + '<span class="label">' + esc(h.label) + '</span></a></li>').join('');
+    '<li><a href="#' + h.id + '" data-hal="' + h.id + '" title="' + esc(labelHalaman(h)) + '">' + ikon(h.ikon) + '<span class="label">' + esc(labelHalaman(h)) + '</span></a></li>').join('');
   const utama = dibenar.filter(h => !h.pemisah);
   const mudah = utama.length > 5 ? utama.slice(0, 4) : utama;
-  $('#menuMudah').innerHTML = mudah.map(h => '<a href="#' + h.id + '" data-hal="' + h.id + '">' + ikon(h.ikon) + '<span>' + esc(h.label.split(' ')[0]) + '</span></a>').join('') +
+  $('#menuMudah').innerHTML = mudah.map(h => '<a href="#' + h.id + '" data-hal="' + h.id + '">' + ikon(h.ikon) + '<span>' + esc(labelHalaman(h).split(' ')[0]) + '</span></a>').join('') +
     (utama.length > 5 ? '<a href="#" id="btnMenuLain">' + ikon('menu') + '<span>Lagi</span></a>' : '');
   const lain = $('#btnMenuLain');
   if (lain) lain.addEventListener('click', ev => {
@@ -974,7 +986,7 @@ function binaKerangka() {
     latar.style.zIndex = 105;
     const helai = document.createElement('div');
     helai.className = 'helaian-bawah';
-    helai.innerHTML = '<ul class="nav" style="padding:4px">' + utama.map(h => '<li><a href="#' + h.id + '">' + ikon(h.ikon) + '<span class="label">' + esc(h.label) + '</span></a></li>').join('') + '</ul>';
+    helai.innerHTML = '<ul class="nav" style="padding:4px">' + utama.map(h => '<li><a href="#' + h.id + '">' + ikon(h.ikon) + '<span class="label">' + esc(labelHalaman(h)) + '</span></a></li>').join('') + '</ul>';
     const tutup = () => { latar.remove(); helai.remove(); };
     latar.addEventListener('click', tutup);
     helai.addEventListener('click', ev2 => { if (ev2.target.closest('a')) tutup(); });
@@ -1293,7 +1305,7 @@ function renderPapan() {
     kadAnalisis('anBil', 'Bilangan jawatan seorang', 'Berapa ramai guru memegang berapa jawatan') + '</div>' +
     '<div class="grid g-2 mt-24">' +
     kadAnalisis('anGred', 'Beban ikut gred', 'Purata jawatan dan Indeks Beban mengikut gred') +
-    kadAnalisis('anRamai', 'Paling banyak jawatan', 'Guru aktif dengan bilangan lantikan tertinggi') + '</div>';
+    kadAnalisis('anRamai', 'Paling banyak jawatan', 'Guru aktif dengan bilangan lantikan tertinggi (tidak termasuk pentadbir yang dikecualikan)') + '</div>';
   $('#btnKiraSemula').addEventListener('click', ev => {
     const b = ev.currentTarget;
     b.disabled = true;
@@ -1475,7 +1487,7 @@ function lukisAnalisis(d) {
     }).join('') + '</tbody></table></div>' : kosong('military_tech', 'Tiada data gred', ''));
 
   // 7. Paling banyak jawatan
-  const ramai = aktif.filter(g => g.bil > 0).sort((a, b) => b.bil - a.bil || (b.T - a.T)).slice(0, 7);
+  const ramai = aktif.filter(g => g.bil > 0 && !g.dikecualikan).sort((a, b) => b.bil - a.bil || (b.T - a.T)).slice(0, 7);
   const maksBil = ramai.length ? ramai[0].bil : 0;
   set('anRamai', ramai.length ? '<ul class="senarai-ringkas">' + ramai.map(g => '<li data-guru="' + esc(g.id_guru) + '"><div class="avatar kecil">' + esc(inisial(g.nama)) + '</div>' +
     '<div class="flex-1" style="min-width:0"><div class="nama">' + esc(g.nama) + '</div><div class="bar-mendatar mt-8" style="height:6px"><i style="width:' + (g.bil / maksBil * 100) + '%;background:' +
@@ -1621,15 +1633,29 @@ function modalTukarLantikan(guruAsal, l) {
 // ============================================================================
 // 8. TUGAS SAYA (GURU)
 // ============================================================================
+const TS = { idGuru: '' };
 function renderTugasSaya() {
   const k = $('#kandungan');
-  k.innerHTML = kepala('Tugas Saya', 'Tugas Saya', 'Lantikan jawatankuasa dan Indeks Beban anda bagi tahun ' + S.tahun) +
+  const pilih = S.user.role === 'ADMIN' || S.user.role === 'PK';
+  const tajuk = pilih ? 'Tugas Guru' : 'Tugas Saya';
+  k.innerHTML = kepala(tajuk, tajuk, pilih ? 'Lihat lantikan, Indeks Beban dan surat mana-mana guru bagi tahun ' + S.tahun + ', seperti yang dilihat oleh guru itu.'
+    : 'Lantikan jawatankuasa dan Indeks Beban anda bagi tahun ' + S.tahun) +
+    (pilih ? '<div class="baris mb-16"><label class="kecil tebal" for="pilihGuruTugas">Guru</label><select id="pilihGuruTugas" class="input" style="max-width:420px"><option value="">Memuatkan...</option></select></div>' : '') +
     '<div id="tugasBadan">' + rangka(200) + '</div>';
-  api('getTugasSaya', { tahun: S.tahun }).then(res => {
+  api('getTugasSaya', { tahun: S.tahun, id_guru: pilih ? TS.idGuru : '' }).then(res => {
     const d = res.data;
     const b = $('#tugasBadan');
+    const sel = $('#pilihGuruTugas');
+    if (sel && d.senaraiGuru) {
+      const dipilih = d.idDilihat || '';
+      sel.innerHTML = (dipilih ? '' : '<option value="">Pilih guru...</option>') +
+        d.senaraiGuru.map(g => '<option value="' + esc(g.id_guru) + '"' + (g.id_guru === dipilih ? ' selected' : '') + '>' + esc(g.nama) +
+          (g.id_guru === S.user.id_guru ? ' (saya)' : '') + '</option>').join('');
+      sel.onchange = () => { TS.idGuru = sel.value; renderTugasSaya(); };
+    }
     if (!d.dipautkan) {
-      b.innerHTML = '<div class="kad">' + kosong('link_off', 'Akaun belum dipautkan', 'Emel akaun anda (' + S.user.email + ') tiada dalam senarai guru. Sila hubungi pentadbir sistem.') + '</div>';
+      b.innerHTML = '<div class="kad">' + (pilih ? kosong('person_search', 'Pilih guru', 'Pilih nama guru di atas untuk melihat tugas dan surat lantikannya.')
+        : kosong('link_off', 'Akaun belum dipautkan', 'Emel akaun anda (' + S.user.email + ') tiada dalam senarai guru. Sila hubungi pentadbir sistem.')) + '</div>';
       return;
     }
     const g = d.guru || { nama: S.user.nama, M: 0, T: 0, bil: 0, indeks: null };
@@ -1646,14 +1672,14 @@ function renderTugasSaya() {
       (d.surat ? '<div class="baris antara"><div><b>Versi ' + d.surat.versi + (d.surat.versi > 1 ? ' <span class="cip merah">PINDAAN</span>' : '') + '</b>' +
         '<div class="kecil muted">Dijana ' + tarikhPanjang(d.surat.tarikh_jana) + '</div>' +
         (d.surat.lapuk === 'Y' ? '<div class="kecil ambar mt-8">Lantikan anda telah berubah. Surat baharu akan dikeluarkan.</div>' : '') + '</div>' +
-        '<button class="btn utama" id="btnMuatSurat">' + ikon('download') + 'Muat Turun PDF</button></div>'
+        (d.bolehMuatSurat ? '<button class="btn utama" id="btnMuatSurat">' + ikon('download') + 'Muat Turun PDF</button>' : '') + '</div>'
         : '<p class="muted kecil">Surat lantikan belum dijana untuk tahun ini.</p>') + '</div></div>' +
-      '<div class="kad"><div class="kad-kepala"><h3>' + ikon('assignment', 'sm') + ' Lantikan Saya ' + d.tahun + '</h3><span class="pill info">' + d.lantikan.length + ' lantikan</span></div>' +
+      '<div class="kad"><div class="kad-kepala"><h3>' + ikon('assignment', 'sm') + (d.diriSendiri ? ' Lantikan Saya ' : ' Lantikan ') + d.tahun + '</h3><span class="pill info">' + d.lantikan.length + ' lantikan</span></div>' +
       '<div id="listLantikanSaya">' + (d.lantikan.length ? d.lantikan.map(l => '<div class="kad-badan" style="border-bottom:1px solid var(--border);padding:14px 20px">' +
         '<div class="baris antara" style="align-items:flex-start;flex-wrap:nowrap"><div><b>' + esc(l.jawatankuasa) + '</b><div class="kecil muted">' + esc(l.bidang) + '</div>' +
         '<div class="mt-8"><span class="tebal">' + esc(labelJawatan(l)) + '</span></div></div><div class="kanan">' + cipTahap(l.tahap) +
         '<div class="kecil muted mt-8">Mulai ' + tarikh(l.tarikh_kuat_kuasa) + '</div></div></div></div>').join('')
-        : kosong('event_busy', 'Tiada lantikan', 'Anda belum dilantik ke mana-mana jawatankuasa bagi tahun ini.')) + '</div></div></div></div>';
+        : kosong('event_busy', 'Tiada lantikan', (d.diriSendiri ? 'Anda' : 'Guru ini') + ' belum dilantik ke mana-mana jawatankuasa bagi tahun ini.')) + '</div></div></div></div>';
     const btn = $('#btnMuatSurat');
     if (btn) btn.onclick = () => muatTurunSurat(d.surat.id_surat, btn);
   }).catch(e => { ralat(e); $('#tugasBadan').innerHTML = kosong('error', 'Gagal memuatkan', e.message); });
@@ -2136,7 +2162,8 @@ function renderJK() {
     '<div class="baris mb-16"><div class="carian" style="min-width:240px"><span class="ms sm">search</span><input class="input sm" id="cariJKGrid" placeholder="Cari jawatankuasa atau nama guru..." value="' + esc(JK.cari) + '"></div>' +
     '<select id="tapisTahap" class="input sm" style="width:auto">' + pilihan((S.rujukan.tahapJK || []).map(t => [t.tahap, t.tahap.charAt(0) + t.tahap.slice(1).toLowerCase()]), JK.tahap, 'Semua tahap') + '</select>' +
     '<label class="togol kecil"><input type="checkbox" id="tapisW07"' + (JK.w07 ? ' checked' : '') + '><span class="trek"></span>Perlu diisi sahaja</label>' +
-    '<div class="flex-1"></div><button class="btn sm hantu" id="btnKembangSemua">' + ikon('unfold_more', 'sm') + '<span>Kembangkan semua</span></button></div>' +
+    '<div class="flex-1"></div><button class="btn sm" id="btnDocxJK">' + ikon('download', 'sm') + '<span>Muat turun DOCX</span></button>' +
+    '<button class="btn sm hantu" id="btnKembangSemua">' + ikon('unfold_more', 'sm') + '<span>Kembangkan semua</span></button></div>' +
     '<div id="gridJK">' + rangka(320) + '</div>';
   $('#btnTambahJK').onclick = () => modalJK(null);
   const bs = $('#kandungan [data-aksi="salin"]');
@@ -2144,6 +2171,7 @@ function renderJK() {
   $('#cariJKGrid').addEventListener('input', debounce(ev => { JK.cari = ev.target.value; lukisGridJK(); }, 250));
   $('#tapisTahap').onchange = ev => { JK.tahap = ev.target.value; lukisGridJK(); };
   $('#tapisW07').onchange = ev => { JK.w07 = ev.target.checked; lukisGridJK(); };
+  $('#btnDocxJK').onclick = () => modalDocxJK();
   $('#btnKembangSemua').onclick = () => {
     const semua = $$('#gridJK [data-jk]').map(e => e.dataset.jk);
     const bukaSemua = semua.some(id => !JK.buka[id]);
@@ -2176,6 +2204,130 @@ function muatJK() {
   }).catch(e => { ralat(e); const g = $('#gridJK'); if (g) g.innerHTML = kosong('error', 'Gagal memuatkan', e.message); });
 }
 
+// ---------- Muat turun senarai jawatankuasa (DOCX, dijana dalam pelayar) ----------
+function modalDocxJK() {
+  if (!JK.data) return;
+  const dipapar = barisJKTapis().filter(j => j.aktif === 'Y').length;
+  const semua = barisJKTapis(true).filter(j => j.aktif === 'Y').length;
+  const m = bukaModal({
+    tajuk: 'Muat turun senarai jawatankuasa',
+    badan: '<p class="muted kecil" style="margin-top:0">Format: nama jawatankuasa (tebal), diikuti <b>Jawatan : Nama</b> bagi setiap ahli. Fail .docx boleh dibuka dan diubah dalam Microsoft Word atau Google Docs.</p>' +
+      '<div class="medan"><label>Jawatankuasa</label>' +
+      '<label class="baris" style="gap:8px"><input type="radio" name="skopDocx" value="papar" checked> Yang dipaparkan sekarang (' + dipapar + ')</label>' +
+      '<label class="baris" style="gap:8px"><input type="radio" name="skopDocx" value="semua"> Semua jawatankuasa aktif (' + semua + ')</label></div>' +
+      '<div class="medan"><label>Nama guru</label>' +
+      '<label class="baris" style="gap:8px"><input type="checkbox" id="docxHuruf" checked> Tukar HURUF BESAR kepada huruf biasa (Mohd Fauzi bin Maulan)</label>' +
+      '<label class="baris" style="gap:8px"><input type="checkbox" id="docxGelaran" checked> Tambah gelaran En / Pn (ikut bin / binti dalam nama)</label>' +
+      '<label class="baris" style="gap:8px"><input type="checkbox" id="docxKosong"> Sertakan jawatan yang belum diisi</label></div>',
+    kaki: '<button class="btn" data-tutup>Batal</button><button class="btn utama" id="btnJanaDocx">' + ikon('download', 'sm') + 'Muat turun</button>'
+  });
+  $('#btnJanaDocx', m).onclick = () => {
+    const skop = ($('input[name=skopDocx]:checked', m) || {}).value;
+    const rows = barisJKTapis(skop === 'semua').filter(j => j.aktif === 'Y');
+    if (!rows.length) { showToast('Tiada jawatankuasa untuk dimuat turun.', 'warning'); return; }
+    const blob = janaDocxJK(rows, { huruf: $('#docxHuruf', m).checked, gelaran: $('#docxGelaran', m).checked, kosong: $('#docxKosong', m).checked });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'Senarai Jawatankuasa ' + S.tahun + '.docx';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    m.tutup();
+    showToast(rows.length + ' jawatankuasa dimuat turun.', 'success');
+  };
+}
+
+/** "MOHD FAUZI BIN MAULAN" -> "Mohd Fauzi bin Maulan"; "BURHAM@BORHAN" -> "Burham@Borhan". */
+function namaHurufBiasa(n) {
+  return String(n || '').toLowerCase().replace(/(^|[\s@'(\-\/.])([a-z])/g, (m, a, b) => a + b.toUpperCase())
+    .replace(/\b(Bin|Binti|Bt|A\/L|A\/P|Al|Van|De)\b/g, s => s.toLowerCase());
+}
+function denganGelaran(n) {
+  if (/^(en|pn|cik|tn|tuan|puan|encik|dr|ts|hj|haji|hajah|hjh|dato'?|datin|prof|ir|sr)\b\.?/i.test(n)) return n;
+  if (/\b(binti|bt\.?|a\/p)\b/i.test(n)) return 'Pn ' + n;
+  if (/\b(bin|b\.|a\/l)\b/i.test(n)) return 'En ' + n;
+  return n;
+}
+
+function janaDocxJK(rows, o) {
+  const x = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const RPR = b => '<w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/>' + (b ? '<w:b/>' : '') + '<w:sz w:val="22"/><w:szCs w:val="22"/></w:rPr>';
+  const run = (t, b) => '<w:r>' + RPR(b) + '<w:t xml:space="preserve">' + x(t) + '</w:t></w:r>';
+  const tab = '<w:r>' + RPR() + '<w:tab/></w:r>';
+  const labelJaw = j => {
+    const s = String(j || '').trim();
+    if (/^(ajk|ahli|ahli jawatankuasa)$/i.test(s)) return 'Ahli';
+    return s.replace(/^penolong\s+/i, 'Pen. ');
+  };
+  // Kedudukan ":" ikut label paling panjang (Arial 11pt diukur dalam pelayar; 1px = 15 twip)
+  const kanvas = (janaDocxJK.kanvas || (janaDocxJK.kanvas = document.createElement('canvas'))).getContext('2d');
+  kanvas.font = '14.667px Arial';
+  let lebar = 0;
+  rows.forEach(j => (JK.ahli[j.id_jk] || []).forEach(a => { lebar = Math.max(lebar, kanvas.measureText(labelJaw(a.jawatan)).width); }));
+  const TITIK = Math.max(1700, Math.round(lebar * 15) + 220), NAMA = TITIK + 260; // twip
+  const pBaris = isi => '<w:p><w:pPr><w:tabs><w:tab w:val="left" w:pos="' + TITIK + '"/><w:tab w:val="left" w:pos="' + NAMA + '"/></w:tabs>' +
+    '<w:spacing w:before="0" w:after="0" w:line="264" w:lineRule="auto"/><w:ind w:left="' + NAMA + '" w:hanging="' + NAMA + '"/></w:pPr>' + isi + '</w:p>';
+  const pTajuk = (t, sebelum, tengah, saiz) => '<w:p><w:pPr><w:keepNext/>' + (tengah ? '<w:jc w:val="center"/>' : '') +
+    '<w:spacing w:before="' + sebelum + '" w:after="60"/></w:pPr><w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/><w:b/>' +
+    '<w:sz w:val="' + (saiz || 22) + '"/></w:rPr><w:t xml:space="preserve">' + x(t) + '</w:t></w:r></w:p>';
+  const nama = n => { let s = o.huruf ? namaHurufBiasa(n) : String(n || ''); return o.gelaran ? denganGelaran(s) : s; };
+
+  let badan = pTajuk('SENARAI JAWATANKUASA ' + S.tahun, 0, true, 26);
+  if (S.setup.NAMA_SEKOLAH) badan += pTajuk(String(S.setup.NAMA_SEKOLAH).toUpperCase(), 0, true, 22);
+  rows.forEach((j, i) => {
+    badan += pTajuk(String(j.nama).toUpperCase(), i === 0 ? 360 : 280);
+    const ahli = (JK.ahli[j.id_jk] || []).filter(a => o.kosong || !a.kosong);
+    if (!ahli.length) { badan += pBaris(run('Belum ada ahli dilantik')); return; }
+    let labelLepas = null;
+    ahli.forEach(a => {
+      const label = labelJaw(a.jawatan);
+      const teks = (a.kosong ? '(belum diisi)' : nama(a.nama)) + (a.butiran ? ' (' + a.butiran + ')' : '');
+      badan += pBaris(label === labelLepas ? tab + tab + run(teks) : run(label) + tab + run(':') + tab + run(teks));
+      labelLepas = label;
+    });
+  });
+  const dokumen = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' + badan +
+    '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1418" w:header="709" w:footer="709" w:gutter="0"/></w:sectPr></w:body></w:document>';
+  return zipFail([
+    ['[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>' +
+      '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'],
+    ['_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'],
+    ['word/document.xml', dokumen]
+  ], 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+}
+
+/** Fail ZIP ringkas (tanpa mampatan) untuk .docx. fail = [[nama, teks]]. */
+function zipFail(fail, jenis) {
+  const enc = new TextEncoder();
+  const jadual = zipFail.crc || (zipFail.crc = (() => {
+    const t = new Uint32Array(256);
+    for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
+    return t;
+  })());
+  const crc32 = b => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = jadual[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  const bahagian = [], pusat = [];
+  let ofset = 0;
+  fail.forEach(([nama, teks]) => {
+    const n = enc.encode(nama), d = enc.encode(teks), crc = crc32(d);
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true);
+    h.setUint32(14, crc, true); h.setUint32(18, d.length, true); h.setUint32(22, d.length, true); h.setUint16(26, n.length, true);
+    bahagian.push(h.buffer, n, d);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true);
+    c.setUint32(16, crc, true); c.setUint32(20, d.length, true); c.setUint32(24, d.length, true); c.setUint16(28, n.length, true); c.setUint32(42, ofset, true);
+    pusat.push(c.buffer, n);
+    ofset += 30 + n.length + d.length;
+  });
+  const saizPusat = pusat.reduce((s, p) => s + p.byteLength, 0);
+  const akhir = new DataView(new ArrayBuffer(22));
+  akhir.setUint32(0, 0x06054b50, true); akhir.setUint16(8, fail.length, true); akhir.setUint16(10, fail.length, true);
+  akhir.setUint32(12, saizPusat, true); akhir.setUint32(16, ofset, true);
+  return new Blob(bahagian.concat(pusat, [akhir.buffer]), { type: jenis });
+}
+
 /** Susunan tahap ikut lajur susunan TAHAP_JK (Utama, Sokongan, Sampingan). */
 function urutanTahap(t) {
   const i = (S.rujukan.tahapJK || []).findIndex(x => x.tahap === t);
@@ -2194,6 +2346,18 @@ function statusJK(j) {
   return '<span class="pill seimbang">' + ikon('check', 'sm') + 'Lengkap</span>';
 }
 
+/** JK yang dipaparkan ikut tab, tahap, carian dan tapisan "Perlu diisi" (susunan sama seperti grid). */
+function barisJKTapis(semua) {
+  // Carian merangkumi nama JK dan nama guru ahli
+  const cari = semua ? '' : JK.cari.trim().toLowerCase();
+  const padanGuru = j => cari && (JK.ahli[j.id_jk] || []).some(a => a.nama.toLowerCase().indexOf(cari) !== -1);
+  return JK.data.filter(j => semua ? (S.user.role !== 'PK' || j.id_bidang === S.user.id_bidang) :
+    (!JK.tab || j.id_bidang === JK.tab) && (!JK.tahap || j.tahap === JK.tahap) &&
+    (!cari || j.nama.toLowerCase().indexOf(cari) !== -1 || padanGuru(j)) && (!JK.w07 || (j.aktif === 'Y' && (!j.ahli || j.kosongWajib.length || j.kosongPosisi))))
+    .sort((a, b) => (a.aktif === b.aktif ? 0 : a.aktif === 'Y' ? -1 : 1) || urutanTahap(a.tahap) - urutanTahap(b.tahap) ||
+      urutanTempoh(a.jenis_tempoh) - urutanTempoh(b.jenis_tempoh) || a.nama.localeCompare(b.nama));
+}
+
 function lukisGridJK() {
   if (!JK.data || !$('#gridJK')) return;
   const bidang = S.user.role === 'PK' ? (S.rujukan.bidang || []).filter(b => b.id_bidang === S.user.id_bidang) : (S.rujukan.bidang || []);
@@ -2202,13 +2366,9 @@ function lukisGridJK() {
       ' (' + JK.data.filter(j => j.id_bidang === b.id_bidang).length + ')</button>').join('');
   $$('#tabBidangJK button').forEach(b => b.onclick = () => { JK.tab = b.dataset.tab; lukisGridJK(); });
 
-  // Carian merangkumi nama JK dan nama guru ahli
   const cari = JK.cari.trim().toLowerCase();
   const padanGuru = j => cari && (JK.ahli[j.id_jk] || []).some(a => a.nama.toLowerCase().indexOf(cari) !== -1);
-  const rows = JK.data.filter(j => (!JK.tab || j.id_bidang === JK.tab) && (!JK.tahap || j.tahap === JK.tahap) &&
-    (!cari || j.nama.toLowerCase().indexOf(cari) !== -1 || padanGuru(j)) && (!JK.w07 || (j.aktif === 'Y' && (!j.ahli || j.kosongWajib.length || j.kosongPosisi))))
-    .sort((a, b) => (a.aktif === b.aktif ? 0 : a.aktif === 'Y' ? -1 : 1) || urutanTahap(a.tahap) - urutanTahap(b.tahap) ||
-      urutanTempoh(a.jenis_tempoh) - urutanTempoh(b.jenis_tempoh) || a.nama.localeCompare(b.nama));
+  const rows = barisJKTapis();
   if (!rows.length) {
     $('#gridJK').innerHTML = '<div class="kad">' + kosong('groups', JK.data.length ? 'Tiada jawatankuasa sepadan' : 'Belum ada jawatankuasa',
       JK.data.length ? 'Ubah tapisan atau carian.' : 'Mulakan dengan menambah jawatankuasa atau salin dari tahun lepas.') + '</div>';
@@ -3008,7 +3168,7 @@ function medanTeks(kunci, label, o) {
   const v = S.setup[kunci] === undefined ? '' : S.setup[kunci];
   return '<div class="medan"' + (o.span ? ' style="grid-column:span ' + o.span + '"' : '') + '><label for="st_' + kunci + '">' + esc(label) + '</label>' +
     (o.textarea ? '<textarea id="st_' + kunci + '" data-kunci="' + kunci + '" class="input' + (o.mono ? ' mono' : '') + '" style="min-height:' + (o.tinggi || 90) + 'px">' + esc(v) + '</textarea>'
-      : '<input id="st_' + kunci + '" data-kunci="' + kunci + '" class="input" type="' + (o.jenis || 'text') + '"' + (o.step ? ' step="' + o.step + '"' : '') +
+      : '<input id="st_' + kunci + '"' + (o.kunci ? ' readonly' : ' data-kunci="' + kunci + '"') + ' class="input" type="' + (o.jenis || 'text') + '"' + (o.step ? ' step="' + o.step + '"' : '') +
       (o.min !== undefined ? ' min="' + o.min + '"' : '') + (o.max !== undefined ? ' max="' + o.max + '"' : '') + ' value="' + esc(v) + '"' + (o.placeholder ? ' placeholder="' + esc(o.placeholder) + '"' : '') + '>') +
     (o.bantuan ? '<span class="bantuan">' + o.bantuan + '</span>' : '') + '</div>';
 }
@@ -3049,7 +3209,9 @@ function lukisTetapan() {
       kad('Logo Sekolah', '<div class="baris" style="gap:20px;flex-wrap:nowrap" id="uploadLogo"><div id="pratontonLogo" style="width:96px;height:96px;border:1px dashed var(--border-input);border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--surface-2);flex-shrink:0">' +
         (S.logo ? '<img src="' + esc(S.logo) + '" style="max-width:100%;max-height:100%">' : ikon('image', 'lg')) + '</div><div><label class="btn" for="failLogo">' + ikon('upload', 'sm') + 'Tukar Logo</label>' +
         '<input type="file" id="failLogo" accept="image/png,image/jpeg" class="sembunyi"><p class="kecil muted mt-8">PNG atau JPG, maksimum 2 MB. Digunakan pada kepala surat dan bar atas.</p></div></div>') +
-      kad('Maklumat Sekolah', '<div class="grid g-2">' + medanTeks('NAMA_SEKOLAH', 'Nama Sekolah', { span: 2 }) + medanTeks('KOD_SEKOLAH', 'Kod Sekolah', { bantuan: 'Digunakan dalam nombor rujukan {KOD}' }) +
+      kad('Maklumat Sekolah', '<div class="grid g-2">' +
+        medanTeks('NAMA_SEKOLAH', 'Nama Sekolah', { span: 2, kunci: !!S.setup.KOD_LESEN, bantuan: S.setup.KOD_LESEN ? 'Ikut pendaftaran kod sekolah. Hubungi pembangun sistem untuk membetulkan.' : '' }) +
+        medanTeks('KOD_SEKOLAH', 'Kod Sekolah', { kunci: !!S.setup.KOD_LESEN, bantuan: S.setup.KOD_LESEN ? 'Ikut pendaftaran. Digunakan dalam nombor rujukan {KOD}' : 'Digunakan dalam nombor rujukan {KOD}' }) +
         medanTeks('NO_TELEFON', 'No. Telefon') + medanTeks('ALAMAT_1', 'Alamat (baris 1)', { span: 2 }) + medanTeks('ALAMAT_2', 'Alamat (baris 2)') + medanTeks('ALAMAT_3', 'Alamat (baris 3)') +
         medanTeks('POSKOD', 'Poskod') + medanTeks('BANDAR', 'Bandar') + medanTeks('NEGERI', 'Negeri') + medanTeks('EMEL_SEKOLAH', 'Emel Sekolah', { jenis: 'email' }) + '</div>') +
       kad('Penandatangan Surat', '<div class="grid g-2">' + medanTeks('NAMA_PENGETUA', 'Nama Pengetua') + medanTeks('JAWATAN_PENANDATANGAN', 'Jawatan Penandatangan') + '</div>' +
@@ -3228,16 +3390,37 @@ function lukisEditorRujukan(b, kad) {
 // 7. PENGGUNA
 // ============================================================================
 function renderPengguna(el) {
-  (el || $('#kandungan')).innerHTML = '<div class="kad"><div class="kad-kepala"><div><h3>Pengguna</h3><div class="sub">Hanya emel yang disenaraikan dan aktif boleh membuka sistem</div></div>' +
+  const terbuka = String(S.setup.AKSES_TERBUKA || 'T').toUpperCase() === 'Y';
+  (el || $('#kandungan')).innerHTML =
+    '<div class="kad kad-pad mb-16"><div style="display:flex;align-items:center;justify-content:space-between;gap:20px">' +
+      '<div style="min-width:0"><h3 style="margin:0 0 4px">Akses terbuka</h3>' +
+        '<div class="kecil muted" id="notaAkses" style="line-height:1.5">' + notaAkses(terbuka) + '</div>' +
+        '<div class="kecil muted mt-8">' + ikon('verified_user', 'sm') + ' Pemilik salinan sistem ini sentiasa menjadi ADMIN.</div></div>' +
+      '<label class="togol" style="flex:none" aria-label="Akses terbuka"><input type="checkbox" id="togolAksesTerbuka"' + (terbuka ? ' checked' : '') + '><span class="trek"></span></label>' +
+    '</div></div>' +
+    '<div class="kad"><div class="kad-kepala"><div><h3>Pengguna</h3><div class="sub">Peranan ADMIN dan PK perlu didaftarkan di sini</div></div>' +
     '<div class="baris">' + menuTitik('<button class="btn sm">' + ikon('more_horiz', 'sm') + '</button>', [['janaGuru', 'Beri akses GURU kepada semua guru', 'group_add']]) +
     '<button class="btn sm utama" id="btnTambahPengguna">' + ikon('person_add', 'sm') + 'Tambah</button></div></div>' +
     '<div id="jadualPengguna">' + rangka(260) + '</div></div>';
   const bjg = document.querySelector('[data-aksi="janaGuru"]');
   if (bjg) bjg.id = 'btnJanaGuru';
   $('#btnTambahPengguna').onclick = () => modalPengguna(null);
+  $('#togolAksesTerbuka').onchange = function () {
+    const c = this, nilai = c.checked ? 'Y' : 'T';
+    api('simpanTetapan', { nilai: { AKSES_TERBUKA: nilai } }).then(r => {
+      S.setup = r.data.setup; $('#notaAkses').innerHTML = notaAkses(nilai === 'Y');
+      showToast(nilai === 'Y' ? 'Akses terbuka dihidupkan.' : 'Akses terhad kepada pengguna berdaftar.', 'success');
+    }).catch(e => { ralat(e); c.checked = !c.checked; });
+  };
   $('#btnJanaGuru').onclick = () => sahkan('Beri akses kepada semua guru?', 'Semua guru (bukan Bertukar Keluar) yang mempunyai emel sah dan belum berdaftar akan ditambah sebagai pengguna GURU. Mereka hanya boleh melihat tugas dan surat sendiri.', 'Teruskan')
     .then(ya => { if (ya) api('janaPenggunaGuru').then(res => { showToast(res.message, 'success'); muatPengguna(); }).catch(ralat); });
   muatPengguna();
+}
+
+function notaAkses(terbuka) {
+  return terbuka
+    ? 'Hidup: sesiapa yang log masuk dengan akaun sekolah boleh membuka sistem sebagai GURU dan melihat tugas sendiri sahaja. ADMIN dan PK tetap perlu didaftarkan.'
+    : 'Mati: hanya emel yang didaftarkan dan aktif di bawah boleh membuka sistem.';
 }
 
 function muatPengguna() {
