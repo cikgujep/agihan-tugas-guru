@@ -78,7 +78,7 @@ button.hantar:disabled { opacity: .6; cursor: wait }
       <div class="kad">
         <h2><i>1</i>Maklumat sekolah</h2>
         <div class="grid">
-          <div class="medan"><label for="kod">Kod sekolah <b class="wajib">*</b></label><input id="kod" maxlength="7" placeholder="ABC1234" autocomplete="off" required pattern="[A-Za-z]{3}[0-9]{4}"><small>Kod KPM: 3 huruf, 4 nombor</small></div>
+          <div class="medan"><label for="kod">Kod sekolah <b class="wajib">*</b></label><input id="kod" maxlength="10" placeholder="Contoh: JEA1234" autocomplete="off" required pattern="[A-Za-z0-9]{5,10}"><small>Kod sekolah KPM (huruf dan nombor)</small></div>
           <div class="medan"><label for="negeri">Negeri <b class="wajib">*</b></label><select id="negeri" required>
               <option value="">Pilih negeri</option>
               <option>Johor</option><option>Kedah</option><option>Kelantan</option><option>Melaka</option><option>Negeri Sembilan</option>
@@ -174,7 +174,7 @@ var URL_PUSAT_LESEN = 'https://script.google.com/macros/s/AKfycbwZjqKaT5r_LT8TEi
     var f = this;
     if (!f.checkValidity()) {
       var x = f.querySelector(':invalid'); x.focus();
-      return ralat(x.id === 'kod' ? 'Kod sekolah mesti 3 huruf dan 4 nombor, contoh JEA1234.' :
+      return ralat(x.id === 'kod' ? 'Kod sekolah mesti 5 hingga 10 huruf atau nombor, contoh JEA1234.' :
         x.id === 'setuju' ? 'Sila tandakan pengesahan.' : 'Sila lengkapkan ruangan yang bertanda *.');
     }
     var b = $('btnHantar'); b.disabled = true; b.textContent = 'Menghantar...';
