@@ -60,6 +60,7 @@ button.hantar:disabled { opacity: .6; cursor: wait }
 .btn-u, .btn-k { display: block; text-decoration: none; border-radius: 12px; padding: 14px; font-weight: 700 }
 .btn-u { background: var(--amber); color: #fff }
 .btn-k { border: 1.5px solid var(--line); color: var(--fg) }
+.berjaya ol li { line-height: 1.5 } .berjaya ol { gap: 12px !important; font-size: 15px }
 [hidden] { display: none !important }
 </style>
 </head>
@@ -131,9 +132,12 @@ button.hantar:disabled { opacity: .6; cursor: wait }
     <p class="lead" id="teksBerjaya"></p>
     <div class="kod-besar"><span>Kod sekolah anda</span><b id="kodBerjaya"></b></div>
     <ol>
-      <li><b>Buat salinan</b> sistem dalam Drive akaun sekolah.</li>
-      <li>Dalam Apps Script salinan itu, klik <b>Deploy</b> sebagai web app dan benarkan akses.</li>
-      <li>Buka web app dan masukkan kod sekolah di atas.</li>
+      <li><b>Buat salinan sistem.</b> Log masuk dengan akaun sekolah, klik butang <b>Buat salinan sistem</b> di bawah, kemudian <b>Make a copy</b>.</li>
+      <li><b>Terbitkan sebagai web app.</b> Dalam salinan itu, buka <b>Extensions › Apps Script</b>, klik <b>Deploy › New deployment › Web app</b>.
+        Tetapkan <i>Execute as: Me</i> dan <i>Who has access: Anyone within</i> domain sekolah. Klik <b>Deploy</b>, kemudian <b>Authorize access</b>
+        (jika ada amaran: <b>Advanced › Go to … (unsafe) › Allow</b>). Salin URL web app.</li>
+      <li><b>Aktifkan.</b> Buka URL web app. Anda menjadi ADMIN secara automatik. Masukkan kod sekolah di atas pada skrin <b>Aktifkan Sistem</b>.</li>
+      <li><b>Mula guna.</b> Buang data contoh (menu <b>Sistem Agihan Tugas › Buang data contoh</b> dalam Sheet), lengkapkan Tetapan › Sekolah, dan import senarai guru.</li>
     </ol>
     <div class="tindakan">
       <a class="btn-u" id="pautanSalinan" target="_blank" rel="noopener">Buat salinan sistem →</a>
@@ -193,7 +197,7 @@ var URL_PUSAT_LESEN = 'https://script.google.com/macros/s/AKfycbwZjqKaT5r_LT8TEi
           $('paparanBorang').hidden = true; $('paparanBerjaya').hidden = false;
           $('teksBerjaya').textContent = r.emelDihantar
             ? 'Emel pengesahan bersama pautan salinan dan langkah pemasangan telah dihantar ke ' + r.emel + '. Semak juga folder Spam.'
-            : 'Sekolah anda sudah aktif. Simpan kod di bawah dan ikut langkah pemasangan.';
+            : 'Sekolah anda sudah aktif. Emel arahan akan dihantar ke ' + r.emel + ' dalam masa 24 jam, tetapi anda boleh mula sekarang dengan langkah di bawah.';
           $('kodBerjaya').textContent = r.kod;
           $('pautanSalinan').href = r.salinan;
           $('pautanPanduan').href = r.panduan;
