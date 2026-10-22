@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1"><title>Demo · Agihan Blok Mengajar</title><meta name="robots" content="noindex">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><title>Demo · Agihan Blok Mengajar</title><meta name="robots" content="noindex"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Crect width=%2724%27 height=%2724%27 rx=%276%27 fill=%27%234F46E5%27/%3E%3C/svg%3E">
   <meta charset="utf-8">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +39,7 @@ let V = 0;
 window.google = { script: { get run() { let ok; const r = {
   withSuccessHandler(f) { ok = f; return r; }, withFailureHandler() { return r; },
   muatData() { setTimeout(() => { ok(SEED); setTimeout(() => tunjukBanner('amaran', 'Demo dengan data sekolah rekaan. Cuba apa sahaja: tanda agihan, tukar tetapan, klik Simpan. Tiada apa yang disimpan.'), 50); }, 200); },
-  simpanData() { setTimeout(() => ok(JSON.stringify({ ok: true, versi: ++V, terakhir: 'demo, tidak disimpan' })), 300); },
+  simpanData() { setTimeout(() => ok(JSON.stringify({ ok: true, versi: ++V, terakhir: 'dalam demo (tidak kekal)' })), 300); },
   tetapkanAkses(m) { setTimeout(() => ok(JSON.stringify({ mod: m, pentadbir: ['pentadbir@contoh.edu.my'] })), 200); },
   aktifkanLesen() { setTimeout(() => ok(JSON.stringify({ ok: true })), 200); },
 }; return r; } } };
