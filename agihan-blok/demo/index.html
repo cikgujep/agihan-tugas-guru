@@ -306,6 +306,8 @@ const halangTetapan = (nama) => {
 const ikon = (n, k = 'ikon') => `<svg class="${k}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKON[n]}</svg>`;
 const adaTugasan = (g, s, u) => IDX.has(kunci(g, s, u));
 const draf = (k, lalai = '') => ui.draf[k] ?? lalai;
+// Mesej ralat pelayan tanpa awalan "Error:" / "Exception:" yang ditambah oleh Google
+const mesejRalat = (e) => String(e && e.message ? e.message : e).replace(/^(Error|Exception|ScriptError):s*/i, '');
 
 /* ---------- Muat & simpan ---------- */
 
@@ -334,7 +336,7 @@ function terima(json) {
 function gagal(e) {
   sibuk = false;
   $('#memuat').hidden = true;
-  tunjukBanner('ralat', `Ralat: ${e && e.message ? e.message : e}`);
+  tunjukBanner('ralat', `Ralat: ${mesejRalat(e)}`);
   if (st) render(); else renderShell();
 }
 
@@ -1060,7 +1062,7 @@ const A = {
     paparLesen(meta);
     google.script.run
       .withSuccessHandler(() => { ui.lesenSibuk = false; muat(); })
-      .withFailureHandler((e) => { ui.lesenSibuk = false; ui.mesejLesen = e && e.message ? e.message : String(e); paparLesen({ ...meta, kod }); })
+      .withFailureHandler((e) => { ui.lesenSibuk = false; ui.mesejLesen = mesejRalat(e); paparLesen({ ...meta, kod }); })
       .aktifkanLesen(kod);
   },
   simpanPentadbir: () => tukarAkses(meta.mod || 'buka', draf('pentadbir', (meta.pentadbir || []).join(', '))),
