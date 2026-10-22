@@ -461,10 +461,10 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <p class="lead">Sekolah penyumbang tidak perlu mendaftar semula. Kod sekolah yang digunakan untuk Sistem Agihan Tugas Guru juga mengaktifkan Agihan Blok Mengajar.</p>
     </div>
     <ol class="langkah">
-      <li><h3>Dapatkan pautan</h3><p>Mohon pautan salinan sistem sebagai sekolah penyumbang SATG.</p><span class="masa">1 minit</span></li>
-      <li><h3>Buat salinan</h3><p>Klik <b>Make a copy</b>. Sistem disimpan dalam Google Drive akaun sekolah anda sendiri.</p><span class="masa">1 minit</span></li>
-      <li><h3>Terbitkan app</h3><p>Klik <b>Deploy</b> dan benarkan akses, seperti memasang SATG.</p><span class="masa">5 minit</span></li>
-      <li><h3>Masukkan kod sekolah</h3><p>Buka app dan masukkan kod sekolah SATG anda. Anda terus menjadi pentadbir.</p><span class="masa">1 minit</span></li>
+      <li><h3>Buat salinan</h3><p>Klik <a href="https://docs.google.com/spreadsheets/d/17lBZEzVMophaqkWvs4O0sU5BqHYmkmBxkzijL3SQjaQ/copy" target="_blank" rel="noopener">Buat salinan sistem</a>, kemudian <b>Make a copy</b>. Sistem disimpan dalam Google Drive anda sendiri.</p><span class="masa">1 minit</span></li>
+      <li><h3>Terbitkan app</h3><p>Dalam Sheet salinan: <b>Extensions &gt; Apps Script &gt; Deploy &gt; New deployment</b>, pilih <b>Web app</b> (Execute as: Me, Who has access: Anyone) dan benarkan akses.</p><span class="masa">5 minit</span></li>
+      <li><h3>Buka &amp; aktifkan</h3><p>Buka URL app dan masukkan kod sekolah SATG anda. Nama sekolah diambil terus daripada pendaftaran SATG.</p><span class="masa">1 minit</span></li>
+      <li><h3>Buang data contoh</h3><p>Salinan datang dengan data sekolah rekaan. Pilih menu <b>Agihan Blok &gt; Buang data contoh</b>, kemudian masukkan guru sekolah anda.</p><span class="masa">2 minit</span></li>
     </ol>
   </div>
 </section>
@@ -488,7 +488,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <li>Eksport ke Excel dan helaian ringkasan sedia cetak</li>
           <li>Aktif dengan kod sekolah SATG yang sama</li>
         </ul>
-        <a class="btn utama" href="#" id="ctaPenyumbang" data-perlu-pautan>Mohon pautan salinan →</a>
+        <a class="btn utama" href="#" id="ctaPenyumbang" data-perlu-pautan>Buat salinan sistem →</a>
         <p class="syarat">Layak: sekolah berstatus aktif dalam SATG dengan rekod belanja kopi. Satu kod sekolah untuk satu salinan sistem.</p>
       </div>
       <div class="kad-akses kedua">
@@ -631,9 +631,9 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   lukis();
 
   // ---------- Pautan salinan untuk penyumbang (ditetapkan apabila aliran pemasangan dimuktamadkan) ----------
-  var PAUTAN_PENYUMBANG = '';
+  var PAUTAN_PENYUMBANG = 'https://docs.google.com/spreadsheets/d/17lBZEzVMophaqkWvs4O0sU5BqHYmkmBxkzijL3SQjaQ/copy';
   var cta = document.getElementById('ctaPenyumbang');
-  if (PAUTAN_PENYUMBANG) cta.href = PAUTAN_PENYUMBANG;
+  if (PAUTAN_PENYUMBANG) { cta.href = PAUTAN_PENYUMBANG; cta.target = '_blank'; cta.rel = 'noopener'; }
   else cta.onclick = function (e) { e.preventDefault(); alert('Pautan salinan untuk penyumbang akan dibuka tidak lama lagi.'); };
 })();
 </script>
