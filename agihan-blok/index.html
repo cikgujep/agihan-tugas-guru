@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agihan Blok Mengajar</title>
+<meta name="description" content="Kira blok mengajar setiap guru tanpa lajur TOLAK GABUNG. Percuma untuk sekolah penyumbang Sistem Agihan Tugas Guru.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%234F46E5'/%3E%3Cpath d='M12 7v12M5 17V6h4a3 3 0 0 1 3 3 3 3 0 0 1 3-3h4v11h-5a2 2 0 0 0-2 2 2 2 0 0 0-2-2z' fill='none' stroke='white' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Laman adik kepada Sistem Agihan Tugas Guru: struktur & fon sama, aksen indigo-violet ikut app Agihan Blok */
+:root {
+  --bg: #F6F7FC; --surface: #FFFFFF; --tint: #EEF0FB; --fg: #151A33; --muted: #575F7A; --line: #DFE2F0;
+  --indigo: #4F46E5; --violet: #7C3AED; --indigo-soft: #E6E8FD; --amber: #EA7A12; --amber-ink: #FFFFFF;
+  --ok: #15803D; --ok-soft: #E3F6EA; --warn: #B45309; --warn-soft: #FFF1DC; --bad: #C0262D; --bad-soft: #FDE8E9;
+  --grad: linear-gradient(135deg, #4338CA 0%, #4F46E5 45%, #7C3AED 100%);
+  --shadow: 0 1px 2px rgba(21,26,51,.06), 0 14px 36px -14px rgba(49,46,129,.28);
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0D1022; --surface: #151a33; --tint: #111530; --fg: #E8EAF6; --muted: #A0A6C3; --line: #272D4E;
+  --indigo: #A5B4FC; --violet: #C4B5FD; --indigo-soft: #1F2350; --amber: #F59A3C; --amber-ink: #1B1205;
+  --ok: #6FD39C; --ok-soft: #143326; --warn: #F2B866; --warn-soft: #3A2A12; --bad: #FF8F95; --bad-soft: #3D1A1D;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.6); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0D1022; --surface: #151a33; --tint: #111530; --fg: #E8EAF6; --muted: #A0A6C3; --line: #272D4E;
+  --indigo: #A5B4FC; --violet: #C4B5FD; --indigo-soft: #1F2350; --amber: #F59A3C; --amber-ink: #1B1205;
+  --ok: #6FD39C; --ok-soft: #143326; --warn: #F2B866; --warn-soft: #3A2A12; --bad: #FF8F95; --bad-soft: #3D1A1D;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 16px 40px -16px rgba(0,0,0,.6); color-scheme: dark }
+
+* { box-sizing: border-box }
+html { scroll-behavior: smooth; scroll-padding-top: 80px }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto } *, *::before, *::after { transition: none !important; animation: none !important } }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 17px; line-height: 1.6 }
+.wrap { max-width: 1140px; margin: 0 auto; padding-inline: 20px }
+a { color: inherit }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.1; text-wrap: balance; margin: 0 }
+h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -.02em }
+h3 { font-size: 1.25rem; letter-spacing: -.01em }
+p { margin: 0 }
+.mono { font-family: var(--f-mono) }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--indigo) }
+.lead { color: var(--muted); font-size: 1.1rem; max-width: 62ch }
+section { padding-block: 88px }
+section.tint { background: var(--tint) }
+.kepala { display: grid; gap: 14px; margin-bottom: 44px; max-width: 740px }
+.btn { display: inline-flex; align-items: center; gap: 10px; font: 700 16px/1 var(--f-body); padding: 15px 22px; border-radius: 12px; text-decoration: none; border: 2px solid transparent; cursor: pointer; transition: transform .15s, border-color .15s, box-shadow .15s }
+.btn:focus-visible, button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid var(--indigo); outline-offset: 3px }
+.btn.utama { background: var(--amber); color: var(--amber-ink); box-shadow: 0 8px 20px -8px var(--amber) }
+.btn.utama:hover { transform: translateY(-2px) }
+.btn.kedua { border-color: var(--line); background: var(--surface); color: var(--fg) }
+.btn.kedua:hover { border-color: var(--indigo) }
+
+/* Nav */
+nav.atas { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line) }
+nav.atas .wrap { display: flex; align-items: center; gap: 24px; height: 66px }
+.jenama { display: flex; align-items: center; gap: 10px; font: 800 18px var(--f-display); text-decoration: none; letter-spacing: -.01em }
+.jenama .logo { width: 36px; height: 36px; border-radius: 10px; background: var(--grad); display: grid; place-items: center; box-shadow: 0 6px 14px -6px #4F46E5 }
+.jenama .logo svg { width: 20px; height: 20px }
+.pautan { display: flex; gap: 22px; margin-left: auto; font-weight: 600; font-size: 15px }
+.pautan a { text-decoration: none; color: var(--muted) }
+.pautan a:hover { color: var(--fg) }
+nav.atas .btn { padding: 11px 16px; font-size: 15px }
+@media (max-width: 920px) { .pautan { display: none } nav.atas .btn { margin-left: auto } }
+@media (max-width: 420px) { .jenama .teks { display: none } }
+
+/* Hero */
+.hero { padding-block: 64px 72px; position: relative; overflow: hidden }
+.hero::before { content: ''; position: absolute; inset: -30% -10% auto auto; width: 60vw; height: 60vw; max-width: 720px; max-height: 720px; background: radial-gradient(closest-side, color-mix(in srgb, var(--violet) 22%, transparent), transparent); pointer-events: none }
+.hero .wrap { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; position: relative }
+@media (max-width: 960px) { .hero .wrap { grid-template-columns: 1fr; gap: 40px } }
+.lencana { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; padding: 7px 14px; border-radius: 999px; background: var(--indigo-soft); color: var(--indigo); margin-bottom: 20px }
+.lencana i { width: 8px; height: 8px; border-radius: 50%; background: var(--violet) }
+.hero h1 { font-size: clamp(2.3rem, 5.4vw, 3.7rem); letter-spacing: -.03em; margin-bottom: 20px }
+.hero h1 em { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent }
+.hero .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px }
+.hero .kecil { margin-top: 16px; color: var(--muted); font-size: 14px }
+
+/* Bingkai peranti */
+.peranti { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); overflow: hidden }
+.bar-peranti { display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: var(--grad); color: #fff; font-size: 13px; font-weight: 600 }
+.bar-peranti i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.45) }
+.bar-peranti span { margin-left: 8px; opacity: .95; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.isi-peranti { padding: 18px }
+.togol { display: inline-flex; padding: 4px; border-radius: 12px; background: var(--tint); gap: 4px; margin-bottom: 16px }
+.togol button { font: 700 14px var(--f-body); border: 0; background: transparent; color: var(--muted); padding: 9px 14px; border-radius: 9px; cursor: pointer }
+.togol button[aria-pressed="true"] { background: var(--surface); color: var(--fg); box-shadow: 0 1px 3px rgba(0,0,0,.12) }
+
+/* Hero: kiraan lama vs unit */
+.kira { display: grid; gap: 14px }
+.kira-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px }
+.kira-grid.unit { grid-template-columns: repeat(3, 1fr) }
+.sel-h { font: 600 12px var(--f-mono); text-align: center; padding: 10px 2px; border-radius: 8px; background: var(--tint); color: var(--muted); transition: all .3s }
+.sel-h.on { background: var(--grad); color: #fff; box-shadow: 0 6px 12px -6px #4F46E5 }
+.sel-h b { display: block; font-size: 15px }
+.kira-baris { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 14px; border-radius: 10px; background: var(--tint); font-weight: 600 }
+.kira-baris .n { font: 700 18px var(--f-mono) }
+.kira-baris.tolak { background: var(--bad-soft); color: var(--bad) }
+.kira-baris.jumlah { background: var(--ok-soft); color: var(--ok) }
+.kira-baris.jumlah .n { font-size: 24px }
+.nota-h { font-size: 13px; color: var(--muted) }
+
+/* Bukti */
+.bukti { border-block: 1px solid var(--line); background: var(--surface) }
+.bukti .wrap { display: grid; grid-template-columns: repeat(4, 1fr); padding-block: 26px }
+.bukti div { padding: 6px 18px; border-left: 1px solid var(--line) }
+.bukti div:first-child { border-left: 0 }
+.bukti b { display: block; font: 800 clamp(1.5rem, 3vw, 2rem) var(--f-display); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent }
+.bukti span { color: var(--muted); font-size: 14px }
+@media (max-width: 760px) { .bukti .wrap { grid-template-columns: 1fr 1fr; row-gap: 18px } .bukti div:nth-child(3) { border-left: 0 } }
+
+/* Banding */
+.banding { display: grid; grid-template-columns: 1fr 1fr; gap: 20px }
+@media (max-width: 860px) { .banding { grid-template-columns: 1fr } }
+.lajur-b { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 26px }
+.lajur-b.baru { border: 2px solid transparent; background: linear-gradient(var(--surface), var(--surface)) padding-box, var(--grad) border-box }
+.lajur-b h3 { display: flex; align-items: center; gap: 10px; margin-bottom: 18px }
+.lajur-b ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 16px }
+.lajur-b li { display: flex; gap: 12px }
+.lajur-b li b { display: block }
+.lajur-b li span { color: var(--muted); font-size: 15px }
+.tanda { flex: none; width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-weight: 800; font-size: 14px }
+.tanda.x { background: var(--bad-soft); color: var(--bad) }
+.tanda.v { background: var(--ok-soft); color: var(--ok) }
+
+/* Tab ciri */
+.tab-baris { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px }
+.tab-baris button { font: 700 15px var(--f-body); padding: 11px 16px; border-radius: 11px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer }
+.tab-baris button[aria-selected="true"] { background: var(--grad); color: #fff; border-color: transparent; box-shadow: 0 8px 18px -10px #4F46E5 }
+.panel { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: clamp(22px, 4vw, 40px); box-shadow: var(--shadow) }
+@media (max-width: 860px) { .panel { grid-template-columns: 1fr } }
+.panel h3 { font-size: 1.6rem; margin-bottom: 12px }
+.panel p { color: var(--muted) }
+.semak { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 10px }
+.semak li { display: flex; gap: 10px; align-items: flex-start }
+.semak li::before { content: '✓'; flex: none; width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; background: var(--ok-soft); color: var(--ok); font-weight: 800; font-size: 13px; margin-top: 2px }
+.mini { background: var(--tint); border-radius: 14px; padding: 16px; display: grid; gap: 8px }
+.tajuk-mini { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.baris-m { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--surface); border-radius: 10px; padding: 10px 12px; font-size: 15px }
+.baris-m .n { font-weight: 600 }
+.baris-m .n small { display: block; font-weight: 500; color: var(--muted); font-size: 12px }
+.pil { font: 700 12px var(--f-mono); padding: 4px 9px; border-radius: 999px; white-space: nowrap }
+.pil.ok { background: var(--ok-soft); color: var(--ok) }
+.pil.warn { background: var(--warn-soft); color: var(--warn) }
+.pil.bad { background: var(--bad-soft); color: var(--bad) }
+.pil.indigo { background: var(--indigo-soft); color: var(--indigo) }
+.mod3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px }
+.mod3 div { background: var(--surface); border-radius: 10px; padding: 10px; font-size: 13px; border: 2px solid transparent }
+.mod3 div b { display: block; font-size: 14px }
+.mod3 .aktif { border-color: var(--ok) }
+
+/* Grid cuba */
+.cuba { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr); gap: 24px; align-items: start }
+@media (max-width: 960px) { .cuba { grid-template-columns: 1fr } }
+.pilih-subjek { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px }
+.pilih-subjek button { font: 700 14px var(--f-body); padding: 9px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer }
+.pilih-subjek button[aria-pressed="true"] { border-color: var(--indigo); color: var(--indigo); background: var(--indigo-soft) }
+.pilih-subjek .jenis { font: 600 11px var(--f-mono); margin-left: 6px; opacity: .8 }
+.grid-luar { overflow-x: auto; border-radius: 12px; border: 1px solid var(--line) }
+table.g { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 14px; background: var(--surface) }
+table.g th { font: 700 11px var(--f-body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--tint); padding: 8px 6px; text-align: center; white-space: nowrap }
+table.g th.u { font: 600 12px var(--f-mono); letter-spacing: 0; text-transform: none; color: var(--indigo) }
+table.g td { border-top: 1px solid var(--line); text-align: center; padding: 3px }
+table.g td.nama { text-align: left; padding: 8px 12px; font-weight: 600; white-space: nowrap; position: sticky; left: 0; background: var(--surface) }
+table.g td.nama small { display: block; font: 500 11px var(--f-mono); color: var(--muted) }
+table.g td.jum { font: 700 15px var(--f-mono); color: var(--indigo) }
+.sel { width: 42px; height: 36px; border: 0; border-radius: 9px; background: transparent; color: color-mix(in srgb, var(--muted) 45%, transparent); font: 600 14px var(--f-mono); cursor: pointer; transition: all .15s }
+.sel:hover { background: var(--indigo-soft); color: var(--indigo) }
+.sel.on { background: var(--grad); color: #fff; box-shadow: 0 5px 12px -6px #4F46E5 }
+table.g tr.kaki td { background: var(--tint); font: 700 13px var(--f-mono); padding: 8px 4px }
+table.g tr.kaki td.ok { background: var(--ok-soft); color: var(--ok) }
+table.g tr.kaki td.kosong { background: var(--bad-soft); color: var(--bad) }
+table.g tr.kaki td.tak { background: var(--warn-soft); color: var(--warn) }
+.ringkas-cuba { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px; box-shadow: var(--shadow); display: grid; gap: 14px }
+.ringkas-cuba h3 { font-size: 1.1rem }
+.baris-r { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; border-bottom: 1px dashed var(--line); padding-bottom: 10px }
+.baris-r:last-child { border-bottom: 0; padding-bottom: 0 }
+.baris-r span { color: var(--muted); font-size: 15px }
+.baris-r b { font: 700 18px var(--f-mono) }
+.kira-guru { font-size: 14px; color: var(--muted); background: var(--tint); border-radius: 10px; padding: 10px 12px }
+.kira-guru b { color: var(--fg) }
+.nota-kalk { margin-top: 14px; color: var(--muted); font-size: 14px }
+
+.demo-penuh { margin-top: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; background: var(--indigo-soft); border-radius: 16px; padding: 18px 20px }
+.demo-penuh b { display: block }
+.demo-penuh span { color: var(--muted); font-size: 15px; max-width: 56ch; display: block }
+
+/* Langkah */
+.langkah { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: l }
+@media (max-width: 960px) { .langkah { grid-template-columns: 1fr 1fr } }
+@media (max-width: 560px) { .langkah { grid-template-columns: 1fr } }
+.langkah li { counter-increment: l; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 24px; display: grid; gap: 10px; align-content: start }
+.langkah li::before { content: counter(l); width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--grad); color: #fff; font: 800 18px var(--f-display) }
+.langkah p { color: var(--muted); font-size: 15px }
+.masa { justify-self: start; font: 600 12px var(--f-mono); color: var(--indigo); background: var(--indigo-soft); padding: 4px 10px; border-radius: 999px }
+
+/* Akses */
+.akses { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px }
+@media (max-width: 860px) { .akses { grid-template-columns: 1fr } }
+.kad-akses { border-radius: 22px; padding: clamp(24px, 4vw, 36px); display: grid; gap: 14px; align-content: start }
+.kad-akses.utama { background: var(--grad); color: #fff; box-shadow: 0 24px 48px -24px #4338CA }
+.kad-akses.utama .eyebrow { color: #C7D2FE }
+.kad-akses.kedua { background: var(--surface); border: 1px solid var(--line) }
+.harga { font: 800 clamp(2.6rem, 6vw, 3.6rem)/1 var(--f-display); letter-spacing: -.03em }
+.harga small { font: 600 16px var(--f-body); opacity: .85; letter-spacing: 0 }
+.kad-akses ul { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 9px }
+.kad-akses.utama li { display: flex; gap: 10px }
+.kad-akses.utama li::before { content: '✓'; font-weight: 800; color: #A7F3D0 }
+.kad-akses.kedua p { color: var(--muted) }
+.kad-akses .btn { justify-self: start; margin-top: 8px }
+.kad-akses.utama .btn.kedua { background: rgba(255,255,255,.14); color: #fff; border-color: rgba(255,255,255,.35) }
+.syarat { font-size: 14px; opacity: .85 }
+
+/* FAQ */
+.faq { display: grid; gap: 12px; max-width: 860px }
+.faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 4px 20px }
+.faq summary { cursor: pointer; font-weight: 700; padding: 14px 0; list-style: none; display: flex; justify-content: space-between; gap: 16px }
+.faq summary::-webkit-details-marker { display: none }
+.faq summary::after { content: '+'; font: 700 20px var(--f-mono); color: var(--indigo); line-height: 1 }
+.faq details[open] summary::after { content: '−' }
+.faq p { color: var(--muted); padding-bottom: 16px }
+
+/* Penutup */
+.penutup { background: var(--grad); color: #fff; border-radius: 28px; padding: clamp(32px, 6vw, 64px); display: grid; gap: 18px; justify-items: start; position: relative; overflow: hidden }
+.penutup::after { content: ''; position: absolute; right: -80px; bottom: -120px; width: 360px; height: 360px; border-radius: 50%; background: rgba(255,255,255,.08) }
+.penutup h2 { max-width: 20ch }
+.penutup p { opacity: .9; max-width: 58ch }
+.penutup .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; position: relative; z-index: 1 }
+.penutup .btn.kedua { background: transparent; color: #fff; border-color: rgba(255,255,255,.4) }
+footer { padding-block: 36px 48px; color: var(--muted); font-size: 14px }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px }
+</style>
+
+<nav class="atas" aria-label="Navigasi utama">
+  <div class="wrap">
+    <a class="jenama" href="#atas" aria-label="Agihan Blok Mengajar">
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+      <span class="teks">Agihan Blok Mengajar</span>
+    </a>
+    <div class="pautan">
+      <a href="#kelebihan">Kelebihan</a><a href="#ciri">Ciri</a><a href="#cuba">Cuba sendiri</a><a href="#mula">Cara mula</a><a href="#akses">Akses</a><a href="#soalan">Soalan lazim</a>
+    </div>
+    <a class="btn utama" href="#akses">Dapatkan percuma</a>
+  </div>
+</nav>
+
+<header class="hero" id="atas">
+  <div class="wrap">
+    <div>
+      <span class="lencana"><i></i>Percuma untuk penyumbang Sistem Agihan Tugas Guru</span>
+      <h1>Kira blok mengajar setiap guru, <em>tanpa lajur TOLAK</em>.</h1>
+      <p class="lead">Tanda kelas atau kumpulan yang diajar, dan jumlah blok guru terus betul, termasuk subjek gabungan seperti Bahasa Antarabangsa dan Pendidikan Moral. Direka untuk PK Pentadbiran, Ketua Panitia dan penyusun jadual waktu.</p>
+      <div class="cta">
+        <a class="btn utama" href="#akses">Dapatkan sistem →</a>
+        <a class="btn kedua" href="https://script.google.com/macros/s/AKfycbyoML-t3ke4ccqwHztkB2xiLRmhV0HnJn7OhRsU0vXqXMYYMRaWrdI7UabWoXtLKv9h/exec" target="_blank" rel="noopener">Cuba demo ▶</a>
+      </div>
+      <p class="kecil">Berjalan dalam Google Sheets sekolah anda. Tiada aplikasi untuk dipasang.</p>
+    </div>
+
+    <div class="peranti" aria-label="Contoh kiraan blok seorang guru Bahasa Antarabangsa">
+      <div class="bar-peranti"><i></i><i></i><i></i><span>Bahasa Antarabangsa · seorang guru · 4 blok seminggu</span></div>
+      <div class="isi-peranti">
+        <div class="togol" role="group" aria-label="Pilih cara kiraan">
+          <button type="button" id="tgLama" aria-pressed="true">Cara lama</button>
+          <button type="button" id="tgUnit" aria-pressed="false">Dengan unit</button>
+        </div>
+        <div class="kira" id="kiraLama">
+          <div class="kira-grid" aria-hidden="true">
+            <div class="sel-h on">2J<b>4</b></div><div class="sel-h on">2K<b>4</b></div><div class="sel-h on">2R<b>4</b></div>
+            <div class="sel-h on">3J<b>4</b></div><div class="sel-h on">3K<b>4</b></div><div class="sel-h on">3R<b>4</b></div>
+            <div class="sel-h on">4B<b>4</b></div><div class="sel-h on">4F<b>4</b></div><div class="sel-h on">4H<b>4</b></div>
+          </div>
+          <div class="kira-baris"><span>9 kelas × 4 blok</span><span class="n">36</span></div>
+          <div class="kira-baris tolak"><span>TOLAK GABUNG (ditaip sendiri)</span><span class="n">−24</span></div>
+          <div class="kira-baris jumlah"><span>Jumlah</span><span class="n">12</span></div>
+          <p class="nota-h">Guru menanda setiap kelas dalam set gabungan, kemudian jumlahnya dibetulkan dengan tolakan manual. Terlupa tolak, beban jadi 36.</p>
+        </div>
+        <div class="kira" id="kiraUnit" hidden>
+          <div class="kira-grid unit" aria-hidden="true">
+            <div class="sel-h on">2JKR<b>4</b></div><div class="sel-h on">3JKR<b>4</b></div><div class="sel-h on">4BFH<b>4</b></div>
+          </div>
+          <div class="kira-baris"><span>3 unit gabungan × 4 blok</span><span class="n">12</span></div>
+          <div class="kira-baris jumlah"><span>Jumlah</span><span class="n">12</span></div>
+          <p class="nota-h">Satu klik ialah satu kumpulan yang benar-benar diajar. Blok dikira sekali bagi setiap unit, jadi tiada apa yang perlu ditolak.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="bukti" aria-label="Fakta ringkas">
+  <div class="wrap">
+    <div><b>0</b><span>lajur tolakan manual</span></div>
+    <div><b>1 klik</b><span>satu kelas atau satu kumpulan</span></div>
+    <div><b>7</b><span>semakan automatik setiap kali disunting</span></div>
+    <div><b>RM0</b><span>untuk sekolah penyumbang SATG</span></div>
+  </div>
+</div>
+
+<section id="kelebihan">
+  <div class="wrap">
+    <div class="kepala">
+      <p class="eyebrow">Sebelum dan selepas</p>
+      <h2>Jumlah blok guru tidak perlu lagi dibetulkan dengan tangan.</h2>
+      <p class="lead">Grid lama merekod kelas, bukan kumpulan. Bagi subjek yang menggabungkan kelas, bilangan kumpulan tidak boleh diteka daripada sel, jadi tolakan perlu dikira berasingan untuk setiap guru.</p>
+    </div>
+    <div class="banding">
+      <div class="lajur-b">
+        <h3><span class="tanda x">✕</span>Cara biasa: grid guru × 30 kelas</h3>
+        <ul>
+          <li><span class="tanda x">✕</span><div><b>Lajur TOLAK GABUNG ditaip sendiri</b><span>Setiap guru BAN dan PM perlu dikira semula. Silap satu nombor, beban guru salah.</span></div></li>
+          <li><span class="tanda x">✕</span><div><b>Blok kelas berganda</b><span>Empat guru BAN dalam satu set menjadikan blok kelas 16, bukan 4.</span></div></li>
+          <li><span class="tanda x">✕</span><div><b>Kelas tanpa guru tidak disedari</b><span>Hanya ditemui ketika menyusun jadual waktu, atau selepas sesi bermula.</span></div></li>
+          <li><span class="tanda x">✕</span><div><b>Satu fail, ramai penyunting</b><span>Formula boleh terpadam dan tiada siapa tahu siapa mengubah apa.</span></div></li>
+        </ul>
+      </div>
+      <div class="lajur-b baru">
+        <h3><span class="tanda v">✓</span>Dengan Agihan Blok Mengajar</h3>
+        <ul>
+          <li><span class="tanda v">✓</span><div><b>Unit, bukan kelas</b><span>Subjek gabungan direkod sebagai unit seperti 1BFH. Satu klik dikira sekali, tanpa tolakan.</span></div></li>
+          <li><span class="tanda v">✓</span><div><b>Blok kelas dikira sekali</b><span>Ringkasan Kelas menunjukkan blok sebenar setiap kelas dan guru yang mengajarnya.</span></div></li>
+          <li><span class="tanda v">✓</span><div><b>Semakan automatik</b><span>Kelas tanpa guru, set yang tidak cukup guru dan kelas yang diagih dua kali ditanda serta-merta.</span></div></li>
+          <li><span class="tanda v">✓</span><div><b>Akses dikawal</b><span>Hanya pentadbir boleh mengubah tetapan. Sistem boleh dibuka, dijadikan baca sahaja, atau ditutup.</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tint" id="ciri">
+  <div class="wrap">
+    <div class="kepala">
+      <p class="eyebrow">Ciri-ciri</p>
+      <h2>Empat paparan, satu sumber data.</h2>
+    </div>
+    <div class="tab-baris" role="tablist" aria-label="Ciri sistem">
+      <button role="tab" id="t-agih" aria-controls="p-agih" aria-selected="true">Agihan Panitia</button>
+      <button role="tab" id="t-kelas" aria-controls="p-kelas" aria-selected="false" tabindex="-1">Ringkasan Kelas</button>
+      <button role="tab" id="t-guru" aria-controls="p-guru" aria-selected="false" tabindex="-1">Analisis Guru</button>
+      <button role="tab" id="t-semak" aria-controls="p-semak" aria-selected="false" tabindex="-1">Semakan &amp; akses</button>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-agih" aria-labelledby="t-agih">
+      <div>
+        <h3>Ketua Panitia tanda, jumlah terus betul.</h3>
+        <p>Pilih subjek, kemudian klik sel bagi kelas atau kumpulan yang diajar setiap guru. Blok diambil daripada jadual subjek mengikut tingkatan, bukan ditaip.</p>
+        <ul class="semak">
+          <li>Subjek kelas dan subjek set dalam grid yang sama</li>
+          <li>Baris Bil. guru berwarna ikut jangkaan setiap unit</li>
+          <li>Jumlah blok semua subjek di bawah nama setiap guru</li>
+        </ul>
+      </div>
+      <div class="mini" aria-hidden="true">
+        <div class="tajuk-mini">BAN · Bahasa Antarabangsa · set</div>
+        <div class="baris-m"><span class="n">Rosnah binti Kassim<small>12 blok semua subjek</small></span><span class="pil indigo">2JKR · 3JKR · 4BFH</span></div>
+        <div class="baris-m"><span class="n">Tan Mei Ling<small>8 blok semua subjek</small></span><span class="pil indigo">1BFH · 2BFH</span></div>
+        <div class="tajuk-mini" style="margin-top:8px">Bil. guru berbanding jangkaan</div>
+        <div class="baris-m"><span class="n">1BFH</span><span class="pil ok">4 / 4</span></div>
+        <div class="baris-m"><span class="n">3BFH</span><span class="pil warn">2 / 4</span></div>
+      </div>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-kelas" aria-labelledby="t-kelas" hidden>
+      <div>
+        <h3>Setiap kelas, setiap subjek, setiap guru.</h3>
+        <p>Satu kad bagi setiap kelas: subjek yang diajar, guru bagi setiap subjek dan jumlah blok kelas. Guru Kelas dipilih daripada guru yang benar-benar mengajar kelas itu.</p>
+        <ul class="semak">
+          <li>Blok subjek berbilang guru dikira sekali</li>
+          <li>PI dan PM dikira sekali sebagai kumpulan alternatif</li>
+          <li>Tapis ikut tingkatan</li>
+        </ul>
+      </div>
+      <div class="mini" aria-hidden="true">
+        <div class="tajuk-mini">Kelas 2J · 38 blok</div>
+        <div class="baris-m"><span class="n">BM<small>Aminah binti Yusof</small></span><span class="pil indigo">7</span></div>
+        <div class="baris-m"><span class="n">BAN<small>4 guru ▸</small></span><span class="pil indigo">4</span></div>
+        <div class="baris-m"><span class="n">PM<small>Suresh a/l Krishnan</small></span><span class="pil indigo">5 · AGAMA</span></div>
+        <div class="baris-m"><span class="n">SEJ<small>Belum ada guru</small></span><span class="pil bad">4</span></div>
+      </div>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-guru" aria-labelledby="t-guru" hidden>
+      <div>
+        <h3>Beban seluruh guru dalam satu jadual.</h3>
+        <p>Jumlah blok, minit dan jam seminggu setiap guru, bilangan kelas, tingkatan yang diajar dan pecahan mengikut subjek. Tapis guru yang belum diagih dan eksport ke Excel.</p>
+        <ul class="semak">
+          <li>1 blok = 30 minit, dikira automatik</li>
+          <li>Carian dan susunan ikut jumlah blok</li>
+          <li>Helaian ringkasan dalam Google Sheets untuk dicetak</li>
+        </ul>
+      </div>
+      <div class="mini" aria-hidden="true">
+        <div class="tajuk-mini">Analisis Guru</div>
+        <div class="baris-m"><span class="n">Aminah binti Yusof<small>BM 21 · SEJ 4 · 3 tingkatan</small></span><span class="pil indigo">25 blok · 12.5 j</span></div>
+        <div class="baris-m"><span class="n">Rajesh a/l Kumar<small>MM 18 · MT 10</small></span><span class="pil indigo">28 blok · 14 j</span></div>
+        <div class="baris-m"><span class="n">Hafiz bin Rahman<small>Belum diagih</small></span><span class="pil warn">0</span></div>
+      </div>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-semak" aria-labelledby="t-semak" hidden>
+      <div>
+        <h3>Kesilapan ditemui sebelum jadual waktu disusun.</h3>
+        <p>Tab Semakan menyenaraikan kelas tanpa guru, set yang tidak cukup guru, kelas diagih dua kali dan guru kelas yang tidak mengajar kelasnya. Pentadbir mengawal siapa boleh menyunting.</p>
+        <ul class="semak">
+          <li>Mod Terbuka, Baca sahaja atau Ditutup</li>
+          <li>Tetapan hanya untuk pentadbir</li>
+          <li>Sandaran agihan setiap kali disimpan</li>
+        </ul>
+      </div>
+      <div class="mini" aria-hidden="true">
+        <div class="tajuk-mini">Akses sistem</div>
+        <div class="mod3"><div class="aktif"><b>Terbuka</b>Panitia menyunting</div><div><b>Baca sahaja</b>Lihat sahaja</div><div><b>Ditutup</b>Pentadbir sahaja</div></div>
+        <div class="tajuk-mini" style="margin-top:8px">Semakan</div>
+        <div class="baris-m"><span class="n">Kelas belum ada guru<small>SEJ: 2J, 4R</small></span><span class="pil bad">2</span></div>
+        <div class="baris-m"><span class="n">Set: bilangan guru tidak sepadan<small>BAN 3BFH (2/4)</small></span><span class="pil warn">1</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cuba">
+  <div class="wrap">
+    <div class="kepala">
+      <p class="eyebrow">Cuba sendiri</p>
+      <h2>Klik sel, lihat jumlah blok dikira terus.</h2>
+      <p class="lead">Ini grid Agihan Panitia yang dipermudahkan, dengan dua tingkatan dan nama guru rekaan. Tukar antara subjek kelas (BM) dan subjek set (BAN), kemudian tanda kelas atau kumpulan yang diajar.</p>
+    </div>
+    <div class="cuba">
+      <div>
+        <div class="pilih-subjek" role="group" aria-label="Pilih subjek">
+          <button type="button" data-s="BM" aria-pressed="true">BM<span class="jenis">kelas · 7 blok</span></button>
+          <button type="button" data-s="BAN" aria-pressed="false">BAN<span class="jenis">set · 4 blok</span></button>
+        </div>
+        <div class="grid-luar"><table class="g" id="gridCuba"></table></div>
+        <p class="nota-kalk" id="notaCuba"></p>
+        <div class="demo-penuh">
+          <div><b>Mahu lihat sistem sebenar?</b><span>Demo penuh sekolah rekaan SMK Contoh Seri Bintang: 71 guru, semua subjek, Ringkasan Kelas, Analisis Guru dan Semakan. Tiada log masuk, baca sahaja.</span></div>
+          <a class="btn utama" href="https://script.google.com/macros/s/AKfycbyoML-t3ke4ccqwHztkB2xiLRmhV0HnJn7OhRsU0vXqXMYYMRaWrdI7UabWoXtLKv9h/exec" target="_blank" rel="noopener">Buka demo penuh ↗</a>
+        </div>
+      </div>
+      <aside class="ringkas-cuba" aria-live="polite">
+        <h3>Jumlah blok semua subjek</h3>
+        <div id="ringkasCuba"></div>
+        <div class="kira-guru" id="formulaCuba"></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="tint" id="mula">
+  <div class="wrap">
+    <div class="kepala">
+      <p class="eyebrow">Cara mula</p>
+      <h2>Empat langkah, guna kod sekolah SATG yang sama.</h2>
+      <p class="lead">Sekolah penyumbang tidak perlu mendaftar semula. Kod sekolah yang digunakan untuk Sistem Agihan Tugas Guru juga mengaktifkan Agihan Blok Mengajar.</p>
+    </div>
+    <ol class="langkah">
+      <li><h3>Dapatkan pautan</h3><p>Mohon pautan salinan sistem sebagai sekolah penyumbang SATG.</p><span class="masa">1 minit</span></li>
+      <li><h3>Buat salinan</h3><p>Klik <b>Make a copy</b>. Sistem disimpan dalam Google Drive akaun sekolah anda sendiri.</p><span class="masa">1 minit</span></li>
+      <li><h3>Terbitkan app</h3><p>Klik <b>Deploy</b> dan benarkan akses, seperti memasang SATG.</p><span class="masa">5 minit</span></li>
+      <li><h3>Masukkan kod sekolah</h3><p>Buka app dan masukkan kod sekolah SATG anda. Anda terus menjadi pentadbir.</p><span class="masa">1 minit</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="akses">
+  <div class="wrap">
+    <div class="kepala">
+      <p class="eyebrow">Akses</p>
+      <h2>Terima kasih kepada sekolah yang menyokong SATG.</h2>
+      <p class="lead">Agihan Blok Mengajar diberi percuma kepada sekolah yang pernah belanja kopi semasa mendaftar Sistem Agihan Tugas Guru.</p>
+    </div>
+    <div class="akses">
+      <div class="kad-akses utama">
+        <p class="eyebrow">Sekolah penyumbang SATG</p>
+        <div class="harga">RM0 <small>untuk setiap sekolah</small></div>
+        <ul>
+          <li>Semua ciri: Agihan Panitia, Ringkasan Kelas, Analisis Guru, Semakan</li>
+          <li>Subjek kelas dan subjek set yang boleh ditetapkan sendiri</li>
+          <li>Kawalan akses: Terbuka, Baca sahaja, Ditutup</li>
+          <li>Data disimpan dalam Google Drive sekolah anda sendiri</li>
+          <li>Eksport ke Excel dan helaian ringkasan sedia cetak</li>
+          <li>Aktif dengan kod sekolah SATG yang sama</li>
+        </ul>
+        <a class="btn utama" href="#" id="ctaPenyumbang" data-perlu-pautan>Mohon pautan salinan →</a>
+        <p class="syarat">Layak: sekolah berstatus aktif dalam SATG dengan rekod belanja kopi. Satu kod sekolah untuk satu salinan sistem.</p>
+      </div>
+      <div class="kad-akses kedua">
+        <p class="eyebrow">Belum penyumbang?</p>
+        <h3>Daftar SATG dan belanja kopi pembangun.</h3>
+        <p>Sistem Agihan Tugas Guru sendiri kekal percuma. Sekolah yang menyertakan belanja kopi semasa mendaftar layak terus untuk Agihan Blok Mengajar, tanpa borang tambahan.</p>
+        <a class="btn kedua" href="../daftar.html">Daftar SATG →</a>
+        <a class="btn kedua" href="../">Kenali SATG</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tint" id="soalan">
+  <div class="wrap">
+    <div class="kepala"><p class="eyebrow">Soalan lazim</p><h2>Sebelum anda mula</h2></div>
+    <div class="faq">
+      <details><summary>Siapa yang layak mendapat sistem ini percuma?</summary><p>Sekolah yang berdaftar dan aktif dalam Sistem Agihan Tugas Guru (SATG), dan mempunyai rekod belanja kopi semasa pendaftaran. Kelayakan disemak secara automatik apabila kod sekolah dimasukkan.</p></details>
+      <details><summary>Sekolah kami sudah daftar SATG tetapi tidak belanja kopi. Boleh guna?</summary><p>Belum. Hubungi pembangun selepas belanja kopi supaya rekod sekolah anda dikemas kini. Selepas itu, kod sekolah yang sama terus boleh mengaktifkan Agihan Blok Mengajar.</p></details>
+      <details><summary>Perlu guna SATG untuk guna sistem ini?</summary><p>Tidak. Kedua-dua sistem berasingan dan disimpan dalam salinan masing-masing. Kod sekolah SATG hanya digunakan untuk mengaktifkan Agihan Blok Mengajar.</p></details>
+      <details><summary>Bagaimana subjek gabungan seperti BAN dan PM dikira?</summary><p>Subjek ditetapkan sebagai subjek set, dan kelas yang digabungkan direkod sebagai satu unit, contohnya 1BFH (1B, 1F, 1H). Guru menanda unit yang diajar dan blok dikira sekali bagi setiap unit. Mana-mana subjek boleh dijadikan subjek set dalam Tetapan.</p></details>
+      <details><summary>Boleh ubah bilangan blok setiap subjek?</summary><p>Boleh. Pentadbir menetapkan blok seminggu bagi setiap subjek mengikut tingkatan (T1 hingga T5), dan jumlah guru dikira semula serta-merta.</p></details>
+      <details><summary>Siapa boleh menyunting agihan?</summary><p>Pentadbir memilih mod akses. Dalam mod Terbuka, Ketua Panitia boleh menanda agihan. Dalam mod Baca sahaja, semua boleh melihat tetapi tidak boleh menyimpan. Dalam mod Ditutup, hanya pentadbir boleh membuka sistem. Tetapan subjek dan guru hanya untuk pentadbir.</p></details>
+      <details><summary>Di mana data sekolah kami disimpan?</summary><p>Dalam salinan Google Sheet milik sekolah anda. Pembangun tidak boleh melihatnya. Semakan lesen hanya menghantar kod sekolah dan ID salinan.</p></details>
+      <details><summary>Bagaimana jika tersilap menyimpan?</summary><p>Setiap kali disimpan, agihan sebelumnya disalin ke helaian sandaran. Sistem juga menolak simpanan jika orang lain telah menyimpan selepas anda membuka app, supaya kerja mereka tidak ditimpa.</p></details>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="penutup">
+      <p class="eyebrow" style="color:#C7D2FE">Sesi persekolahan baharu</p>
+      <h2>Agihan mengajar yang betul sebelum jadual waktu disusun.</h2>
+      <p>Mohon pautan salinan, tetapkan subjek sekolah anda, dan biarkan Ketua Panitia menanda agihan masing-masing.</p>
+      <div class="cta">
+        <a class="btn utama" href="#akses">Dapatkan percuma →</a>
+        <a class="btn kedua" href="https://script.google.com/macros/s/AKfycbyoML-t3ke4ccqwHztkB2xiLRmhV0HnJn7OhRsU0vXqXMYYMRaWrdI7UabWoXtLKv9h/exec" target="_blank" rel="noopener">Cuba demo dahulu</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span>Agihan Blok Mengajar · cikgujep © 2026</span><span>Rakan kepada <a href="../">Sistem Agihan Tugas Guru</a></span></div></footer>
+
+<script>
+(function () {
+  // ---------- Hero: cara lama lawan unit ----------
+  var lama = document.getElementById('kiraLama'), unit = document.getElementById('kiraUnit');
+  var bLama = document.getElementById('tgLama'), bUnit = document.getElementById('tgUnit');
+  function hero(u) {
+    lama.hidden = u; unit.hidden = !u;
+    bLama.setAttribute('aria-pressed', String(!u)); bUnit.setAttribute('aria-pressed', String(u));
+  }
+  bLama.onclick = function () { hero(false); };
+  bUnit.onclick = function () { hero(true); };
+
+  // ---------- Tab ciri (ARIA tabs, anak panah kiri/kanan) ----------
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function pilihTab(t) {
+    tabs.forEach(function (x) {
+      var on = x === t;
+      x.setAttribute('aria-selected', String(on)); x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.onclick = function () { pilihTab(t); };
+    t.onkeydown = function (e) {
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      var n = tabs[(i + d + tabs.length) % tabs.length]; pilihTab(n); n.focus();
+    };
+  });
+
+  // ---------- Grid cuba sendiri (data rekaan) ----------
+  var GURU = ['Aminah binti Yusof', 'Tan Mei Ling', 'Rajesh a/l Kumar'];
+  var SUBJEK = {
+    BM: { blok: 7, jangka: 1, unit: ['1B', '1F', '1H', '1J', '1K', '1R', '2B', '2F', '2H', '2J', '2K', '2R'] },
+    BAN: { blok: 4, jangka: 4, unit: ['1BFH', '1JKR', '2BFH', '2JKR'] },
+  };
+  var tanda = { BM: { 0: ['1B', '2B', '2F'], 1: ['1F', '1H'], 2: [] }, BAN: { 0: ['2JKR'], 1: ['1BFH', '1JKR'], 2: ['1BFH'] } };
+  var semasa = 'BM';
+  var grid = document.getElementById('gridCuba');
+  var ada = function (s, g, u) { return tanda[s][g].indexOf(u) >= 0; };
+  var jumSubjek = function (s, g) { return tanda[s][g].length * SUBJEK[s].blok; };
+  var bil = function (s, u) { return GURU.filter(function (_, g) { return ada(s, g, u); }).length; };
+
+  function lukis() {
+    var S = SUBJEK[semasa], h = '<thead><tr><th style="text-align:left;padding-left:12px">Guru</th><th>Jum</th>';
+    S.unit.forEach(function (u) { h += '<th class="u">' + u + '</th>'; });
+    h += '</tr></thead><tbody>';
+    GURU.forEach(function (nama, g) {
+      var semua = jumSubjek('BM', g) + jumSubjek('BAN', g);
+      h += '<tr><td class="nama">' + nama + '<small>' + semua + ' blok semua subjek</small></td><td class="jum">' + (jumSubjek(semasa, g) || '–') + '</td>';
+      S.unit.forEach(function (u) {
+        var on = ada(semasa, g, u);
+        h += '<td><button type="button" class="sel' + (on ? ' on' : '') + '" data-g="' + g + '" data-u="' + u + '" aria-pressed="' + on + '" aria-label="' + nama + ', ' + u + '">' + (on ? S.blok : '·') + '</button></td>';
+      });
+      h += '</tr>';
+    });
+    h += '<tr class="kaki"><td class="nama" style="background:var(--tint)">Bil. guru</td><td></td>';
+    S.unit.forEach(function (u) {
+      var n = bil(semasa, u), k = n === S.jangka ? 'ok' : n === 0 ? 'kosong' : 'tak';
+      h += '<td class="' + k + '" title="Jangkaan ' + S.jangka + ' guru">' + n + '/' + S.jangka + '</td>';
+    });
+    grid.innerHTML = h + '</tr></tbody>';
+    document.getElementById('notaCuba').textContent = semasa === 'BAN'
+      ? 'BAN ialah subjek set: setiap unit menggabungkan tiga kelas dan dijangka diajar oleh 4 guru (satu bagi setiap bahasa). Setiap guru dikira 4 blok bagi setiap unit, bukan bagi setiap kelas.'
+      : 'BM ialah subjek kelas: setiap kelas dijangka diajar oleh seorang guru. Baris Bil. guru menjadi hijau apabila sepadan, merah jika tiada guru.';
+    ringkas();
+  }
+
+  function ringkas() {
+    var r = '';
+    GURU.forEach(function (nama, g) {
+      var t = jumSubjek('BM', g) + jumSubjek('BAN', g);
+      r += '<div class="baris-r"><span>' + nama + '</span><b>' + t + '</b></div>';
+    });
+    document.getElementById('ringkasCuba').innerHTML = r;
+    var g0 = 0, bm = tanda.BM[g0].length, ban = tanda.BAN[g0].length;
+    document.getElementById('formulaCuba').innerHTML =
+      '<b>' + GURU[g0] + '</b>: BM ' + bm + ' kelas × 7 + BAN ' + ban + ' unit × 4 = <b>' + (bm * 7 + ban * 4) + ' blok</b> (' + ((bm * 7 + ban * 4) * 30 / 60) + ' jam seminggu).';
+  }
+
+  grid.addEventListener('click', function (e) {
+    var b = e.target.closest('.sel'); if (!b) return;
+    var g = +b.dataset.g, u = b.dataset.u, senarai = tanda[semasa][g], i = senarai.indexOf(u);
+    if (i >= 0) senarai.splice(i, 1); else senarai.push(u);
+    lukis();
+    var baru = grid.querySelector('.sel[data-g="' + g + '"][data-u="' + u + '"]'); if (baru) baru.focus();
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.pilih-subjek button'), function (b) {
+    b.onclick = function () {
+      semasa = b.dataset.s;
+      Array.prototype.forEach.call(document.querySelectorAll('.pilih-subjek button'), function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      lukis();
+    };
+  });
+  lukis();
+
+  // ---------- Pautan salinan untuk penyumbang (ditetapkan apabila aliran pemasangan dimuktamadkan) ----------
+  var PAUTAN_PENYUMBANG = '';
+  var cta = document.getElementById('ctaPenyumbang');
+  if (PAUTAN_PENYUMBANG) cta.href = PAUTAN_PENYUMBANG;
+  else cta.onclick = function (e) { e.preventDefault(); alert('Pautan salinan untuk penyumbang akan dibuka tidak lama lagi.'); };
+})();
+</script>
+</body>
+</html>
