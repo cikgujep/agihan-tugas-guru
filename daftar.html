@@ -96,9 +96,8 @@ button.hantar:disabled { opacity: .6; cursor: wait }
         <h2><i>2</i>Maklumat pemohon</h2>
         <div class="grid">
           <div class="medan penuh"><label for="namaGuru">Nama penuh <b class="wajib">*</b></label><input id="namaGuru" required autocomplete="name" placeholder="Nama seperti dalam rekod sekolah"></div>
-          <div class="medan"><label for="jawatan">Jawatan <b class="wajib">*</b></label><input id="jawatan" required list="senaraiJawatan" placeholder="Pilih atau taip">
-            <datalist id="senaraiJawatan"><option>Pengetua</option><option>Guru Besar</option><option>PK Pentadbiran</option>
-              <option>PK Hal Ehwal Murid</option><option>PK Kokurikulum</option><option>Setiausaha Kurikulum</option><option>Guru</option></datalist></div>
+          <div class="medan"><label for="jawatan">Jawatan <b class="wajib">*</b></label><select id="jawatan" required>
+            <option value="">Pilih jawatan</option><option>Pengetua</option><option>Guru Besar</option><option>Penolong Kanan Pentadbiran</option><option>Penolong Kanan Hal Ehwal Murid</option><option>Penolong Kanan Kokurikulum</option><option>Penolong Kanan Pendidikan Khas</option><option>Setiausaha Kurikulum</option><option>Setiausaha Kokurikulum</option><option>Setiausaha Disiplin</option><option>Guru Kanan Mata Pelajaran (GKMP)</option><option>Guru Data</option><option>Guru ICT</option><option>Guru</option><option>Pegawai KPM / JPN / PPD</option><option>Lain-lain</option></select></div>
           <div class="medan"><label for="telefon">No. telefon (WhatsApp) <b class="wajib">*</b></label><input id="telefon" required type="tel" inputmode="tel" placeholder="01X-XXX XXXX" autocomplete="tel"></div>
           <div class="medan penuh"><label for="emel">Emel rasmi <b class="wajib">*</b></label><input id="emel" type="email" required placeholder="nama@moe-dl.edu.my" autocomplete="email"><small>Kod sekolah, pautan salinan dan langkah pemasangan dihantar ke emel ini.</small></div>
         </div>
