@@ -677,6 +677,33 @@ function paparanLama_(e) {
 }
 window.addEventListener('unhandledrejection', ev => { if (paparanLama_(ev.reason)) ev.preventDefault(); });
 
+/**
+ * ADMIN salinan sekolah: semak versi CoreLib terkini (laman sistem) dan paparkan banner jika salinan ini ketinggalan.
+ * Master (versiCoreLib = 0) tidak disemak.
+ */
+function semakVersiBaharu() {
+  const kini = Number(S.boot.versiCoreLib || 0);
+  if (!kini || !S.user || S.user.role !== 'ADMIN') return;
+  fetch('https://cikgujep.github.io/agihan-tugas-guru/sistem/versi.json?t=' + Math.floor(Date.now() / 36e5))
+    .then(r => r.ok ? r.json() : null).then(v => {
+      if (!v || !(Number(v.corelib) > kini) || document.getElementById('bannerVersi')) return;
+      const auto = String(S.boot.statusKemasKini || '');
+      const nota = /API_TIDAK_AKTIF/.test(auto)
+        ? 'Kemas kini automatik belum boleh berjalan kerana <b>Google Apps Script API</b> belum dihidupkan. Hidupkan di <a href="https://script.google.com/home/usersettings" target="_blank" rel="noopener">script.google.com/home/usersettings</a>, dan sistem akan dikemas kini sendiri dalam masa 24 jam.'
+        : auto ? 'Status kemas kini automatik: ' + esc(auto) + '.' : '';
+      const b = document.createElement('div');
+      b.id = 'bannerVersi'; b.className = 'makluman ambar';
+      b.style.cssText = 'margin:12px 16px 0;align-items:flex-start';
+      b.innerHTML = ikon('system_update') + '<div class="flex-1"><b>Versi baharu sistem tersedia (v' + Number(v.corelib) + '; salinan ini v' + kini + ').</b>' +
+        (nota ? '<div class="kecil mt-8">' + nota + '</div>' : '') +
+        '<div class="kecil mt-8">Kemas kini manual (1 minit): Sheet › Extensions › Apps Script › Libraries › CoreLib › tukar Version kepada <b>' + Number(v.corelib) +
+        '</b> › Save. Kemudian Deploy › Manage deployments › ✏️ › Version: New version › Deploy.</div></div>' +
+        '<button class="btn-ikon" aria-label="Tutup" onclick="this.parentNode.remove()">' + ikon('close', 'sm') + '</button>';
+      const k = document.getElementById('kandungan');
+      if (k && k.parentNode) k.parentNode.insertBefore(b, k);
+    }).catch(() => { /* tiada sambungan: abaikan */ });
+}
+
 function ralat(e) {
   if (paparanLama_(e)) { console.warn('Paparan lama diabaikan:', e.message); return; }
   console.error(e);
@@ -1116,6 +1143,7 @@ function mula() {
     binaKerangka();
     $('#muatGlobal').remove();
     bacaHashAwal(id => pergi(id || halamanLalai(), {}, true));
+    semakVersiBaharu();
   }).catch(e => {
     $('#muatGlobal').innerHTML = '<div class="kad kad-pad" style="max-width:440px;text-align:center">' + ikon('error', 'lg') +
       '<h2 class="mt-8">Sistem tidak dapat dimuatkan</h2><p class="muted mt-8">' + esc(e.message) + '</p>' +
@@ -1730,9 +1758,22 @@ function urutanButiran(butiran) {
   });
   return terbaik;
 }
-/** Susun butiran dalam jawatan yang sama: ikut jawatan yang disebut dalam butiran, kemudian abjad. */
+/**
+ * Hierarki Penolong Kanan dalam butiran (cth. Naib Pengerusi "Penolong Kanan HEM"):
+ * Pentadbiran -> HEM -> Kokurikulum -> Penyelia Petang. Butiran lain di belakang.
+ */
+function urutanPK(butiran) {
+  const b = String(butiran || '').toLowerCase();
+  if (!/penolong kanan|\bpk\b|penyelia petang/.test(b)) return 99;
+  if (/pentadbiran/.test(b)) return 1;
+  if (/\bhem\b|hal ehwal murid/.test(b)) return 2;
+  if (/kokurikulum|\bkoko\b/.test(b)) return 3;
+  if (/petang/.test(b)) return 4;
+  return 5;
+}
+/** Susun butiran dalam jawatan yang sama: ikut jawatan yang disebut, hierarki PK, kemudian abjad. */
 function bandingButiran(a, b) {
-  return urutanButiran(a.butiran) - urutanButiran(b.butiran) ||
+  return urutanButiran(a.butiran) - urutanButiran(b.butiran) || urutanPK(a.butiran) - urutanPK(b.butiran) ||
     String(a.butiran || '').localeCompare(String(b.butiran || ''), 'ms', { numeric: true });
 }
 function jkBerunit(senarai) {
@@ -2493,7 +2534,7 @@ function modalSalinTahun() {
 // ============================================================================
 // 3. GURU (termasuk masa mengajar: diisi terus dalam jadual)
 // ============================================================================
-const GR = { data: null, cari: '', zon: '', status: '', muka: 1, ubah: {} };
+const GR = { data: null, cari: '', zon: '', status: '', muka: 1, ubah: {}, pilih: {} };
 const MG = { imp: null, modal: null }; // wizard import CSV masa mengajar (dalam modal)
 
 // Menu "⋯" ringkas: <div class="menu-titik"><button data-titik>…</button><div class="senarai-menu">…</div></div>
@@ -2525,22 +2566,25 @@ function renderGuru() {
   GR.ubah = {};
   if (S.param.zon) GR.zon = S.param.zon;
   $('#kandungan').innerHTML = kepala('Guru', 'Guru', 'Isi masa mengajar terus dalam jadual. Klik nama guru untuk melihat profil.',
-    menuTitik('<button class="btn">' + ikon('upload_file') + 'Import</button>', [['importGuru', 'Import senarai guru', 'group_add'], ['importMasa', 'Import masa mengajar (CSV)', 'schedule']]) +
+    menuTitik('<button class="btn">' + ikon('upload_file') + 'Import</button>', [['importGuru', 'Import senarai guru', 'group_add'], ['importMasa', 'Import masa mengajar (CSV)', 'schedule'], ['resetGuru', 'Buang semua guru (reset)', 'delete_sweep']]) +
     '<button class="btn utama" id="btnTambahGuru">' + ikon('person_add') + 'Tambah Guru</button>') +
     '<div class="kad"><div class="kad-kepala"><div class="baris"><div class="carian" style="min-width:240px"><span class="ms sm">search</span>' +
     '<input class="input sm" id="cariGuruSenarai" placeholder="Cari nama atau emel..." value="' + esc(GR.cari) + '"></div>' +
     '<select id="grStatus" class="input sm" style="width:auto">' + pilihan([['AKTIF', 'Aktif'], ['CUTI', 'Cuti'], ['BERTUKAR_KELUAR', 'Bertukar keluar']], GR.status, 'Semua status') + '</select></div>' +
-    '<div class="seg" id="segZonGuru"></div></div>' +
+    '<div class="baris" id="barPilihGuru"></div><div class="seg" id="segZonGuru"></div></div>' +
     '<div id="tableGuru">' + rangka(320) + '</div></div>';
   $('#btnTambahGuru').onclick = () => modalGuru(null);
-  $$('#kandungan [data-aksi]').forEach(b => b.onclick = () => { if (b.dataset.aksi === 'importGuru') modalImportGuru(); else modalImportMasa(); });
+  $$('#kandungan [data-aksi]').forEach(b => b.onclick = () => {
+    b.closest('.menu-titik').classList.remove('buka');
+    if (b.dataset.aksi === 'importGuru') modalImportGuru(); else if (b.dataset.aksi === 'resetGuru') modalBuangGuru(true); else modalImportMasa();
+  });
   $('#cariGuruSenarai').addEventListener('input', debounce(ev => { GR.cari = ev.target.value; GR.muka = 1; lukisJadualGuru(); }, 250));
   $('#grStatus').onchange = ev => { GR.status = ev.target.value; GR.muka = 1; lukisJadualGuru(); };
   muatGuru();
 }
 
 function muatGuru() {
-  return api('senaraiGuru', { tahun: S.tahun }).then(res => { GR.data = res.data; GR.ubah = {}; lukisJadualGuru(); lukisBarGuru(); })
+  return api('senaraiGuru', { tahun: S.tahun }).then(res => { GR.data = res.data; GR.ubah = {}; GR.pilih = {}; lukisJadualGuru(); lukisBarGuru(); })
     .catch(e => { ralat(e); const el = $('#tableGuru'); if (el) el.innerHTML = kosong('error', 'Gagal memuatkan', e.message); });
 }
 
@@ -2568,6 +2612,7 @@ function lukisJadualGuru() {
     (!GR.zon || (GR.zon === 'TERBEBAN' ? g.amaran.indexOf('W01') !== -1 : GR.zon === 'KURANG' ? g.amaran.indexOf('W02') !== -1 :
       g.status === 'AKTIF' && !(nilaiMasaGuru(g).masa > 0))))
     .sort((a, b) => GR.zon === 'TERBEBAN' ? (b.indeks || 0) - (a.indeks || 0) : a.nama.localeCompare(b.nama));
+  lukisPilihGuru();
   if (!rows.length) {
     $('#tableGuru').innerHTML = kosong('school', semua.length ? 'Tiada guru sepadan' : 'Belum ada data guru',
       semua.length ? 'Ubah tapisan atau carian.' : 'Tambah guru satu persatu atau import senarai.',
@@ -2577,11 +2622,13 @@ function lukisJadualGuru() {
   const saiz = 20;
   const muka = Math.min(GR.muka, Math.ceil(rows.length / saiz));
   const bah = rows.slice((muka - 1) * saiz, muka * saiz);
-  $('#tableGuru').innerHTML = '<div class="jadual-bungkus penuh"><table class="jadual"><thead><tr><th>Guru</th>' +
+  $('#tableGuru').innerHTML = '<div class="jadual-bungkus penuh"><table class="jadual"><thead><tr><th style="width:40px"><input type="checkbox" class="kotak" id="pilihSemuaGuru" aria-label="Tanda semua guru di halaman ini"' +
+    (bah.every(g => GR.pilih[g.id_guru]) ? ' checked' : '') + '></th><th>Guru</th>' +
     '<th class="num">Masa / minggu</th><th class="tengah">Kelas peperiksaan</th><th class="num">Jawatan</th><th>Beban</th><th class="sorok-mudah">Perhatian</th></tr></thead><tbody>' +
     bah.map(g => {
       const v = nilaiMasaGuru(g);
-      return '<tr class="klik' + (GR.ubah[g.id_guru] ? ' dipilih' : '') + '" data-id="' + esc(g.id_guru) + '"><td><div class="nama-sel"><div class="avatar kecil">' + esc(inisial(g.nama)) + '</div>' +
+      return '<tr class="klik' + (GR.ubah[g.id_guru] ? ' dipilih' : '') + '" data-id="' + esc(g.id_guru) + '"><td><input type="checkbox" class="kotak" data-pilih-guru="' + esc(g.id_guru) + '"' + (GR.pilih[g.id_guru] ? ' checked' : '') +
+        ' aria-label="Tanda ' + esc(g.nama) + '"></td><td><div class="nama-sel"><div class="avatar kecil">' + esc(inisial(g.nama)) + '</div>' +
         '<div><b>' + esc(g.nama) + '</b><span class="sangat-kecil muted">' + esc(g.kod_gred || 'Tiada gred') + (g.status !== 'AKTIF' ? ' · ' + esc(labelStatus(g.status)) : '') + '</span></div></div></td>' +
         '<td class="num"><input class="input sm num" type="number" min="0" step="0.5" style="width:84px;display:inline-block" data-masa="' + esc(g.id_guru) + '" value="' +
         (v.masa > 0 ? esc(v.masa) : '') + '" placeholder="0" aria-label="Masa seminggu ' + esc(g.nama) + '"></td>' +
@@ -2595,6 +2642,8 @@ function lukisJadualGuru() {
     if (ev.target.closest('input, label')) return;
     bukaProfilGuru(tr.dataset.id);
   }));
+  $('#pilihSemuaGuru').onchange = ev => { bah.forEach(g => { GR.pilih[g.id_guru] = ev.target.checked; }); lukisJadualGuru(); };
+  $$('#tableGuru [data-pilih-guru]').forEach(c => c.onchange = () => { GR.pilih[c.dataset.pilihGuru] = c.checked; lukisPilihGuru(); });
   const tanda = (id, medan, nilai) => {
     const g = semua.find(x => x.id_guru === id);
     const asal = { masa: Math.round(keMasa(g.minit) * 100) / 100, peperiksaan: g.peperiksaan };
@@ -2608,6 +2657,50 @@ function lukisJadualGuru() {
   };
   $$('#tableGuru [data-masa]').forEach(i => i.addEventListener('input', () => tanda(i.dataset.masa, 'masa', i.value === '' ? 0 : Number(i.value))));
   $$('#tableGuru [data-pep]').forEach(c => c.addEventListener('change', () => tanda(c.dataset.pep, 'peperiksaan', c.checked ? 'Y' : 'T')));
+}
+
+/** Bilangan guru ditanda + butang buang di kepala jadual. */
+function lukisPilihGuru() {
+  const el = $('#barPilihGuru');
+  if (!el || !GR.data) return;
+  const ada = {};
+  GR.data.guru.forEach(g => { ada[g.id_guru] = true; });
+  const ids = Object.keys(GR.pilih).filter(id => GR.pilih[id] && ada[id]);
+  el.innerHTML = ids.length ? '<span class="kecil muted">' + ids.length + ' ditanda</span>' +
+    '<button class="btn sm" id="btnNyahPilihGuru">Nyahtanda</button><button class="btn sm bahaya" id="btnBuangDitanda">' + ikon('delete', 'sm') + 'Buang yang ditanda</button>' : '';
+  if (!ids.length) return;
+  $('#btnNyahPilihGuru').onclick = () => { GR.pilih = {}; lukisJadualGuru(); };
+  $('#btnBuangDitanda').onclick = () => modalBuangGuru(false, ids);
+}
+
+/** Sahkan buang guru pukal. semua = reset seluruh senarai (perlu taip PADAM). */
+function modalBuangGuru(semua, ids) {
+  if (!GR.data) return;
+  const set = {};
+  (ids || []).forEach(id => { set[id] = true; });
+  const sasaran = GR.data.guru.filter(g => semua || set[g.id_guru]);
+  if (!sasaran.length) { showToast('Tiada guru untuk dibuang.', 'warning'); return; }
+  const bilLantikan = sasaran.reduce((n, g) => n + (Number(g.bil) || 0), 0);
+  const contoh = sasaran.slice(0, 5).map(g => '<li>' + esc(g.nama) + '</li>').join('') + (sasaran.length > 5 ? '<li class="muted">dan ' + (sasaran.length - 5) + ' lagi</li>' : '');
+  const m = bukaModal({
+    tajuk: semua ? 'Buang Semua Guru' : 'Buang Guru Ditanda', tanpaFokus: true,
+    badan: '<div class="baris" style="flex-wrap:nowrap;align-items:flex-start">' + ikon('warning', 'lg') + '<div>' +
+      '<p><b>' + sasaran.length + ' guru</b> akan dibuang' + (bilLantikan ? ' bersama <b>' + bilLantikan + ' lantikan</b> tahun ini' : '') + '.</p>' +
+      (semua ? '' : '<ul class="kecil mt-8" style="padding-left:18px">' + contoh + '</ul>') +
+      '<p class="kecil muted mt-8">Masa mengajar, lantikan (semua tahun), beban dan log surat guru ini turut dibuang. Akaun pengguna (tab Pengguna) tidak disentuh. Tindakan ini tidak boleh dibatalkan.</p>' +
+      (semua ? '<div class="medan mt-16"><label for="sahPadam">Taip PADAM untuk mengesahkan</label><input class="input" id="sahPadam" autocomplete="off"></div>' : '') +
+      '</div></div>',
+    kaki: '<button class="btn" data-tutup>Batal</button><button class="btn bahaya" id="btnYaBuang"' + (semua ? ' disabled' : '') + '>' + ikon('delete', 'sm') + 'Buang ' + sasaran.length + ' guru</button>'
+  });
+  const ya = m.querySelector('#btnYaBuang');
+  const sah = m.querySelector('#sahPadam');
+  if (sah) { sah.addEventListener('input', () => { ya.disabled = sah.value.trim().toUpperCase() !== 'PADAM'; }); sah.focus(); }
+  ya.onclick = () => {
+    ya.disabled = true;
+    api('hapusGuruPukal', semua ? { semua: true, pengesahan: sah.value } : { ids: sasaran.map(g => g.id_guru) })
+      .then(res => { showToast(res.message, 'success', 6000); m.tutup(); muatGuru(); })
+      .catch(e => { ralat(e); ya.disabled = false; });
+  };
 }
 
 /** Bar simpan terapung apabila masa mengajar diubah. */
@@ -2699,13 +2792,20 @@ function modalGuru(g) {
     .then(ya => { if (ya) api('hapusGuru', { id_guru: g.id_guru }).then(res => { showToast(res.message, 'success'); m.tutup(); muatGuru(); }).catch(ralat); });
 }
 
+/** Jadual contoh kecil untuk arahan import. baris = [[sel...], ...]; baris pertama ialah tajuk. */
+function jadualContoh(baris) {
+  return '<table style="border-collapse:collapse;margin:10px 0 8px;font-size:13px;width:100%;max-width:560px;background:var(--surface);border-radius:8px;overflow:hidden">' +
+    baris.map((b, i) => '<tr>' + b.map(c => (i ? '<td' : '<th') + ' style="border:1px solid var(--border);padding:6px 10px;text-align:left' + (i ? '' : ';background:var(--bg);font-weight:700') + '">' + esc(c) + (i ? '</td>' : '</th>')).join('') + '</tr>').join('') + '</table>';
+}
+
 function modalImportGuru() {
   const m = bukaModal({
     tajuk: 'Import Senarai Guru', saiz: 'lebar',
-    badan: '<div class="makluman mb-16">' + ikon('info') + '<div>Format: <span class="mono">nama, emel, kod_gred, status</span>. Baris pengepala pilihan. Salin-tampal terus dari Google Sheets juga diterima. ' +
-      'Guru dengan emel yang sama akan dikemas kini. Status: AKTIF / CUTI / BERTUKAR_KELUAR (lalai AKTIF).</div></div>' +
+    badan: '<div class="makluman mb-16">' + ikon('info') + '<div><b>Sediakan senarai seperti ini dalam Excel atau Google Sheets, kemudian salin dan tampal di bawah:</b>' +
+      jadualContoh([['Nama', 'Emel', 'Gred', 'Status'], ['Ahmad bin Ali', 'ahmad@moe-dl.edu.my', 'DG44', 'Aktif'], ['Siti binti Hassan', 'siti@moe-dl.edu.my', 'DG48', 'Cuti']]) +
+      '<div class="kecil">Status boleh dikosongkan (dianggap Aktif). Pilihan lain: Cuti, Bertukar keluar. Guru yang emelnya sudah ada akan dikemas kini, bukan ditambah semula.</div></div></div>' +
       '<div class="medan"><label for="impFail">Fail CSV</label><input id="impFail" type="file" accept=".csv,text/csv,.txt" class="input" style="padding-top:6px"></div>' +
-      '<div class="medan mt-16"><label for="impTeks">Atau tampal data</label><textarea id="impTeks" class="input mono" style="min-height:180px" placeholder="nama,emel,kod_gred,status&#10;Ahmad bin Ali,ahmad@moe-dl.edu.my,DG44,AKTIF"></textarea></div>',
+      '<div class="medan mt-16"><label for="impTeks">Atau tampal data</label><textarea id="impTeks" class="input mono" style="min-height:180px" placeholder="Tampal di sini, contoh:&#10;Ahmad bin Ali	ahmad@moe-dl.edu.my	DG44	Aktif"></textarea></div>',
     kaki: '<button class="btn" data-tutup>Batal</button><button class="btn utama" id="btnImportGuruSah">' + ikon('upload', 'sm') + 'Import</button>'
   });
   m.querySelector('#impFail').onchange = ev => { const f = ev.target.files[0]; if (f) bacaFail(f).then(t => { m.querySelector('#impTeks').value = t; }).catch(ralat); };
@@ -2732,9 +2832,12 @@ function lukisImport() {
   const b = $('#badanImport');
   if (I.langkah === 1) {
     b.innerHTML = '<label class="zon-lepas" id="zonLepas" for="failCsv">' + ikon('upload_file') + '<h3 class="mt-8">Seret & lepas fail CSV di sini</h3>' +
-      '<p class="muted kecil mt-8">atau klik untuk memilih fail .csv (maksimum 2 MB). Format ringkas: <span class="mono">Nama, Masa, Peperiksaan (Y/T)</span>. Eksport dari aSc / Sheets juga diterima.</p>' +
+      '<p class="muted kecil mt-8">atau klik untuk memilih fail .csv (maksimum 2 MB). Eksport jadual waktu daripada aSc juga diterima.</p>' +
       '<span class="btn mt-16">' + ikon('folder_open', 'sm') + 'Pilih fail .csv</span></label><input type="file" id="failCsv" accept=".csv,text/csv" class="sembunyi">' +
-      '<div class="makluman mt-16 kecil">' + ikon('info', 'sm') + '<div>Selepas disahkan, rekod bersumber CSV bagi guru terlibat akan diganti. <b>Rekod MANUAL tidak akan diubah.</b></div></div>';
+      '<div class="makluman mt-16 kecil">' + ikon('info', 'sm') + '<div><b>Format ringkas: simpan senarai seperti ini sebagai CSV dari Excel atau Google Sheets.</b>' +
+      jadualContoh([['Nama', 'Masa seminggu', 'Kelas peperiksaan'], ['Ahmad bin Ali', '30', 'Ya'], ['Siti binti Hassan', '26', 'Tidak']]) +
+      '<div>Nama tidak perlu tepat 100%. Sistem akan mencadangkan padanan dengan senarai guru sebelum anda sahkan. ' +
+      'Masa mengajar yang diisi dari CSV sebelum ini akan diganti; masa yang anda isi sendiri di skrin Guru tidak diubah.</div></div></div>';
     const zon = $('#zonLepas');
     const proses = f => {
       if (!f) return;
@@ -3409,7 +3512,7 @@ function renderPengguna(el) {
     const c = this, nilai = c.checked ? 'Y' : 'T';
     api('simpanTetapan', { nilai: { AKSES_TERBUKA: nilai } }).then(r => {
       S.setup = r.data.setup; $('#notaAkses').innerHTML = notaAkses(nilai === 'Y');
-      showToast(nilai === 'Y' ? 'Akses terbuka dihidupkan.' : 'Akses terhad kepada pengguna berdaftar.', 'success');
+      showToast(nilai === 'Y' ? 'Semua guru kini boleh membuka sistem.' : 'Hanya pengguna berdaftar boleh membuka sistem.', 'success');
     }).catch(e => { ralat(e); c.checked = !c.checked; });
   };
   $('#btnJanaGuru').onclick = () => sahkan('Beri akses kepada semua guru?', 'Semua guru (bukan Bertukar Keluar) yang mempunyai emel sah dan belum berdaftar akan ditambah sebagai pengguna GURU. Mereka hanya boleh melihat tugas dan surat sendiri.', 'Teruskan')
@@ -3419,8 +3522,8 @@ function renderPengguna(el) {
 
 function notaAkses(terbuka) {
   return terbuka
-    ? 'Hidup: sesiapa yang log masuk dengan akaun sekolah boleh membuka sistem sebagai GURU dan melihat tugas sendiri sahaja. ADMIN dan PK tetap perlu didaftarkan.'
-    : 'Mati: hanya emel yang didaftarkan dan aktif di bawah boleh membuka sistem.';
+    ? 'Semua guru yang log masuk dengan akaun sekolah boleh membuka sistem dan melihat tugas sendiri, tanpa perlu didaftarkan satu per satu. ADMIN dan PK tetap perlu didaftarkan.'
+    : 'Hanya pengguna yang didaftarkan dan aktif di bawah boleh membuka sistem. Hidupkan untuk membenarkan semua guru sekolah masuk dan melihat tugas sendiri.';
 }
 
 function muatPengguna() {
