@@ -168,12 +168,14 @@ input[type=range] { width: 100%; accent-color: var(--teal) }
 
 /* Soalan lazim */
 .faq { display: grid; gap: 10px }
-.faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 2px 20px }
+.faq details { scroll-margin-top: 90px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 2px 20px }
 .faq summary { cursor: pointer; font-weight: 700; padding-block: 14px; list-style: none; display: flex; justify-content: space-between; gap: 16px }
 .faq summary::-webkit-details-marker { display: none }
 .faq summary::after { content: "+"; font: 700 22px/1 var(--f-display); color: var(--teal); transition: transform .2s; flex: none }
 .faq details[open] summary::after { transform: rotate(45deg) }
 .faq details p { color: var(--muted); padding-bottom: 14px; margin: 0 }
+.faq details ol { color: var(--muted); margin: 0 0 4px; padding-left: 22px }
+.faq details .gbr { margin: 6px 0 14px }
 
 footer { border-top: 1px solid var(--line); padding-block: 32px 48px; color: var(--muted); font-size: 14px }
 footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px }
@@ -247,7 +249,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <figure class="gbr"><a href="img/panduan/izin.webp" target="_blank"><img src="img/panduan/izin.webp" alt="Skrin kebenaran Google dengan kotak Select all dan butang Continue ditanda" loading="lazy" width="1600" height="1054"></a><figcaption>Tanda Select all</figcaption></figure>
       </div>
       <div class="nota amaran"><p><b>Wajib tanda Select all.</b> Jika ada kotak yang tidak ditanda, sistem tidak dapat menyemak kod sekolah atau menghantar emel. Untuk membetulkannya, buka Sheet › <b>Sistem Agihan Tugas › Pasang / semak pangkalan data</b> dan beri kebenaran semula dengan semua kotak ditanda.</p></div></div></li>
-    <li><div><b class="t">Salin URL web app</b><span class="d">Selepas deployment berjaya, klik <b>Copy</b> (1) pada URL web app. Ini alamat sistem anda. Simpan atau tandakan (bookmark) URL ini.</span>
+    <li><div><b class="t">Salin URL web app</b><span class="d">Selepas deployment berjaya, klik <b>Copy</b> (1) pada URL web app. Ini alamat sistem anda. Simpan atau tandakan (bookmark) URL ini. Terlupa URL? Lihat <a href="#url-hilang">cara mencari semula URL web app</a>.</span>
       <figure class="gbr"><a href="img/panduan/url.webp" target="_blank"><img src="img/panduan/url.webp" alt="Dialog Deployment successfully created dengan URL web app dan butang Copy ditanda" loading="lazy" width="1600" height="768"></a></figure></div></li>
     <li><div><b class="t">Buka sistem dan aktifkan</b><span class="d">Buka URL tadi. Skrin <b>Aktifkan Sistem</b> meminta kod sekolah. Masukkan kod daripada emel (1) dan klik <b>Aktifkan sistem</b> (2). <b>Anda sebagai pemilik salinan menjadi pentadbir (ADMIN) secara automatik.</b></span>
       <figure class="gbr kecil"><a href="img/panduan/aktivasi.webp" target="_blank"><img src="img/panduan/aktivasi.webp" alt="Skrin Aktifkan Sistem dengan ruangan kod sekolah dan butang Aktifkan sistem ditanda" loading="lazy" width="1600" height="1138"></a></figure></div></li>
@@ -469,6 +471,18 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <span class="no">11</span>
   <h2>Soalan lazim</h2>
   <div class="faq">
+    <details id="url-hilang"><summary>Terlupa URL web app sistem? Di mana nak cari semula?</summary>
+      <p>URL sentiasa boleh dilihat semula oleh pemilik salinan:</p>
+      <ol>
+        <li>Buka salinan Sheet sistem sekolah anda (cari dalam Google Drive akaun sekolah).</li>
+        <li>Klik <b>Extensions › Apps Script</b>.</li>
+        <li>Klik <b>Deploy</b> (1) › <b>Manage deployments</b> (2).</li>
+        <li>Pilih deployment yang aktif. URL di bawah <b>Web app</b> ialah alamat sistem anda. Klik <b>Copy</b> (3).</li>
+      </ol>
+      <figure class="gbr"><a href="img/panduan/urus.webp" target="_blank"><img src="img/panduan/urus.webp" alt="Menu Deploy, Manage deployments dan URL web app dengan butang Copy ditanda" loading="lazy" width="1600" height="764"></a></figure>
+      <p><b>Jangan buat New deployment baharu semata-mata untuk mendapatkan URL.</b> Setiap deployment baharu menghasilkan URL lain, jadi pautan yang sudah dikongsi kepada guru akan merujuk deployment lama. URL tidak berubah apabila sistem dikemas kini.</p>
+      <p>Guru yang terlupa URL boleh minta daripada pentadbir sistem. Pentadbir boleh menyalin URL daripada bar alamat pelayar semasa sistem dibuka dan berkongsi semula.</p>
+    </details>
     <details><summary>Kenapa indeks seorang guru berubah walaupun lantikannya sama?</summary><p>Indeks dibandingkan dengan median sekolah. Apabila guru lain menerima lantikan baharu, median naik dan indeks guru lain turun sedikit.</p></details>
     <details><summary>Perlu ke skrin log masuk?</summary><p>Tidak. Sistem mengenal pengguna melalui akaun Google sekolah dan senarai di Tetapan › Pengguna. Tiada kata laluan untuk diurus.</p></details>
     <details><summary>Guru mendapat skrin "Akses disekat" walaupun sudah didaftarkan?</summary><p>Biasanya kerana pelayar log masuk beberapa akaun Google. Tekan <b>Tukar akaun Google</b> pada skrin itu dan pilih akaun sekolah, atau buka pautan dalam tetingkap Incognito.</p></details>
@@ -488,6 +502,15 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 <footer><div class="wrap"><span>Sistem Agihan Tugas Guru v4 · cikgujep © 2026</span><a href="index.html">Tentang sistem</a></div></footer>
 
 <script>
+// Pautan ke soalan lazim (#id pada <details>) membuka jawapannya.
+(function () {
+  function bukaSoalan() {
+    var el = location.hash && document.getElementById(location.hash.slice(1));
+    if (el && el.tagName === 'DETAILS') el.open = true;
+  }
+  window.addEventListener('hashchange', bukaSoalan);
+  bukaSoalan();
+})();
 (function () {
   // ---------- Kalkulator Indeks Beban (nilai lalai sistem) ----------
   var el = function (id) { return document.getElementById(id); };
