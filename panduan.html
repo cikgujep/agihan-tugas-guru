@@ -67,7 +67,7 @@ nav.atas .btn { padding: 10px 14px; font-size: 14px }
 .hero { padding-block: 56px 40px }
 .hero h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); letter-spacing: -.03em; margin-bottom: 14px }
 .hero .lead { color: var(--muted); font-size: 1.12rem; max-width: 62ch }
-.pintu { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 32px }
+.pintu { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 32px }
 @media (max-width: 820px) { .pintu { grid-template-columns: minmax(0, 1fr) } }
 .pintu a { display: grid; gap: 6px; text-decoration: none; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; transition: border-color .15s, transform .15s }
 .pintu a:hover { border-color: var(--teal); transform: translateY(-2px) }
@@ -102,6 +102,15 @@ main > section > h2 { margin-bottom: 14px }
 .gbr a { display: block; cursor: zoom-in }
 .gbr img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); background: #fff }
 .gbr.kecil { max-width: 520px }
+.gbr.sederhana { max-width: 680px }
+.pegangan { font: 800 clamp(1.5rem, 3.4vw, 2.1rem)/1.2 var(--f-display); color: var(--teal); margin: 6px 0 14px; max-width: none }
+.kad-grid.tiga { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+.kitar { list-style: none; counter-reset: k; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; padding: 0; margin: 16px 0 }
+.kitar li { counter-increment: k; background: var(--tint); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 3px; align-content: start }
+.kitar li::before { content: counter(k); color: var(--teal); font: 800 15px var(--f-display) }
+.kitar b { font-size: 15px; line-height: 1.25 }
+.kitar span { color: var(--muted); font-size: 13.5px; line-height: 1.4 }
+@media (max-width: 900px) { .kitar { grid-template-columns: minmax(0, 1fr) } .kad-grid.tiga { grid-template-columns: minmax(0, 1fr) } }
 .gbr figcaption { font-size: 13.5px; color: var(--muted); margin-top: 6px }
 .gbr-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; align-items: start }
 .gbr-grid .gbr { margin-top: 14px }
@@ -198,10 +207,11 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <div class="wrap">
     <p class="eyebrow">Panduan pengguna · v4</p>
     <h1>Panduan Sistem Agihan Tugas Guru</h1>
-    <p class="lead">Semua yang anda perlu tahu untuk memasang sistem di sekolah anda, melantik ahli jawatankuasa, membaca Indeks Beban dan menghantar surat lantikan.</p>
+    <p class="lead">Semua yang anda perlu tahu: kenapa sistem ini dibina, cara memasangnya, cara menggunakannya setiap hari, dan cara membaca Indeks Beban dengan betul.</p>
     <div class="pintu">
+      <a href="#roh"><b>Apa tujuan sistem ini?</b><span>Fahami rohnya sebelum menekan butang.</span><i>Roh sistem →</i></a>
       <a href="#pasang"><b>Baru mula?</b><span>Pasang sistem dalam kira-kira 5 minit.</span><i>Pasang di sekolah anda →</i></a>
-      <a href="#tugas"><b>Sudah guna?</b><span>Lantik, tukar dan isi kekosongan jawatan.</span><i>Mengurus tugas →</i></a>
+      <a href="#guna"><b>Sudah pasang?</b><span>Guru, jawatankuasa, lantikan dan guru terbeban.</span><i>Cara guna →</i></a>
       <a href="#kira"><b>Ingin faham kiraan?</b><span>Cuba kalkulator Indeks Beban.</span><i>Cara beban dikira →</i></a>
     </div>
   </div>
@@ -211,10 +221,12 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 <nav class="toc" aria-label="Kandungan">
   <p>Kandungan</p>
   <ol>
+    <li><a href="#roh">Roh sistem</a></li>
     <li><a href="#pasang">Pasang di sekolah anda</a></li>
     <li><a href="#peranan">Siapa boleh buat apa</a></li>
     <li><a href="#aliran">Aliran kerja setahun</a></li>
     <li><a href="#menu">Menu sistem</a></li>
+    <li><a href="#guna">Cara guna, langkah demi langkah</a></li>
     <li><a href="#tugas">Mengurus tugas</a></li>
     <li><a href="#kira">Cara beban dikira</a></li>
     <li><a href="#ambang">Memilih ambang</a></li>
@@ -227,8 +239,56 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 
 <main>
 
-<section id="pasang">
+<section id="roh">
   <span class="no">01</span>
+  <h2>Roh sistem</h2>
+  <p class="pegangan">Agih ikut beban, bukan ikut suka.</p>
+  <p>Itulah keseluruhan sistem ini dalam satu ayat. Sebelum belajar butang mana perlu ditekan, fahami dahulu masalah yang cuba diselesaikan.</p>
+  <p>Agihan tugas selalunya bergantung pada ingatan dan kebiasaan. Guru yang boleh diharap dilantik lagi dan lagi. Guru yang bekerja secara senyap terlepas pandang. Senarai jawatankuasa nampak lengkap, tetapi tiada sesiapa dapat menjawab soalan paling asas: beban siapa paling berat sekarang?</p>
+
+  <h3>Tiga soalan yang dijawab sistem</h3>
+  <div class="kad-grid tiga">
+    <div><b>Siapa paling berat?</b><span>Guru yang perlu diringankan, bukan sekadar yang paling kerap mengadu.</span></div>
+    <div><b>Siapa masih ada ruang?</b><span>Guru yang boleh diberi tugas tanpa membebankan rakan yang sudah penuh.</span></div>
+    <div><b>Siapa patut dilantik?</b><span>Calon bagi setiap jawatan, disusun daripada beban paling rendah.</span></div>
+  </div>
+
+  <h3>Pegangan yang membentuk sistem</h3>
+  <ol class="langkah">
+    <li><div><b class="t">Beban bukan bilangan jawatan</b><span class="d">Dua guru sama-sama Setiausaha, tetapi seorang memegang JK Kurikulum sepanjang tahun dan seorang lagi program sehari. Dengan nilai lalai, jawatan pertama bernilai 3 × 4 × 1 = <b>12</b> mata dan yang kedua 1 × 4 × 0.3 = <b>1.2</b> mata. Sebab itu sistem mengira berat, bukan kiraan jawatan.</span></div></li>
+    <li><div><b class="t">Mengajar ialah kerja utama guru</b><span class="d">Jawatankuasa bukan satu-satunya beban. Indeks menggabungkan masa mengajar dengan tugas, dan secara lalai masa mengajar diberi bahagian lebih besar (60%).</span></div></li>
+    <li><div><b class="t">Ukur dengan sekolah sendiri</b><span class="d">Setiap sekolah berbeza saiz dan budayanya. Guru dibandingkan dengan median guru di sekolah sendiri, bukan dengan piawai luar. Nilai 1.00 bermaksud beban setara guru pertengahan di sekolah itu.</span></div></li>
+    <li><div><b class="t">Sekolah yang menetapkan nilai</b><span class="d">Pemberat, ambang, skor jawatan dan faktor tempoh semuanya boleh diubah. Nilai lalai hanyalah titik mula. Putuskan dalam mesyuarat dan catat rujukannya di Tetapan › Lanjutan supaya angka itu milik bersama.</span></div></li>
+    <li><div><b class="t">Manusia yang membuat keputusan</b><span class="d">Sistem menyusun calon, menunjukkan kesan setiap lantikan dan memberi amaran. Sistem tidak melantik sesiapa. Pentadbir tahu perkara yang tiada dalam data, jadi amaran boleh diatasi dengan <b>Simpan Juga</b> jika ada sebabnya.</span></div></li>
+    <li><div><b class="t">Alat bantu keputusan, bukan penilaian prestasi</b><span class="d">Indeks tinggi tidak bermaksud guru lebih rajin. Indeks rendah tidak bermaksud guru malas. Nombor ini tentang agihan kerja, bukan tentang mutu seseorang.</span></div></li>
+    <li><div><b class="t">Telus kepada guru</b><span class="d">Setiap guru boleh melihat lantikan, Indeks Beban dan surat sendiri di <b>Tugas Saya</b>, berserta perbandingan dengan median sekolah. Guru tidak melihat indeks rakan.</span></div></li>
+  </ol>
+
+  <h3>Kitaran kerja</h3>
+  <p>Sistem digunakan sebagai satu kitaran, bukan sekali isi dan selesai:</p>
+  <ol class="kitar">
+    <li><b>Isi data</b><span>Guru, masa mengajar, jawatankuasa</span></li>
+    <li><b>Sistem kira</b><span>Indeks dan amaran dikemas kini sendiri</span></li>
+    <li><b>Tengok gambaran</b><span>Analisis: siapa berat, siapa ada ruang</span></li>
+    <li><b>Bincang dan laraskan</b><span>Lantik, tukar, bahagikan semula</span></li>
+    <li><b>Keluarkan surat</b><span>Selepas agihan dipersetujui</span></li>
+  </ol>
+
+  <h3>Sistem ini bukan</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Bukan</th><th>Maksudnya</th></tr></thead>
+    <tbody>
+      <tr><td><b>Penilaian prestasi</b></td><td>Jangan gunakan indeks untuk menilai guru atau membandingkan kerajinan.</td></tr>
+      <tr><td><b>Ukuran semua kerja guru</b></td><td>Sistem hanya tahu masa mengajar dan lantikan yang direkodkan. Kerja di luar rekod tidak dikira. Jika sesuatu tugas penting tiada, daftarkan sebagai jawatankuasa atau jawatan.</td></tr>
+      <tr><td><b>Pengganti perbincangan</b></td><td>Keadaan kesihatan, keluarga dan kekuatan guru tiada dalam data. Nombor membuka perbincangan, bukan menamatkannya.</td></tr>
+      <tr><td><b>Kuota</b></td><td>Tiada bilangan guru yang "mesti" terbeban. Matlamatnya sifar guru terbeban, dicapai dengan mengagihkan semula tugas.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="nota"><p>Apabila seorang guru ditanda <span class="pil bad">Terbeban</span>, soalan yang betul ialah "tugas mana yang boleh dipindahkan?", bukan "kenapa guru ini begini?". Label itu menunjukkan keadaan agihan, bukan kesalahan guru.</p></div>
+</section>
+
+<section id="pasang">
+  <span class="no">02</span>
   <h2>Pasang di sekolah anda</h2>
   <p>Anda hanya perlukan akaun Google sekolah, contohnya akaun <code>@moe-dl.edu.my</code>. Percuma, cuma perlu daftar kod sekolah sekali. Data sekolah anda kekal dalam Drive sekolah anda sendiri.</p>
   <ol class="langkah">
@@ -267,21 +327,21 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 </section>
 
 <section id="peranan">
-  <span class="no">02</span>
+  <span class="no">03</span>
   <h2>Siapa boleh buat apa</h2>
   <p>Sistem mengenal pengguna melalui akaun Google mereka. <b>Pemilik salinan sistem sentiasa ADMIN</b>, walaupun emelnya tiada dalam senarai pengguna. Pengguna lain mesti didaftarkan dan aktif di Tetapan › Pengguna, kecuali jika <b>Akses terbuka</b> dihidupkan: sesiapa yang log masuk dengan akaun domain sekolah boleh masuk sebagai GURU. ADMIN dan PK tetap perlu didaftarkan.</p>
   <div class="tbl"><table>
     <thead><tr><th>Peranan</th><th>Boleh buat</th></tr></thead>
     <tbody>
       <tr><td><b>ADMIN</b></td><td>Semua perkara: tetapan, pengguna, guru, semua jawatankuasa, surat dan emel.</td></tr>
-      <tr><td><b>PK</b></td><td>Melantik dan menukar ahli dalam jawatankuasa bidangnya sahaja. Melihat Analisis dan senarai guru.</td></tr>
-      <tr><td><b>GURU</b></td><td>Melihat <em>Tugas Saya</em>: lantikan sendiri, Indeks Beban sendiri dan surat sendiri.</td></tr>
+      <tr><td><b>PK</b></td><td>Melantik dan menukar ahli dalam jawatankuasa bidangnya sahaja. Melihat Analisis dan Tugas Guru. Menu Guru, Surat dan Tetapan hanya untuk ADMIN.</td></tr>
+      <tr><td><b>GURU</b></td><td>Melihat <em>Tugas Saya</em>: lantikan sendiri, Indeks Beban sendiri dan surat sendiri. Guru tidak melihat indeks rakan.</td></tr>
     </tbody>
   </table></div>
 </section>
 
 <section id="aliran">
-  <span class="no">03</span>
+  <span class="no">04</span>
   <h2>Aliran kerja setahun</h2>
   <ol class="langkah">
     <li><div><b class="t">Sediakan tetapan</b><span class="d">Profil sekolah, logo, tandatangan Pengetua, senarai gred dan jawatan.</span></div></li>
@@ -295,21 +355,128 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 </section>
 
 <section id="menu">
-  <span class="no">04</span>
+  <span class="no">05</span>
   <h2>Menu sistem</h2>
   <div class="kad-grid">
     <div><b>Analisis</b><span>Ringkasan sekolah: taburan beban, guru yang perlu perhatian (Terbeban · Ada ruang · JK kosong), carta masa mengajar lawan tugas, kelengkapan JK, status surat, agihan ikut bidang dan gred.</span></div>
     <div><b>Jawatankuasa</b><span>Senarai JK ikut bidang, disusun ikut tahap kemudian tempoh. Klik untuk melihat ahli; <b>Urus ahli</b> untuk melantik. Carian turut mencari nama guru. <b>Muat turun DOCX</b> menghasilkan senarai jawatankuasa dalam Word.</span></div>
-    <div><b>Guru</b><span>Jadual guru dengan masa mengajar dan tanda peperiksaan yang boleh diedit terus. Klik nama untuk membuka profil.</span></div>
+    <div><b>Guru</b><span>Jadual guru dengan masa mengajar dan tanda peperiksaan yang boleh diedit terus. Klik nama untuk membuka profil. Tanda beberapa guru untuk membuang secara pukal.</span></div>
     <div><b>Surat</b><span>Jana PDF lantikan, hantar emel, dan pantau status setiap guru.</span></div>
     <div><b>Tetapan</b><span>Sekolah, Surat &amp; emel, Senarai rujukan, Pengguna, Log aktiviti dan Lanjutan (pemberat dan ambang).</span></div>
-    <div><b>Tugas Saya</b><span>Untuk semua pengguna: lantikan sendiri, Indeks Beban dan surat.</span></div>
+    <div><b>Tugas Saya / Tugas Guru</b><span>Guru melihat lantikan, Indeks Beban dan surat sendiri. ADMIN dan PK melihat menu ini sebagai <b>Tugas Guru</b>, dengan senarai untuk memilih mana-mana guru.</span></div>
   </div>
   <p>Status jawatankuasa dalam senarai: <span class="pil ok">Lengkap</span> <span class="pil warn">2 posisi kosong</span> <span class="pil warn">Setiausaha kosong</span> <span class="pil bad">Belum ada ahli</span></p>
 </section>
 
+<section id="guna">
+  <span class="no">06</span>
+  <h2>Cara guna, langkah demi langkah</h2>
+  <p>Bahagian ini mengikut urutan kerja sebenar. Jika anda baru mula, ikut dari atas ke bawah. Gambar menggunakan data contoh rekaan.</p>
+
+  <h3 id="guna-analisis">Mula dari Analisis</h3>
+  <p>Analisis ialah halaman utama ADMIN dan PK. Kad <b>Lengkapkan persediaan sistem</b> menyenaraikan perkara yang belum disediakan, seperti logo, tandatangan dan templat surat. Klik setiap item untuk terus ke tempatnya.</p>
+  <figure class="gbr"><a href="img/panduan/guna-analisis.webp" target="_blank"><img src="img/panduan/guna-analisis.webp" alt="Halaman Analisis dengan kad persediaan, ringkasan, taburan beban dan senarai Perlu perhatian" loading="lazy" width="1600" height="1032"></a></figure>
+  <ul>
+    <li><b>Taburan beban</b> menunjukkan bentuk sekolah. Jika kebanyakan bar berada di tengah, agihan sudah sihat.</li>
+    <li><b>Perlu perhatian</b> ialah senarai kerja anda: tab Terbeban, Ada ruang dan JK kosong. Klik nama guru untuk membuka profil.</li>
+    <li><b>Kira Semula</b> jarang diperlukan. Indeks dikira semula setiap kali data disimpan dalam sistem. Tekan butang ini hanya selepas menyunting Sheet secara terus atau menukar ambang.</li>
+  </ul>
+
+  <h3 id="guna-guru">Sediakan senarai guru</h3>
+  <p>Buka menu <b>Guru</b>. Cara paling cepat ialah <b>Import</b> (4) › <b>Import senarai guru</b>. Sediakan lajur Nama, Emel, Gred dan Status dalam Excel atau Google Sheets, kemudian salin dan tampal. Guru yang emelnya sudah wujud dikemas kini, bukan ditambah semula.</p>
+  <figure class="gbr"><a href="img/panduan/guna-guru.webp" target="_blank"><img src="img/panduan/guna-guru.webp" alt="Jadual Guru dengan ruangan masa, suis kelas peperiksaan, kotak tanda dan butang Import ditanda" loading="lazy" width="1600" height="1032"></a></figure>
+  <ul>
+    <li><b>Masa / minggu</b> (1): isi bilangan masa terus dalam jadual, contohnya 28.</li>
+    <li><b>Kelas peperiksaan</b> (2): hidupkan bagi guru yang mengajar kelas peperiksaan. Tiada kesan selagi faktor peperiksaan ialah 1.0.</li>
+    <li>Selepas mengubah masa, tekan <b>Simpan</b> pada bar di bawah skrin.</li>
+    <li><b>Kotak tanda</b> (3): tanda beberapa guru untuk dibuang sekali gus. Untuk mengosongkan senarai, pilih Import › <b>Buang semua guru (reset)</b> dan taip PADAM. Lantikan, masa mengajar dan log surat guru itu turut dibuang, dan tindakan ini tidak boleh dibatalkan.</li>
+  </ul>
+  <div class="nota amaran"><p><b>Emel guru mesti sama dengan akaun Google yang digunakan untuk membuka sistem.</b> Jika berbeza, guru akan melihat "Akaun belum dipautkan" di Tugas Saya.</p></div>
+  <figure class="gbr sederhana"><a href="img/panduan/guna-guru-borang.webp" target="_blank"><img src="img/panduan/guna-guru-borang.webp" alt="Borang Tambah Guru dengan ruangan Status dan Tag ditanda" loading="lazy" width="1600" height="1032"></a></figure>
+  <p>Dua ruangan dalam borang guru yang paling kerap ditanya:</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Ruangan</th><th>Pilihan</th><th>Kesan</th></tr></thead>
+    <tbody>
+      <tr><td><b>Status</b> (1)</td><td>Aktif</td><td>Dikira dalam indeks dan median.</td></tr>
+      <tr><td></td><td>Cuti</td><td>Tiada indeks dan tidak mempengaruhi median. Lantikan kekal dan ditanda Tidak aktif.</td></tr>
+      <tr><td></td><td>Bertukar keluar</td><td>Sama seperti Cuti, dan tidak disalin ke tahun seterusnya.</td></tr>
+      <tr><td><b>Tag</b> (2)</td><td>Pengetua, PK, GKMP</td><td>Secara lalai tidak dikira dalam indeks kerana peranan mereka berbeza.</td></tr>
+      <tr><td></td><td>Ketua Panitia, GC, Guru Baharu</td><td>Dikira, kecuali sekolah memilih untuk mengecualikannya di Tetapan › Lanjutan.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 id="guna-jk">Sediakan jawatankuasa</h3>
+  <p>Di menu <b>Jawatankuasa</b>, tekan <b>Tambah Jawatankuasa</b>. Dua pilihan dalam borang ini paling mempengaruhi kiraan, jadi putuskan secara konsisten untuk semua JK.</p>
+  <figure class="gbr sederhana"><a href="img/panduan/guna-jk-borang.webp" target="_blank"><img src="img/panduan/guna-jk-borang.webp" alt="Borang Tambah Jawatankuasa dengan ruangan Tahap dan Jenis Tempoh ditanda" loading="lazy" width="1600" height="1032"></a></figure>
+  <div class="tbl"><table>
+    <thead><tr><th>Pilihan</th><th class="num">Nilai lalai</th><th>Cadangan penggunaan</th></tr></thead>
+    <tbody>
+      <tr><td><b>Tahap</b> (1): Utama</td><td class="num">× 3</td><td>JK teras sekolah. Kerjanya banyak dan kesannya meluas.</td></tr>
+      <tr><td>Sokongan</td><td class="num">× 2</td><td>JK yang menyokong bidang utama.</td></tr>
+      <tr><td>Sampingan</td><td class="num">× 1</td><td>JK kecil atau yang kerjanya ringan.</td></tr>
+      <tr><td><b>Jenis tempoh</b> (2): Sepanjang tahun</td><td class="num">× 1.0</td><td>Kerja berterusan sepanjang tahun.</td></tr>
+      <tr><td>Bermusim</td><td class="num">× 0.6</td><td>Aktif pada musim tertentu sahaja.</td></tr>
+      <tr><td>Program</td><td class="num">× 0.3</td><td>Tertumpu pada satu acara atau program.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Ini hanya cadangan. Sekolah yang menentukan JK mana berada pada tahap mana. Perkara penting ialah ukuran yang sama digunakan untuk semua JK.</p>
+  <ul>
+    <li><b>Bidang</b>: PK hanya boleh mengurus JK dalam bidangnya.</li>
+    <li><b>Aktif</b>: matikan jika JK tidak lagi digunakan. Lantikannya tidak dikira, dan rekod lama kekal.</li>
+    <li><b>Wajib</b>: penanda pada JK sahaja dan tidak mengubah skor. Amaran "Jawatan wajib kosong" datang daripada jawatan yang ditanda wajib di Tetapan › Senarai rujukan › Jawatan.</li>
+  </ul>
+
+  <h3 id="guna-lantik">Lantik ahli</h3>
+  <ol class="langkah">
+    <li><div><b class="t">Buka Urus ahli</b><span class="d">Di menu Jawatankuasa, tekan <b>Urus ahli</b> pada JK berkenaan.</span></div></li>
+    <li><div><b class="t">Klik posisi</b><span class="d">Klik posisi seperti Pengerusi atau Setiausaha. Jika perlukan posisi lain, pilih jawatan dan tekan <b>Tambah posisi</b>.</span></div></li>
+    <li><div><b class="t">Pilih guru</b><span class="d">Calon disusun daripada beban paling rendah. Setiap calon menunjukkan <b>Beban sekarang</b> dan <b>Jika dilantik</b>, jadi anda nampak kesannya sebelum memilih. Label <b>Cadangan</b> menandakan calon dengan beban terendah selepas lantikan dan tanpa amaran.</span>
+      <figure class="gbr"><a href="img/panduan/guna-urus-ahli.webp" target="_blank"><img src="img/panduan/guna-urus-ahli.webp" alt="Skrin Urus ahli dengan laci Pilih guru menunjukkan beban sekarang, jika dilantik dan label Cadangan" loading="lazy" width="1600" height="1032"></a></figure></div></li>
+    <li><div><b class="t">Tambah butiran jika perlu</b><span class="d">Tekan <b>+ butiran</b> untuk menulis unit atau kelas, contohnya "1 Al Biruni" atau "Kelab Hoki". Sistem menggunakannya untuk menyusun ahli.</span></div></li>
+    <li><div><b class="t">Simpan</b><span class="d">Perubahan belum disimpan selagi anda tidak menekan <b>Simpan</b> pada bar di bawah skrin. Jika ada amaran, pilih <b>Tukar Guru</b> atau <b>Simpan Juga</b> jika anda ada sebab untuk meneruskan.</span></div></li>
+  </ol>
+
+  <h3 id="guna-terbeban">Selesaikan guru terbeban</h3>
+  <p>Inilah kerja utama sistem. Di Analisis, buka tab <b>Terbeban</b> dan klik nama guru. Profil menunjukkan punca bebannya: masa mengajar atau tugas.</p>
+  <figure class="gbr sederhana"><a href="img/panduan/guna-profil.webp" target="_blank"><img src="img/panduan/guna-profil.webp" alt="Profil guru menunjukkan Indeks Beban, masa mengajar, skor tugas, lantikan dan butang Tukar" loading="lazy" width="1600" height="1032"></a></figure>
+  <div class="kad-grid">
+    <div><b>Bar Skor Tugas jauh melepasi median</b><span>Punca ialah lantikan. Tekan <b>⇄ Tukar</b> pada lantikan berskor tinggi dan pilih calon yang ada ruang.</span></div>
+    <div><b>Bar Masa Mengajar jauh melepasi median</b><span>Punca ialah jadual. Ringankan tugas JK buat sementara, dan bawa ke perbincangan jadual waktu.</span></div>
+    <div><b>Tiada calon sesuai</b><span>Pecahkan tugas kepada Penolong atau tambah AJK. Jika beban tetap perlu dikekalkan, teruskan dan catat sebabnya.</span></div>
+    <div><b>Guru "Ada ruang"</b><span>Semak sebabnya dahulu. Mungkin guru baharu atau baru kembali bertugas, dan ruang itu memang wajar diberikan.</span></div>
+  </div>
+  <p>Selepas menukar lantikan, surat kedua-dua guru ditanda perlu dijana semula. Selesaikan semua pelarasan dahulu, kemudian barulah jana surat.</p>
+
+  <h3 id="guna-ubah">Perubahan sepanjang tahun</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Situasi</th><th>Apa perlu dibuat</th></tr></thead>
+    <tbody>
+      <tr><td>Guru baharu masuk</td><td>Tambah Guru, isi masa mengajar, kemudian lantik. Tag Guru Baharu jika perlu.</td></tr>
+      <tr><td>Guru bertukar keluar</td><td>Tukar status kepada <b>Bertukar keluar</b>, kemudian tukar lantikannya kepada guru lain. Jangan padam supaya rekod lama kekal.</td></tr>
+      <tr><td>Guru cuti panjang</td><td>Tukar status kepada <b>Cuti</b>. Jika tugasnya perlu diteruskan, gantikan guru dalam lantikan itu. Tukar semula kepada Aktif apabila guru kembali.</td></tr>
+      <tr><td>Jawatan kosong sementara</td><td>Simpan posisi tanpa guru. Posisi ditanda Belum diisi dan tidak keluar dalam surat.</td></tr>
+      <tr><td>JK baharu ditubuhkan</td><td>Tambah Jawatankuasa, kemudian Urus ahli.</td></tr>
+      <tr><td>JK dibubarkan</td><td>Edit JK dan matikan <b>Aktif</b>. JK yang ada rekod lantikan tidak boleh dipadam.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 id="guna-tahun">Masuk tahun baharu</h3>
+  <ol class="langkah">
+    <li><div><b class="t">Tetapkan tahun aktif</b><span class="d">Tetapan › Lanjutan › Tahun &amp; ujian. Tahun aktif ialah tahun lalai semasa sistem dibuka.</span></div></li>
+    <li><div><b class="t">Kemas kini guru dan masa mengajar</b><span class="d">Tambah guru baharu dan tukar status guru yang keluar. Masa mengajar tidak disimpan mengikut tahun, jadi nilai semasa digunakan untuk tahun yang dipilih. Kemas kini mengikut jadual waktu baharu.</span></div></li>
+    <li><div><b class="t">Salin lantikan</b><span class="d">Jawatankuasa › <b>Lagi</b> › <b>Salin lantikan dari tahun lepas</b>. Pratonton menunjukkan bilangan yang akan disalin dan jawatan yang perlu diisi semula. Guru yang bertukar keluar tidak disalin.</span></div></li>
+    <li><div><b class="t">Laraskan dan keluarkan surat</b><span class="d">Semak Analisis, laraskan agihan dan bawa ke mesyuarat. Selepas dipersetujui, jana dan hantar surat.</span></div></li>
+  </ol>
+
+  <h3 id="guna-peranan">Untuk PK dan guru</h3>
+  <div class="kad-grid">
+    <div><b>PK</b><span>Buka Jawatankuasa untuk melantik ahli dalam JK bidang anda. Analisis menunjukkan gambaran beban, dan <b>Tugas Guru</b> menunjukkan tugas mana-mana guru. Gunakan indeks semasa memilih calon supaya guru yang sama tidak dilantik oleh setiap bidang.</span></div>
+    <div><b>Guru</b><span>Buka URL sistem dengan akaun sekolah. <b>Tugas Saya</b> memaparkan lantikan, Indeks Beban berbanding median sekolah, dan surat lantikan anda. Jika ada kesilapan, maklumkan kepada pentadbir sistem.</span></div>
+  </div>
+</section>
+
 <section id="tugas">
-  <span class="no">05</span>
+  <span class="no">07</span>
   <h2>Mengurus tugas</h2>
   <h3>Tukar guru terus dari profil</h3>
   <p>Klik nama mana-mana guru di Analisis atau menu Guru. Setiap lantikan dalam profil ada butang <b>⇄ Tukar</b>. Calon pengganti disusun daripada beban paling rendah, lengkap dengan indeks <em>sekarang</em> dan <em>jika dilantik</em>. Surat kedua-dua guru ditanda perlu dijana semula.</p>
@@ -333,7 +500,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 </section>
 
 <section id="kira">
-  <span class="no">06</span>
+  <span class="no">08</span>
   <h2>Cara beban dikira</h2>
   <p>Setiap guru diberi satu nombor, <b>Indeks Beban</b>, yang menggabungkan masa mengajar dan tugas jawatankuasa. Kedua-duanya dibandingkan dengan guru biasa di sekolah anda sendiri, jadi <b>1.00 bermaksud setara dengan guru biasa</b>.</p>
 
@@ -390,7 +557,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 </section>
 
 <section id="ambang">
-  <span class="no">07</span>
+  <span class="no">09</span>
   <h2>Memilih ambang</h2>
   <p>Ambang ialah <b>piawai</b>, bukan kuota. Matlamatnya ialah sifar guru terbeban, dicapai dengan mengagihkan semula tugas, bukan dengan menaikkan ambang sehingga tiada sesiapa ditanda.</p>
   <div class="kad-grid">
@@ -402,7 +569,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 </section>
 
 <section id="amaran">
-  <span class="no">08</span>
+  <span class="no">10</span>
   <h2>Amaran</h2>
   <p>Sistem memaparkan amaran dalam bahasa biasa. Kod W hanya muncul apabila tetikus dihalakan pada amaran.</p>
   <div class="tbl"><table>
@@ -423,7 +590,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 </section>
 
 <section id="surat">
-  <span class="no">09</span>
+  <span class="no">11</span>
   <h2>Surat &amp; emel</h2>
   <ol class="langkah">
     <li><div><b class="t">Sediakan templat sekali</b><span class="d">Tetapan › Surat &amp; emel › <b>Sediakan Templat &amp; Folder</b>. Templat ialah Google Doc yang boleh anda sunting.</span></div></li>
@@ -435,7 +602,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 </section>
 
 <section id="tetapan">
-  <span class="no">10</span>
+  <span class="no">12</span>
   <h2>Tetapan &amp; data</h2>
   <div class="tbl"><table>
     <thead><tr><th>Tetapan</th><th class="num">Lalai</th><th>Kesan</th></tr></thead>
@@ -468,9 +635,20 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 </section>
 
 <section id="soalan">
-  <span class="no">11</span>
+  <span class="no">13</span>
   <h2>Soalan lazim</h2>
   <div class="faq">
+    <details><summary>Saya baru buka sistem. Nak mula dari mana?</summary><p>Mula dari <a href="#roh">Roh sistem</a> untuk memahami tujuannya, kemudian ikut <a href="#guna">Cara guna</a> dari atas: tetapan, guru, masa mengajar, jawatankuasa, lantik, semak Analisis, surat.</p></details>
+    <details><summary>Guru ditanda Terbeban. Adakah sistem salah, atau guru itu bermasalah?</summary><p>Kedua-duanya tidak. Label itu bermaksud beban guru melebihi ambang berbanding guru lain di sekolah anda. Ia menunjukkan keadaan agihan, bukan kesalahan guru. Lihat <a href="#guna-terbeban">Selesaikan guru terbeban</a>.</p></details>
+    <details><summary>Kenapa guru yang jawatannya sedikit tetapi indeksnya lebih tinggi daripada guru yang banyak jawatan?</summary><p>Kerana indeks mengira berat, bukan bilangan. Satu jawatan Pengerusi JK Utama sepanjang tahun bernilai 15 mata, sama seperti 50 jawatan AJK program sampingan. Masa mengajar juga dikira. Buka profil guru untuk melihat puncanya.</p></details>
+    <details><summary>Boleh ke indeks digunakan untuk menilai prestasi guru?</summary><p>Tidak. Indeks ialah alat bantu keputusan agihan tugas. Ia tidak mengukur mutu kerja, dan hanya mengira perkara yang direkodkan dalam sistem.</p></details>
+    <details><summary>Macam mana nak tentukan JK ini Utama, Sokongan atau Sampingan?</summary><p>Sekolah yang memutuskan. Lihat <a href="#guna-jk">cadangan penggunaan</a>, bincang dalam mesyuarat, dan gunakan ukuran yang sama untuk semua JK.</p></details>
+    <details><summary>Boleh tukar skor jawatan atau tambah jawatan baharu?</summary><p>Boleh. Buka Tetapan › Senarai rujukan › Jawatan. Anda boleh mengubah skor, menambah jawatan, menetapkan gred minimum cadangan dan menanda jawatan wajib. Pemberat tahap dan faktor tempoh pula di Tetapan › Lanjutan.</p></details>
+    <details><summary>Seorang guru boleh pegang dua jawatan dalam JK yang sama?</summary><p>Boleh. Jika butirannya berbeza, contohnya penasihat dua kelab, sistem tidak menganggapnya lantikan berganda. Jika butirannya sama, amaran Lantikan berganda dipaparkan.</p></details>
+    <details><summary>Sistem tak benarkan padam guru?</summary><p>Butang Padam dalam profil menolak guru yang ada rekod lantikan, supaya rekod tidak hilang tanpa sengaja. Tukar status kepada Bertukar keluar. Jika memang mahu membuang guru bersama lantikannya, tanda guru itu di jadual Guru dan tekan <b>Buang yang ditanda</b>.</p></details>
+    <details><summary>Guru nampak "Akaun belum dipautkan" di Tugas Saya?</summary><p>Emel akaun Google guru itu tiada dalam senarai Guru. Betulkan emel di profil guru supaya sama dengan akaun yang digunakan.</p></details>
+    <details><summary>Saya dah pilih guru, tapi lantikan hilang selepas keluar dari skrin?</summary><p>Perubahan di Urus ahli belum disimpan sehingga anda menekan <b>Simpan</b> pada bar di bawah skrin.</p></details>
+    <details><summary>Guru bersama ambil cuti bersalin. Apa jadi pada indeks orang lain?</summary><p>Guru Cuti tidak termasuk dalam kiraan median, jadi median boleh berubah sedikit dan indeks guru lain ikut berubah. Tugas guru tersebut masih bersamanya sehingga anda menukar lantikan. Sistem menandanya sebagai Tidak aktif sebagai peringatan.</p></details>
     <details id="url-hilang"><summary>Terlupa URL web app sistem? Di mana nak cari semula?</summary>
       <p>URL sentiasa boleh dilihat semula oleh pemilik salinan:</p>
       <ol>
@@ -491,7 +669,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     <details><summary>Siapa boleh melihat data sekolah kami?</summary><p>Hanya pengguna yang anda daftarkan (atau semua akaun domain sekolah jika Akses terbuka dihidupkan, dan mereka hanya melihat tugas sendiri). Data berada dalam salinan Sheet milik sekolah anda; pembangun sistem tidak boleh melihatnya.</p></details>
     <details><summary>Nama atau kod sekolah dalam sistem salah?</summary><p>Nama dan kod sekolah diambil daripada pendaftaran dan tidak boleh diubah di Tetapan. Balas emel pendaftaran untuk membetulkannya; sistem anda dikemas kini sendiri dalam masa kira-kira 20 minit.</p></details>
     <details><summary>Skrin "Aktifkan Sistem" memaparkan ralat?</summary><p><b>Kod sudah digunakan oleh salinan lain</b>: satu kod hanya untuk satu salinan; minta pembangun set semula jika anda membuat salinan baharu. <b>Tidak berdaftar</b>: semak ejaan kod atau daftar dahulu. <b>Tidak dapat dihubungi</b>: pastikan salinan dibuat daripada pautan terkini dalam emel.</p></details>
-    <details><summary>Ralat "You do not have permission to call UrlFetchApp.fetch" semasa aktivasi?</summary><p>Kebenaran "sambung ke perkhidmatan luar" tidak ditanda semasa Authorize. Buka <b>Extensions › Apps Script</b>, pilih fungsi <code>pasang</code>, klik <b>Run</b> dan tandakan <b>semua kotak (Select all)</b> sebelum Allow. Jika skrin kebenaran tidak muncul, buang akses projek itu di myaccount.google.com/permissions, kemudian ulang.</p></details>
+    <details><summary>Ralat "You do not have permission to call UrlFetchApp.fetch" semasa aktivasi?</summary><p>Kebenaran "sambung ke perkhidmatan luar" tidak ditanda semasa Authorize. Buka <b>Extensions › Apps Script</b>, pilih fungsi <code>pasang</code>, klik <b>Run</b> dan tandakan <b>semua kotak (Select all)</b> sebelum Continue. Jika skrin kebenaran tidak muncul, buang akses projek itu di myaccount.google.com/permissions, kemudian ulang.</p></details>
     <details><summary>Boleh guna akaun Google selain DELIMa?</summary><p>Boleh. Sistem berfungsi dengan mana-mana akaun Google Workspace sekolah. Pastikan guru menggunakan akaun domain yang sama dengan pemilik salinan supaya sistem dapat mengenal mereka.</p></details>
   </div>
 </section>
