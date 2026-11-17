@@ -290,6 +290,8 @@ table.jadual { width: 100%; border-collapse: separate; border-spacing: 0; }
 .wbadge.merah { background: var(--terbeban-bg); color: var(--danger); }
 .cip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 9999px; font-size: 12px; font-weight: 500;
   background: #EFF2F7; color: var(--text-2); white-space: nowrap; line-height: 18px; }
+button.cip { border: 0; cursor: pointer; font-family: inherit; }
+button.cip:hover { filter: brightness(.96); }
 .cip.UTAMA { background: var(--ungu-bg); color: var(--ungu); }
 .cip.SOKONGAN { background: var(--biru-bg); color: var(--biru); }
 .cip.SAMPINGAN { background: #EFF2F7; color: var(--text-2); }
@@ -1333,7 +1335,10 @@ function renderPapan() {
     kadAnalisis('anBil', 'Bilangan jawatan seorang', 'Berapa ramai guru memegang berapa jawatan') + '</div>' +
     '<div class="grid g-2 mt-24">' +
     kadAnalisis('anGred', 'Beban ikut gred', 'Purata jawatan dan Indeks Beban mengikut gred') +
-    kadAnalisis('anRamai', 'Paling banyak jawatan', 'Guru aktif dengan bilangan lantikan tertinggi (tidak termasuk pentadbir yang dikecualikan)') + '</div>';
+    kadAnalisis('anRamai', 'Paling banyak jawatan', 'Guru aktif dengan bilangan lantikan tertinggi (tidak termasuk pentadbir yang dikecualikan)') + '</div>' +
+    '<div class="kad mt-24"><div class="kad-kepala"><div><h3>Agihan guru ikut bidang</h3>' +
+    '<div class="sub">Skor tugas dan bilangan jawatan setiap guru dalam setiap bidang. Gunakan untuk melihat penglibatan, bukan sebagai syarat.</div></div></div>' +
+    '<div class="kad-badan" id="anGuruBidang">' + rangka(240) + '</div></div>';
   $('#btnKiraSemula').addEventListener('click', ev => {
     const b = ev.currentTarget;
     b.disabled = true;
@@ -1522,8 +1527,70 @@ function lukisAnalisis(d) {
     (g.bil > had ? 'var(--danger)' : 'var(--teal)') + '"></i></div></div><b class="num" style="min-width:28px;text-align:right">' + g.bil + '</b>' +
     pillIndeks(g.indeks, t, true, g.dikecualikan) + '</li>').join('') + '</ul>' : kosong('assignment_ind', 'Belum ada lantikan', ''));
   $$('#anRamai [data-guru]').forEach(li => li.addEventListener('click', () => bukaProfilGuru(li.dataset.guru)));
+
+  // 8. Agihan guru ikut bidang (matriks guru x bidang)
+  GB.data = { guru: aktif, bidang: bid, t: t };
+  lukisGuruBidang();
+
   const lw = $('#anJK [data-pergi-w07]');
   if (lw) lw.onclick = ev => { ev.preventDefault(); ev.stopPropagation(); pergi('jk', { tapisW07: true }); };
+}
+
+/** Keadaan kad "Agihan guru ikut bidang": tapisan bidang tanpa tugas ('' = semua), carian dan susunan. */
+const GB = { data: null, tiada: '', cari: '', susun: 'nama' };
+
+function lukisGuruBidang() {
+  const el = $('#anGuruBidang');
+  if (!el || !GB.data) return;
+  const { guru, bidang, t } = GB.data;
+  if (!bidang.length || !guru.length) { el.innerHTML = kosong('category', 'Tiada data', 'Tambah guru dan jawatankuasa dahulu.'); return; }
+  const pendek = n => String(n).replace(/^Pengurusan\s+/i, '');
+  const ada = (g, id) => g.bidang && g.bidang[id] && g.bidang[id][1] > 0;
+  // Pentadbir yang dikecualikan tidak dikira dalam ringkasan "tiada tugas"
+  const dikira = guru.filter(g => !g.dikecualikan);
+  const tiadaIkut = id => dikira.filter(g => !ada(g, id)).length;
+  const liputan = g => bidang.filter(b => ada(g, b.id_bidang)).length;
+
+  const cari = GB.cari.trim().toLowerCase();
+  const rows = guru.filter(g => (!cari || g.nama.toLowerCase().indexOf(cari) !== -1) && (!GB.tiada || (!g.dikecualikan && !ada(g, GB.tiada))))
+    .sort((a, b) => GB.susun === 'indeks' ? (b.indeks === null ? -1 : b.indeks) - (a.indeks === null ? -1 : a.indeks)
+      : GB.susun === 'liputan' ? liputan(a) - liputan(b) || a.nama.localeCompare(b.nama) : a.nama.localeCompare(b.nama));
+
+  // Peta haba: warna sel ikut skor berbanding skor sel tertinggi dalam sekolah
+  const maksSel = Math.max(0, ...guru.map(g => Math.max(0, ...Object.keys(g.bidang || {}).map(k => g.bidang[k][0]))));
+  const sel = (g, id) => {
+    const c = g.bidang && g.bidang[id];
+    if (!c || !c[1]) return '<td class="num muted">-</td>';
+    const pekat = maksSel > 0 ? Math.round(8 + 40 * Math.min(1, c[0] / maksSel)) : 8;
+    return '<td class="num" style="background:color-mix(in srgb, var(--biru) ' + pekat + '%, transparent)"><b>' + satu(c[0]) + '</b> <span class="sangat-kecil muted">· ' + c[1] + ' jwt</span></td>';
+  };
+  // Liputan: bidang yang guru terlibat, sebagai titik
+  const selLiputan = g => '<td><span class="baris" style="gap:3px;flex-wrap:nowrap" data-tip="' + liputan(g) + ' daripada ' + bidang.length + ' bidang">' +
+    bidang.map(b => '<i style="width:9px;height:9px;border-radius:50%;display:inline-block;background:' + (ada(g, b.id_bidang) ? 'var(--teal)' : 'var(--border)') + '"></i>').join('') +
+    '<span class="sangat-kecil muted" style="margin-left:4px">' + liputan(g) + '/' + bidang.length + '</span></span></td>';
+  el.innerHTML = '<div class="baris mb-16" style="flex-wrap:wrap;gap:8px"><span class="kecil muted">Tiada tugas dalam:</span>' +
+    bidang.map(b => '<button class="cip' + (GB.tiada === b.id_bidang ? ' biru' : '') + '" data-tiada="' + esc(b.id_bidang) + '">' + esc(pendek(b.nama)) +
+      ' <b class="num">' + tiadaIkut(b.id_bidang) + '</b></button>').join('') +
+    (GB.tiada ? '<button class="btn sm" data-tiada="">' + ikon('close', 'sm') + 'Semua guru</button>' : '') + '</div>' +
+    '<div class="baris antara mb-8" style="flex-wrap:wrap;gap:8px"><div class="carian" style="min-width:220px"><span class="ms sm">search</span>' +
+    '<input class="input sm" id="cariGuruBidang" placeholder="Cari nama guru..." value="' + esc(GB.cari) + '"></div>' +
+    '<div class="baris"><span class="kecil muted">Susun:</span><div class="seg">' + [['nama', 'Nama'], ['liputan', 'Liputan terendah'], ['indeks', 'Indeks tertinggi']].map(x =>
+      '<button data-susungb="' + x[0] + '" class="' + (GB.susun === x[0] ? 'aktif' : '') + '">' + x[1] + '</button>').join('') + '</div></div></div>' +
+    (rows.length ? '<div class="skrol-x" style="max-height:520px;overflow-y:auto"><table class="jadual padat"><thead style="position:sticky;top:0;z-index:1;background:var(--surface)"><tr><th>Guru</th>' +
+      bidang.map(b => '<th class="num">' + esc(pendek(b.nama)) + '</th>').join('') + '<th>Liputan</th><th class="num">Jumlah</th><th>Indeks</th></tr></thead><tbody>' +
+      rows.map(g => '<tr class="klik" data-guru="' + esc(g.id_guru) + '"><td><b>' + esc(g.nama) + '</b></td>' + bidang.map(b => sel(g, b.id_bidang)).join('') + selLiputan(g) +
+        '<td class="num"><b>' + satu(g.T) + '</b> <span class="sangat-kecil muted">· ' + g.bil + ' jwt</span></td><td>' + pillIndeks(g.indeks, t, true, g.dikecualikan) + '</td></tr>').join('') +
+      '</tbody></table></div>' : kosong('task_alt', 'Tiada guru', GB.tiada ? 'Semua guru (selain pentadbir dikecualikan) sudah ada tugas dalam bidang ini.' : 'Ubah carian.')) +
+    '<p class="kecil muted mt-8">Angka tebal ialah skor tugas; "jwt" ialah bilangan jawatan. Warna sel lebih pekat bermaksud skor lebih tinggi. ' +
+    'Liputan menunjukkan bilangan bidang yang guru terlibat. Pentadbir yang dikecualikan tidak dikira dalam kiraan "tiada tugas".</p>';
+  $$('#anGuruBidang [data-tiada]').forEach(b => b.onclick = () => { GB.tiada = GB.tiada === b.dataset.tiada ? '' : b.dataset.tiada; lukisGuruBidang(); });
+  $$('#anGuruBidang [data-susungb]').forEach(b => b.onclick = () => { GB.susun = b.dataset.susungb; lukisGuruBidang(); });
+  $$('#anGuruBidang tr[data-guru]').forEach(tr => tr.addEventListener('click', () => bukaProfilGuru(tr.dataset.guru)));
+  const ci = $('#cariGuruBidang');
+  ci.addEventListener('input', debounce(ev => {
+    GB.cari = ev.target.value; lukisGuruBidang();
+    const i = $('#cariGuruBidang'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
+  }, 250));
 }
 
 // ============================================================================
